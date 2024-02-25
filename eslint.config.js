@@ -12,7 +12,7 @@ export default antfu({
     curly: ['error', 'all'],
   },
 }, {
-  // conflict with changelogen: remove after https://github.com/Teages/changelogen/issues/170
+  // conflict with changelogen: remove after https://github.com/unjs/changelogen/issues/170
   files: ['package.json'],
   name: 'teages:changelogen-package-json',
   rules: {
