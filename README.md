@@ -11,7 +11,8 @@ npx giget@latest gh:teages/template package-name
 > [!NOTE]
 > TODO:
 > - [ ] Update package name: replace `package-name` with your package name
-> - [ ] Update author name: replace `teages` with your name
+> - [ ] Update repo path: replace `Teages/repo` with your package name
+> - [ ] Update author name: replace `Teages` with your name
 > - [ ] Install autofix.ci
 > - [ ] Update package description
 > - [ ] Update usage examples
@@ -75,8 +76,8 @@ Published under [MIT License](./LICENSE).
 [npm-downloads-src]: https://img.shields.io/npm/dm/package-name?style=flat&color=blue
 [npm-downloads-href]: https://npmjs.com/package/package-name
 
-<!-- [codecov-src]: https://img.shields.io/codecov/c/gh/Teages/package-name/main?style=flat&color=blue
-[codecov-href]: https://codecov.io/gh/Teages/package-name
+<!-- [codecov-src]: https://img.shields.io/codecov/c/gh/Teages/repo/main?style=flat&color=blue
+[codecov-href]: https://codecov.io/gh/Teages/repo
 
 [bundle-src]: https://img.shields.io/bundlephobia/minzip/package-name?style=flat&color=blue
 [bundle-href]: https://bundlephobia.com/result?p=package-name -->
