@@ -52,7 +52,9 @@ Import:
 ```js
 // ESM
 import { test } from 'package-name'
+```
 
+```js
 // CommonJS
 const { test } = require('package-name')
 ```
