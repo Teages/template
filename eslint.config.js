@@ -7,15 +7,7 @@ export default antfu({
     'coverage',
     'dist',
   ],
-}, {
   rules: {
     curly: ['error', 'all'],
-  },
-}, {
-  // conflict with changelogen: remove after https://github.com/unjs/changelogen/issues/170
-  files: ['package.json'],
-  name: 'teages:changelogen-package-json',
-  rules: {
-    'style/eol-last': ['error', 'never'],
   },
 })
