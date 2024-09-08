@@ -1,5 +1,3 @@
 export * from './components'
-
-export function test() {
-  return 'works!'
-}
+export * from './composables'
+export * from './utils'

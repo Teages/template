@@ -22,9 +22,3 @@ defineProps<ButtonProps>()
   font-size: 16px;
 }
 </style>
-
-<style scoped>
-body {
-  background-color: aqua;
-}
-</style>
