@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { sum } from '../src/utils'
+import { sum } from '../src'
 
 describe('package-name/utils', () => {
   it('sum', () => {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { ref } from 'vue'
-import { useDouble } from '../src/composables'
+import { useDouble } from '../src'
 
 describe('package-name/composables', () => {
   it('useDouble', () => {
