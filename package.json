@@ -2,7 +2,7 @@
   "name": "package-name",
   "type": "module",
   "version": "0.0.0",
-  "packageManager": "pnpm@9.8.0",
+  "packageManager": "pnpm@9.14.3+sha512.c0f53ee99477ed969b82b289ad011a5d16bf1623c957e7f29eabe8d0c00b574c29b8c7f54f6c67ee710c73f285c8154d07ce44b46fe2c0eeb476a90441bac371",
   "description": "",
   "license": "MIT",
   "repository": "Teages/repo",
@@ -33,15 +33,15 @@
     "test:types": "tsc --noEmit --skipLibCheck"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.27.1",
+    "@antfu/eslint-config": "^3.11.2",
     "@types/node": "^20",
-    "@vitest/coverage-v8": "^2.0.5",
-    "changelogen": "^0.5.5",
-    "eslint": "^9.9.1",
-    "jiti": "2.0.0-beta.3",
-    "typescript": "^5.5.4",
+    "@vitest/coverage-v8": "^2.1.6",
+    "changelogen": "^0.5.7",
+    "eslint": "^9.15.0",
+    "jiti": "2.4.0",
+    "typescript": "^5.7.2",
     "unbuild": "^v3.0.0-rc.7",
-    "vitest": "^2.0.5"
+    "vitest": "^2.1.6"
   },
   "publishConfig": {
     "access": "public"
