@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import type { ButtonProps } from '.'
 
-defineProps<ButtonProps>()
+const {
+  content = 'It is a button',
+} = defineProps<ButtonProps>()
 </script>
 
 <template>
   <button :class="$style.button">
-    {{ content ?? 'It is a button' }}
+    {{ content }}
   </button>
 </template>
 

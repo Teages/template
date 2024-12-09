@@ -9,33 +9,56 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./components/*": {
-      "types": "./dist/components/*/index.d.ts",
-      "import": "./dist/components/*/index.mjs",
-      "require": "./dist/components/*/index.js"
+      "import": {
+        "types": "./dist/components/*/index.d.mts",
+        "default": "./dist/components/*/index.mjs"
+      },
+      "require": {
+        "types": "./dist/components/*/index.d.cts",
+        "default": "./dist/components/*/index.cjs"
+      }
     },
     "./utils/*": {
-      "types": "./dist/utils/*.d.ts",
-      "import": "./dist/utils/*.mjs",
-      "require": "./dist/utils/*.js"
+      "import": {
+        "types": "./dist/utils/*/index.d.mts",
+        "default": "./dist/utils/*/index.mjs"
+      },
+      "require": {
+        "types": "./dist/utils/*/index.d.cts",
+        "default": "./dist/utils/*/index.cjs"
+      }
     },
     "./composables/*": {
-      "types": "./dist/composables/*.d.ts",
-      "import": "./dist/composables/*.mjs",
-      "require": "./dist/composables/*.js"
+      "import": {
+        "types": "./dist/composables/*/index.d.mts",
+        "default": "./dist/composables/*/index.mjs"
+      },
+      "require": {
+        "types": "./dist/composables/*/index.d.cts",
+        "default": "./dist/composables/*/index.cjs"
+      }
     },
     "./styles/*.css": "./dist/styles/*.css"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": "^18.18.0 || ^20.9.0 || >=22.0.0"
+  },
   "scripts": {
     "build": "unbuild",
     "dev:prepare": "unbuild --stub",
@@ -50,27 +73,29 @@
     "test:types": "vue-tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
-    "vue": "^3.5.3"
+    "vue": "^3.5.13"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^3.4.1",
-    "@teages/mkdist-vue-loader": "^0.0.1",
-    "@types/node": "^20",
-    "@vitejs/plugin-vue": "^5.1.2",
-    "@vitest/coverage-v8": "^2.0.5",
-    "@volar/typescript": "^2.4.4",
+    "@antfu/eslint-config": "^3.11.2",
+    "@types/node": "^22.10.1",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vitest/coverage-v8": "^2.1.8",
+    "@volar/typescript": "^2.4.10",
     "@vue/test-utils": "^2.4.6",
-    "changelogen": "^0.5.5",
-    "eslint": "^9.10.0",
+    "changelogen": "^0.5.7",
+    "eslint": "^9.16.0",
     "fast-glob": "^3.3.2",
-    "happy-dom": "^15.7.3",
-    "jiti": "2.0.0-beta.3",
-    "mkdist": "1.5.6",
-    "sass": "^1.78.0",
-    "typescript": "^5.5.4",
-    "unbuild": "^v3.0.0-rc.7",
-    "vitest": "^2.0.5",
-    "vue-tsc": "^2.1.6"
+    "happy-dom": "^15.11.7",
+    "jiti": "2.4.1",
+    "mkdist": "npm:@teages/mkdist@1.6.0-patch.251.002c5b4",
+    "sass": "^1.82.0",
+    "typescript": "^5.7.2",
+    "unbuild": "3.0.0-rc.11",
+    "vitest": "^2.1.8",
+    "vue-tsc": "^2.1.10"
+  },
+  "resolutions": {
+    "mkdist": "npm:@teages/mkdist@1.6.0-patch.251.002c5b4"
   },
   "publishConfig": {
     "access": "public"

@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { Button } from 'package-name/components/button'
-import { useDouble } from 'package-name/composables/double'
-import { sum } from 'package-name/utils/sum'
+import { Button, sum, useDouble } from 'package-name'
 import { ref } from 'vue'
-import 'package-name/styles/index.css'
+import 'package-name/styles/index.scss'
 
 const count = ref(0)
 const double = useDouble(count)
