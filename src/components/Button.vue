@@ -1,6 +1,11 @@
-<script setup lang="ts">
-import type { ButtonProps } from '.'
+<script lang="ts">
+export interface ButtonProps {
+  content?: string
+  obj?: Record<string, unknown>
+}
+</script>
 
+<script setup lang="ts">
 const {
   content = 'It is a button',
 } = defineProps<ButtonProps>()

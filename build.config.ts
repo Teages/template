@@ -32,7 +32,7 @@ export default defineBuildConfig({
 
   hooks: {
     'mkdist:entry:build': (_ctx, _entries, { writtenFiles }) => {
-      const declarations = writtenFiles.filter(file => file.endsWith('.d.ts'))
+      const declarations = writtenFiles.filter(file => file.endsWith('.d.ts') && !file.endsWith('.vue.d.ts'))
       // copy declarations to '.d.mts' and '.d.cts'
       for (const declaration of declarations) {
         const name = declaration.replace(/.d.ts$/, '')

@@ -19,14 +19,8 @@
       }
     },
     "./components/*": {
-      "import": {
-        "types": "./dist/components/*/index.d.mts",
-        "default": "./dist/components/*/index.mjs"
-      },
-      "require": {
-        "types": "./dist/components/*/index.d.cts",
-        "default": "./dist/components/*/index.cjs"
-      }
+      "types": "./dist/components/*.vue.d.ts",
+      "default": "./dist/components/*.vue"
     },
     "./utils/*": {
       "import": {
@@ -48,7 +42,37 @@
         "default": "./dist/composables/*/index.cjs"
       }
     },
-    "./styles/*.css": "./dist/styles/*.css"
+    "./unplugin": {
+      "import": {
+        "types": "./dist/unplugin.d.mts",
+        "default": "./dist/unplugin.mjs"
+      },
+      "require": {
+        "types": "./dist/unplugin.d.cts",
+        "default": "./dist/unplugin.cjs"
+      }
+    },
+    "./vite": {
+      "import": {
+        "types": "./dist/vite.d.mts",
+        "default": "./dist/vite.mjs"
+      },
+      "require": {
+        "types": "./dist/vite.d.cts",
+        "default": "./dist/vite.cjs"
+      }
+    },
+    "./nuxt": {
+      "import": {
+        "types": "./dist/nuxt.d.mts",
+        "default": "./dist/nuxt.mjs"
+      },
+      "require": {
+        "types": "./dist/nuxt.d.cts",
+        "default": "./dist/nuxt.cjs"
+      }
+    },
+    "./styles": "./dist/styles/index.css"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -73,11 +97,21 @@
     "test:types": "vue-tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
+    "@nuxt/kit": "^3.14.1592",
+    "@nuxt/schema": "^3.14.1592",
+    "defu": "^6.1.4",
+    "local-pkg": "^0.5.1",
+    "mlly": "^1.7.3",
+    "pathe": "^1.1.2",
+    "tinyglobby": "^0.2.10",
+    "unplugin": "^2.0.0",
+    "unplugin-auto-import": "^0.18.6",
+    "unplugin-vue-components": "^0.27.5",
     "vue": "^3.5.13"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.11.2",
-    "@types/node": "^22.10.1",
+    "@types/node": "^20",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitest/coverage-v8": "^2.1.8",
     "@volar/typescript": "^2.4.10",
