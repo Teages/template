@@ -8,6 +8,7 @@ export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'package-name/nuxt',
     configKey: 'package-name',
+    version: '>=3.13.1',
   },
   defaults: {
     prefix: 'P',

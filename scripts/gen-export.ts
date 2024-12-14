@@ -4,17 +4,25 @@ import process from 'node:process'
 import { genExport, genTypeExport } from 'knitwork'
 import { findExports, findTypeExports } from 'mlly'
 import { extname, resolve } from 'pathe'
+import { pascalCase } from 'scule'
 import { glob } from 'tinyglobby'
 import { parse } from 'vue/compiler-sfc'
 
 const srcDir = resolve(process.cwd(), './src')
-const indexFilePath = resolve(srcDir, './index.ts')
+const indexFilePath = 'index.ts'
+const componentFilePath = 'components.ts'
 
 const outputHead = `
 /* eslint-disable eslint-comments/no-unlimited-disable */
 /* eslint-disable */
 /* This file is auto-generated */
 `.trim()
+
+interface AnalyzedExport {
+  type?: boolean
+  from: string
+  names: ESMImport[]
+}
 
 async function scanComponentsTypes() {
   const res: Array<AnalyzedExport> = []
@@ -64,13 +72,14 @@ async function scanComponents() {
 
   return res
 }
-function getComponentName(path: string) {
-  return path
+function getComponentName(_path: string) {
+  const paths = _path
     .replace(/\.vue$/, '')
-    .replace(/\/index$/, '')
-    .split(/[-/]/)
-    .map(word => word[0].toUpperCase() + word.slice(1))
-    .join('')
+    .split('/')
+  const base = pascalCase(paths.pop()!)
+  const prefix = pascalCase(paths.join('/'))
+
+  return base.startsWith(prefix) ? base : `${prefix}${base}`
 }
 
 async function scanUtils() {
@@ -107,9 +116,15 @@ function normalizeFrom(path: string) {
 }
 
 async function main() {
+  const scannedComponents = await scanComponents()
+  const componentOutput = `${outputHead}\n${
+    scannedComponents
+      .map(item => genExport(item.from, item.names))
+      .join('\n')
+  }`
+
   const scanned = [
     await scanComponentsTypes(),
-    await scanComponents(),
     await scanUtils(),
   ].flat()
 
@@ -126,23 +141,25 @@ async function main() {
     '',
     ...nonTypeOutput,
     '',
+    genExport('./components', '*'),
+    '',
   ].join('\n')
 
-  const old = await fs.readFile(indexFilePath, 'utf-8')
-  if (old !== output) {
-    await fs.writeFile(indexFilePath, output, 'utf-8')
-    console.log('Updated index.ts')
+  await updateFile(componentFilePath, componentOutput)
+  await updateFile(indexFilePath, output)
+}
+async function updateFile(path: string, content: string) {
+  const filePath = resolve(srcDir, path)
+
+  const old = await fs.readFile(filePath, 'utf-8').catch(() => null)
+  if (old !== content) {
+    await fs.writeFile(filePath, content, 'utf-8')
+    console.log(`Updated ${filePath}`)
   }
   else {
-    console.log('index.ts is up-to-date')
+    console.log(`${path} is up-to-date`)
   }
 }
 
 main()
   .catch(err => console.error('Error while updating index.ts:', err))
-
-interface AnalyzedExport {
-  type?: boolean
-  from: string
-  names: ESMImport[]
-}

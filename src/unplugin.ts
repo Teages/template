@@ -1,10 +1,9 @@
 import type { UnpluginContextMeta, UnpluginOptions } from 'unplugin'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import defu from 'defu'
 import { isPackageExists } from 'local-pkg'
-import { createCommonJS } from 'mlly'
+import { createCommonJS, findExportNames } from 'mlly'
 import { join } from 'pathe'
-import { globSync } from 'tinyglobby'
 import { createUnplugin } from 'unplugin'
 import AutoImport from 'unplugin-auto-import'
 import AutoImportComponents from 'unplugin-vue-components'
@@ -19,13 +18,15 @@ export interface PluginOptions {
 }
 
 const defaultOptions = {
-  prefix: 'P', // TODO: replace with your prefix
+  prefix: 'P', // TODO: replace with your default prefix
   dts: isPackageExists('typescript'),
   importStyle: true,
 } satisfies PluginOptions
 
-const { __dirname } = createCommonJS(import.meta.url)
-export const srcdir = __dirname
+const { __dirname: srcdir } = createCommonJS(import.meta.url)
+function resolve(...paths: string[]) {
+  return join(srcdir, ...paths)
+}
 
 export const plugin = createUnplugin<PluginOptions | undefined>((_options = {}, meta) => {
   const options = defu(_options, defaultOptions)
@@ -41,8 +42,15 @@ function ComponentImportPlugin(framework: UnpluginContextMeta['framework'], opti
   const dtsEnabled = !!dtsInit
   const dts = typeof dtsInit === 'string' ? dtsInit : 'package-name-components.d.ts'
 
-  const components = globSync('**/*.vue', { cwd: join(__dirname, 'components') })
-  const componentNames = new Set(components.map(c => `${options.prefix}${c.replace(/\.vue$/, '')}`))
+  const componentExportFile = getPossibleFile([
+    resolve('components.ts'),
+    resolve('components.mjs'),
+  ])
+  const names = componentExportFile
+    ? new Set(findExportNames(readFileSync(componentExportFile, 'utf-8')))
+    : new Set<string>()
+
+  const from = resolve('components')
   const sideEffects = getSideEffect(options)
 
   return AutoImportComponents[framework]({
@@ -50,9 +58,13 @@ function ComponentImportPlugin(framework: UnpluginContextMeta['framework'], opti
     types: [],
     resolvers: [
       (componentName) => {
-        if (componentNames.has(componentName)) {
-          const from = join(__dirname, 'components', `${componentName.slice(options.prefix.length)}.vue`)
-          return { name: 'default', from, sideEffects }
+        if (!componentName.startsWith(options.prefix)) {
+          return
+        }
+        const name = componentName.slice(options.prefix.length)
+
+        if (names.has(name)) {
+          return { name, from, sideEffects }
         }
       },
     ],
@@ -63,11 +75,13 @@ function getSideEffect(options: Required<PluginOptions>) {
     return undefined
   }
 
-  const possible = [
-    join(__dirname, 'styles', 'index.css'),
-    join(__dirname, 'styles', 'index.scss'),
-  ]
+  return getPossibleFile([
+    resolve('styles', 'index.css'),
+    resolve('styles', 'index.scss'),
+  ])
+}
 
+function getPossibleFile(possible: string[]) {
   return possible.find(p => existsSync(p))
 }
 
@@ -79,8 +93,8 @@ function AutoImportPlugin(framework: UnpluginContextMeta['framework'], options: 
   return AutoImport[framework]({
     dts: dtsEnabled ? dts : false,
     dirs: [
-      join(__dirname, 'composables'),
-      join(__dirname, 'utils'),
+      resolve('composables'),
+      resolve('utils'),
     ],
   }) satisfies UnpluginOptions
 }

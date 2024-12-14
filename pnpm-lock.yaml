@@ -9,10 +9,10 @@ importers:
   .:
     dependencies:
       '@nuxt/kit':
-        specifier: ^3.14.1592
+        specifier: '>=3.13.1'
         version: 3.14.1592(magicast@0.3.5)(rollup@4.28.1)
       '@nuxt/schema':
-        specifier: ^3.14.1592
+        specifier: '>=3.13.1'
         version: 3.14.1592(magicast@0.3.5)(rollup@4.28.1)
       defu:
         specifier: ^6.1.4
@@ -36,7 +36,7 @@ importers:
         specifier: ^0.27.5
         version: 0.27.5(@babel/parser@7.26.3)(@nuxt/kit@3.14.1592(magicast@0.3.5)(rollup@4.28.1))(rollup@4.28.1)(vue@3.5.13(typescript@5.7.2))
       vue:
-        specifier: ^3.5.13
+        specifier: ^3.5
         version: 3.5.13(typescript@5.7.2)
     devDependencies:
       '@antfu/eslint-config':
@@ -75,6 +75,9 @@ importers:
       sass:
         specifier: ^1.83.0
         version: 1.83.0
+      scule:
+        specifier: ^1.3.0
+        version: 1.3.0
       tinyglobby:
         specifier: ^0.2.10
         version: 0.2.10

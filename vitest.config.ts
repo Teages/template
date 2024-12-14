@@ -6,7 +6,11 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     coverage: {
-      include: ['src/**/*'],
+      include: [
+        'src/components/**/*',
+        'src/composables/**/*',
+        'src/utils/**/*',
+      ],
     },
   },
 })

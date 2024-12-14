@@ -3,6 +3,7 @@
 /* This file is auto-generated */
 export type { ButtonProps } from "./components/Button.vue";
 
-export { default as Button } from "./components/Button.vue";
 export { useDouble } from "./composables/double";
 export { sum } from "./utils/sum";
+
+export * from "./components";
