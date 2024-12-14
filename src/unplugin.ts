@@ -47,11 +47,7 @@ function ComponentImportPlugin(framework: UnpluginContextMeta['framework'], opti
 
   return AutoImportComponents[framework]({
     dts: dtsEnabled ? dts : false,
-    // exclude: [
-    //   '**/node_modules/**',
-    //   '**/.git/**',
-    //   '**/.nuxt/**',
-    // ],
+    types: [],
     resolvers: [
       (componentName) => {
         if (componentNames.has(componentName)) {
