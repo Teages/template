@@ -1,12 +1,16 @@
 import type { UnpluginContextMeta, UnpluginOptions } from 'unplugin'
-import { existsSync, readFileSync } from 'node:fs'
+
+import { existsSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+
 import defu from 'defu'
 import { isPackageExists } from 'local-pkg'
-import { createCommonJS, findExportNames } from 'mlly'
 import { join } from 'pathe'
 import { createUnplugin } from 'unplugin'
 import AutoImport from 'unplugin-auto-import'
 import AutoImportComponents from 'unplugin-vue-components'
+
+import componentExportMeta from './components-meta'
 
 export interface PluginOptions {
   prefix?: string
@@ -23,7 +27,7 @@ const defaultOptions = {
   importStyle: true,
 } satisfies PluginOptions
 
-const { __dirname: srcdir } = createCommonJS(import.meta.url)
+const srcdir = fileURLToPath(new URL('.', import.meta.url))
 function resolve(...paths: string[]) {
   return join(srcdir, ...paths)
 }
@@ -42,15 +46,8 @@ function ComponentImportPlugin(framework: UnpluginContextMeta['framework'], opti
   const dtsEnabled = !!dtsInit
   const dts = typeof dtsInit === 'string' ? dtsInit : 'package-name-components.d.ts'
 
-  const componentExportFile = getPossibleFile([
-    resolve('components.ts'),
-    resolve('components.mjs'),
-  ])
-  const names = componentExportFile
-    ? new Set(findExportNames(readFileSync(componentExportFile, 'utf-8')))
-    : new Set<string>()
-
-  const from = resolve('components')
+  const names = new Set(Object.keys(componentExportMeta))
+  const from = resolve()
   const sideEffects = getSideEffect(options)
 
   return AutoImportComponents[framework]({

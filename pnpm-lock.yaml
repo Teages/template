@@ -20,9 +20,6 @@ importers:
       local-pkg:
         specifier: ^0.5.1
         version: 0.5.1
-      mlly:
-        specifier: ^1.7.3
-        version: 1.7.3
       pathe:
         specifier: ^1.1.2
         version: 1.1.2
@@ -47,7 +44,7 @@ importers:
         version: 22.10.2
       '@vitejs/plugin-vue':
         specifier: ^5.2.1
-        version: 5.2.1(vite@5.4.11(@types/node@22.10.2)(sass@1.83.0))(vue@3.5.13(typescript@5.7.2))
+        version: 5.2.1(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(sass@1.83.0)(yaml@2.6.1))(vue@3.5.13(typescript@5.7.2))
       '@vitest/coverage-v8':
         specifier: ^2.1.8
         version: 2.1.8(vitest@2.1.8(@types/node@22.10.2)(happy-dom@15.11.7)(sass@1.83.0))
@@ -72,6 +69,9 @@ importers:
       knitwork:
         specifier: ^1.1.0
         version: 1.1.0
+      mlly:
+        specifier: ^1.7.3
+        version: 1.7.3
       sass:
         specifier: ^1.83.0
         version: 1.83.0
@@ -87,6 +87,9 @@ importers:
       unbuild:
         specifier: 3.0.1
         version: 3.0.1(sass@1.83.0)(typescript@5.7.2)(vue-tsc@2.1.10(typescript@5.7.2))(vue@3.5.13(typescript@5.7.2))
+      vite:
+        specifier: ^6.0.3
+        version: 6.0.3(@types/node@22.10.2)(jiti@2.4.1)(sass@1.83.0)(yaml@2.6.1)
       vitest:
         specifier: ^2.1.8
         version: 2.1.8(@types/node@22.10.2)(happy-dom@15.11.7)(sass@1.83.0)
@@ -4046,11 +4049,6 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.18.0
       eslint-visitor-keys: 4.2.0
-
-  '@vitejs/plugin-vue@5.2.1(vite@5.4.11(@types/node@22.10.2)(sass@1.83.0))(vue@3.5.13(typescript@5.7.2))':
-    dependencies:
-      vite: 5.4.11(@types/node@22.10.2)(sass@1.83.0)
-      vue: 3.5.13(typescript@5.7.2)
 
   '@vitejs/plugin-vue@5.2.1(vite@6.0.3(@types/node@22.10.2)(jiti@2.4.1)(sass@1.83.0)(yaml@2.6.1))(vue@3.5.13(typescript@5.7.2))':
     dependencies:

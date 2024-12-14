@@ -1,22 +1,13 @@
 import type { ESMImport } from 'knitwork'
 import fs from 'node:fs/promises'
-import process from 'node:process'
 import { genExport, genTypeExport } from 'knitwork'
 import { findExports, findTypeExports } from 'mlly'
-import { extname, resolve } from 'pathe'
-import { pascalCase } from 'scule'
+import { extname } from 'pathe'
 import { glob } from 'tinyglobby'
 import { parse } from 'vue/compiler-sfc'
+import { codegenHead, getComponentName, resolve, updateFile } from '../utils'
 
-const srcDir = resolve(process.cwd(), './src')
 const indexFilePath = 'index.ts'
-const componentFilePath = 'components.ts'
-
-const outputHead = `
-/* eslint-disable eslint-comments/no-unlimited-disable */
-/* eslint-disable */
-/* This file is auto-generated */
-`.trim()
 
 interface AnalyzedExport {
   type?: boolean
@@ -30,12 +21,12 @@ async function scanComponentsTypes() {
   const files = await glob([
     'components/**/*.vue',
     'components/**/*.ts',
-  ], { cwd: srcDir })
+  ], { cwd: resolve() })
 
   for (const file of files) {
     const from = normalizeFrom(file)
 
-    const raw = await fs.readFile(resolve(srcDir, file), 'utf-8')
+    const raw = await fs.readFile(resolve(file), 'utf-8')
     const content = extname(file) === '.vue'
       ? parse(raw).descriptor.script?.content ?? ''
       : raw
@@ -50,12 +41,12 @@ async function scanComponentsTypes() {
   return res
 }
 
-async function scanComponents() {
+export async function scanComponents() {
   const res: Array<AnalyzedExport> = []
 
   const files = await glob([
     'components/**/*.vue',
-  ], { cwd: srcDir })
+  ], { cwd: resolve() })
 
   for (const file of files) {
     const from = normalizeFrom(file)
@@ -72,15 +63,6 @@ async function scanComponents() {
 
   return res
 }
-function getComponentName(_path: string) {
-  const paths = _path
-    .replace(/\.vue$/, '')
-    .split('/')
-  const base = pascalCase(paths.pop()!)
-  const prefix = pascalCase(paths.join('/'))
-
-  return base.startsWith(prefix) ? base : `${prefix}${base}`
-}
 
 async function scanUtils() {
   const res: Array<AnalyzedExport> = []
@@ -90,12 +72,12 @@ async function scanUtils() {
     'composables/*/index.ts',
     'utils/*.ts',
     'utils/*/index.ts',
-  ], { cwd: srcDir })
+  ], { cwd: resolve() })
 
   for (const file of files) {
     const from = normalizeFrom(file)
 
-    const content = await fs.readFile(resolve(srcDir, file), 'utf-8')
+    const content = await fs.readFile(resolve(file), 'utf-8')
     const names = findExports(content)
       .map(item => item.name!)
       .filter(name => !!name)
@@ -115,17 +97,11 @@ function normalizeFrom(path: string) {
   return `./${from}`
 }
 
-async function main() {
-  const scannedComponents = await scanComponents()
-  const componentOutput = `${outputHead}\n${
-    scannedComponents
-      .map(item => genExport(item.from, item.names))
-      .join('\n')
-  }`
-
+export default async function () {
   const scanned = [
     await scanComponentsTypes(),
     await scanUtils(),
+    await scanComponents(),
   ].flat()
 
   const typeOutput = scanned
@@ -136,30 +112,12 @@ async function main() {
     .map(item => genExport(item.from, item.names))
 
   const output = [
-    outputHead,
+    codegenHead,
     ...typeOutput,
     '',
     ...nonTypeOutput,
     '',
-    genExport('./components', '*'),
-    '',
   ].join('\n')
 
-  await updateFile(componentFilePath, componentOutput)
   await updateFile(indexFilePath, output)
 }
-async function updateFile(path: string, content: string) {
-  const filePath = resolve(srcDir, path)
-
-  const old = await fs.readFile(filePath, 'utf-8').catch(() => null)
-  if (old !== content) {
-    await fs.writeFile(filePath, content, 'utf-8')
-    console.log(`Updated ${filePath}`)
-  }
-  else {
-    console.log(`${path} is up-to-date`)
-  }
-}
-
-main()
-  .catch(err => console.error('Error while updating index.ts:', err))
