@@ -10,13 +10,17 @@ import { scanComponents, scanTsFile } from './export-meta'
 
 const indexFilePath = 'index.ts'
 
-async function scanComponentsTypes() {
+async function scanTypes() {
   const res: Array<AnalyzedExport> = []
 
-  const files = await glob([
+  const files = (await glob([
+    'composables/*.ts',
+    'composables/*/index.ts',
+    'utils/*.ts',
+    'utils/*/index.ts',
     'components/**/*.vue',
     'components/**/*.ts',
-  ], { cwd: resolve() })
+  ], { cwd: resolve() }))
 
   for (const file of files) {
     const from = normalizeFrom(file)
@@ -36,28 +40,40 @@ async function scanComponentsTypes() {
   return res
 }
 
+function compare(a: AnalyzedExport, b: AnalyzedExport) {
+  if (a.type && !b.type) {
+    return -1
+  }
+  if (!a.type && b.type) {
+    return 1
+  }
+
+  if (a.from !== b.from) {
+    return a.from < b.from ? -1 : 1
+  }
+
+  return 0
+}
 export default async function () {
   const scanned = [
-    await scanComponentsTypes(),
+    await scanTypes(),
     await scanTsFile('composables'),
     await scanTsFile('utils'),
     await scanComponents(),
   ].flat()
 
-  const typeOutput = scanned
-    .filter(item => item.type)
-    .map(item => genTypeExport(`./${item.from}`, item.names))
-  const nonTypeOutput = scanned
-    .filter(item => !item.type)
-    .map(item => genExport(`./${item.from}`, item.names))
-
+  const res = scanned
+    .filter(item => item.names.length)
+    .sort((a, b) => compare(a, b))
+    .map(
+      item => item.type
+        ? genTypeExport(`./${item.from}`, item.names)
+        : genExport(`./${item.from}`, item.names),
+    )
   const output = [
     codegenHead,
-    ...typeOutput,
-    '',
-    ...nonTypeOutput,
+    ...res,
     '',
   ].join('\n')
-
   await updateFile(indexFilePath, output)
 }
