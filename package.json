@@ -84,17 +84,22 @@
     "node": "^18.18.0 || ^20.9.0 || >=22.0.0"
   },
   "scripts": {
-    "build": "unbuild",
     "dev:prepare": "unbuild --stub",
     "dev": "pnpm -C playground dev",
     "dev:build": "pnpm -C playground build",
     "dev:preview": "pnpm -C playground preview",
-    "lint": "eslint --cache .",
-    "lint:fix": "eslint --cache --fix .",
+
+    "build": "pnpm script:gen-export && unbuild",
     "prepack": "pnpm build",
     "release": "pnpm test && changelogen --release --push && pnpm publish",
+
     "test": "pnpm lint && pnpm test:types && vitest run --coverage",
-    "test:types": "vue-tsc --noEmit --skipLibCheck"
+    "test:types": "vue-tsc --noEmit --skipLibCheck",
+
+    "lint": "eslint --cache .",
+    "lint:fix": "eslint --cache --fix .",
+
+    "script:gen-export": "jiti ./scripts/gen-export.ts"
   },
   "dependencies": {
     "@nuxt/kit": "^3.14.1592",
@@ -103,7 +108,6 @@
     "local-pkg": "^0.5.1",
     "mlly": "^1.7.3",
     "pathe": "^1.1.2",
-    "tinyglobby": "^0.2.10",
     "unplugin": "^2.1.0",
     "unplugin-auto-import": "^0.19.0",
     "unplugin-vue-components": "^0.27.5",
@@ -118,10 +122,11 @@
     "@vue/test-utils": "^2.4.6",
     "changelogen": "^0.5.7",
     "eslint": "^9.17.0",
-    "fast-glob": "^3.3.2",
     "happy-dom": "^15.11.7",
     "jiti": "2.4.1",
+    "knitwork": "^1.1.0",
     "sass": "^1.83.0",
+    "tinyglobby": "^0.2.10",
     "typescript": "^5.7.2",
     "unbuild": "3.0.1",
     "vitest": "^2.1.8",
