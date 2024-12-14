@@ -2,7 +2,7 @@
   "name": "package-name",
   "type": "module",
   "version": "0.0.0",
-  "packageManager": "pnpm@9.8.0",
+  "packageManager": "pnpm@9.15.0",
   "description": "",
   "license": "MIT",
   "repository": "Teages/repo",
@@ -88,17 +88,13 @@
     "dev": "pnpm -C playground dev",
     "dev:build": "pnpm -C playground build",
     "dev:preview": "pnpm -C playground preview",
-
     "build": "pnpm script:gen-export && unbuild",
     "prepack": "pnpm build",
     "release": "pnpm test && changelogen --release --push && pnpm publish",
-
     "test": "pnpm lint && pnpm test:types && vitest run --coverage",
     "test:types": "vue-tsc --noEmit --skipLibCheck",
-
     "lint": "eslint --cache .",
     "lint:fix": "eslint --cache --fix .",
-
     "script:gen-export": "jiti ./scripts/gen-export.ts"
   },
   "dependencies": {
