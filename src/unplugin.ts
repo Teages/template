@@ -77,7 +77,7 @@ const dtsHeader = `
 function componentDts(prefix: string) {
   const template = (name: string) => {
     const componentName = `${prefix}${name}`
-    return `    ${componentName}: typeof import('${resolve()}')['${componentName}']`
+    return `    ${componentName}: typeof import('${resolve()}')['${name}']`
   }
 
   return `
