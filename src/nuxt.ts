@@ -1,8 +1,15 @@
 import type { PluginOptions } from './unplugin'
-import { existsSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { addComponentsDir, addImportsDir, createResolver, defineNuxtModule, useLogger } from '@nuxt/kit'
 
-export interface ModuleOptions extends Omit<PluginOptions, 'dts'> {}
+const __filename = fileURLToPath(import.meta.url)
+const isDist = !!__filename.endsWith('.ts')
+
+export interface ModuleOptions extends Pick<
+  PluginOptions,
+  | 'prefix'
+  | 'importStyle'
+> {}
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
@@ -15,7 +22,6 @@ export default defineNuxtModule<ModuleOptions>({
     importStyle: true,
   },
   setup(options, nuxt) {
-    const logger = useLogger('package-name/nuxt')
     const resolver = createResolver(import.meta.url)
 
     addImportsDir([
@@ -28,18 +34,11 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     if (options.importStyle) {
-      const possible = [
-        resolver.resolve('styles', 'index.css'),
-        resolver.resolve('styles', 'index.scss'),
-      ]
+      const style = isDist
+        ? resolver.resolve('styles', 'index.css')
+        : resolver.resolve('styles', 'index.scss')
 
-      const style = possible.find(p => existsSync(p))
-      if (style) {
-        nuxt.options.css.push(style)
-      }
-      else {
-        logger.warn('No style file found')
-      }
+      nuxt.options.css.push(style)
     }
   },
 })

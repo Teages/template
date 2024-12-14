@@ -1,8 +1,8 @@
-import genComponentsMeta from './codegen/components-meta'
+import genExportMeta from './codegen/export-meta'
 import genIndexExport from './codegen/index-export'
 
 async function main() {
-  await genComponentsMeta()
+  await genExportMeta()
   await genIndexExport()
 }
 

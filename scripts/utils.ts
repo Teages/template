@@ -14,6 +14,13 @@ export function resolve(...paths: string[]) {
   return _resolve(process.cwd(), './src', ...paths)
 }
 
+export function normalizeFrom(path: string) {
+  return path
+    .replace(/\.ts$/, '')
+    .replace(/\/index$/, '')
+    .replace(/\/$/, '')
+}
+
 export function getComponentName(_path: string) {
   const paths = _path
     .replace(/\.vue$/, '')
