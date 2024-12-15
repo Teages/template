@@ -84,10 +84,10 @@
     "node": "^18.18.0 || ^20.9.0 || >=22.0.0"
   },
   "scripts": {
-    "dev:prepare": "unbuild --stub",
     "dev": "pnpm -C playground dev",
-    "dev:build": "pnpm -C playground build",
-    "dev:preview": "pnpm -C playground preview",
+    "dev:nuxt": "pnpm -C playground-nuxt dev:dist",
+    "dev:dist": "pnpm -C playground dev:dist",
+    "dev:dist:nuxt": "pnpm -C playground-nuxt dev:dist",
     "codegen": "jiti ./scripts/codegen.ts",
     "build": "pnpm codegen && unbuild",
     "prepack": "pnpm build",

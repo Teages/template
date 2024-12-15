@@ -25,7 +25,7 @@ const defaultOptions = {
 } satisfies PluginOptions
 
 const __filename = fileURLToPath(import.meta.url)
-const isDist = !!__filename.endsWith('.ts')
+const isDist = !__filename.endsWith('.ts')
 
 const srcdir = isDist ? normalize(fileURLToPath(new URL('.', import.meta.url))) : 'package-name'
 function resolve(...paths: string[]) {
@@ -89,7 +89,7 @@ ${Object.keys(exportMeta.components).map(template).join('\n')}
   `.trim()
 }
 
-const unimportPreset = defineUnimportPreset({
+export const unimportPreset = defineUnimportPreset({
   from: resolve(),
   imports: [
     ...Object.keys(exportMeta.composables),
