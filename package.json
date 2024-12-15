@@ -19,8 +19,8 @@
       }
     },
     "./components/*": {
-      "types": "./dist/components/*.vue.d.ts",
-      "default": "./dist/components/*.vue"
+      "types": "./dist/components/*.d.ts",
+      "default": "./dist/components/*"
     },
     "./utils/*": {
       "import": {
