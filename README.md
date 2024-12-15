@@ -1,11 +1,9 @@
-# Package Template
-
-fork from [unjs/template](https://github.com/unjs/template).
+# Vue Module Template
 
 ## Use this template
 
 ```bash
-npx giget@latest gh:teages/template package-name
+npx giget@latest gh:teages/template#vue-module package-name
 ```
 
 > [!NOTE]
@@ -47,16 +45,22 @@ pnpm install package-name
 bun install package-name
 ```
 
-Import:
+Use it with Vite:
 
-```js
-// ESM
-import { test } from 'package-name'
+```ts
+import { plugin } from 'package-name/vite'
+
+export default defineConfig({
+  plugins: [plugin()],
+})
 ```
 
-```js
-// CommonJS
-const { test } = require('package-name')
+As a Nuxt Module:
+
+```ts
+export default defineNuxtConfig({
+  modules: ['package-name/nuxt'],
+})
 ```
 
 ## Development
