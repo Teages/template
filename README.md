@@ -1,3 +1,9 @@
+## Use this template
+
+```bash
+npx giget@latest gh:teages/template#nuxt-app package-name
+```
+
 # My Nuxt App Starter
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
