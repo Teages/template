@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@import "@nuxt/ui-pro";
+
+body {
+  @apply min-w-[375px];
+}
