@@ -6,7 +6,7 @@
 - Run tests: `pnpm test`
 
 ## Frameworks / Libraries
-- Nuxt 3
+- Nuxt 4
 - Nitro
 - Nuxt UI 4
 - Tailwind CSS
