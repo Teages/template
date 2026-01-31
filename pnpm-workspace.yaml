@@ -1,2 +1,10 @@
+shellEmulator: true
+
+trustPolicy: no-downgrade
+
 packages:
   - playground
+
+onlyBuiltDependencies:
+  - esbuild
+  - unrs-resolver
