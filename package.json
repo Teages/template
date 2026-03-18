@@ -14,7 +14,13 @@
     }
   },
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/index.d.mts"
+      ]
+    }
+  },
   "files": [
     "dist"
   ],
@@ -22,8 +28,8 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "build": "unbuild",
-    "play:prepare": "unbuild --stub",
+    "build": "obuild",
+    "play:prepare": "obuild --stub",
     "play": "pnpm -C playground play",
     "dev": "vitest dev",
     "lint": "eslint --cache .",
@@ -40,8 +46,8 @@
     "changelogen": "^0.6.2",
     "eslint": "^10.0.3",
     "jiti": "2.6.1",
+    "obuild": "^0.4.32",
     "typescript": "^5.9.3",
-    "unbuild": "^3.6.1",
     "vitest": "^4.1.0"
   },
   "publishConfig": {

@@ -8,3 +8,9 @@ packages:
 onlyBuiltDependencies:
   - esbuild
   - unrs-resolver
+
+peerDependencyRules:
+  ignoreMissing:
+    - rollup
+
+autoInstallPeers: false
