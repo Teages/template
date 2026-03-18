@@ -1,5 +1,3 @@
-# Package Template
-
 fork from [unjs/template](https://github.com/unjs/template).
 
 ## Use this template
