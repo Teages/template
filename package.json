@@ -14,7 +14,8 @@
     "dev": "slidev --open",
     "export": "slidev export",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "skills:install": "pnpx skills@1.5.1 experimental_install --agent universal"
   },
   "dependencies": {
     "@slidev/cli": "^52.15.2",
