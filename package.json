@@ -1,54 +1,33 @@
 {
-  "name": "package-name",
+  "name": "slidev-name",
   "type": "module",
   "version": "0.0.0",
   "packageManager": "pnpm@11.1.2",
-  "description": "",
+  "description": "This is my slidev description.",
   "license": "MIT",
   "repository": "Teages/repo",
-  "sideEffects": false,
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.mts",
-      "import": "./dist/index.mjs"
-    }
-  },
-  "module": "./dist/index.mjs",
-  "typesVersions": {
-    "*": {
-      ".": [
-        "./dist/index.d.mts"
-      ]
-    }
-  },
-  "files": [
-    "dist"
-  ],
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=24.0.0"
   },
   "scripts": {
-    "build": "obuild",
-    "play:prepare": "obuild --stub",
-    "play": "pnpm -C playground play",
-    "dev": "vitest dev",
-    "lint": "eslint --cache .",
-    "lint:fix": "eslint --cache --fix .",
-    "prepack": "pnpm build",
-    "release": "pnpm test && changelogen --release --push && pnpm publish",
-    "test": "pnpm lint && pnpm test:types && vitest run --coverage",
-    "test:types": "tsc --noEmit --skipLibCheck"
+    "build": "slidev build",
+    "dev": "slidev --open",
+    "export": "slidev export",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
+  },
+  "dependencies": {
+    "@slidev/cli": "^52.15.2",
+    "@slidev/theme-default": "0.25.0",
+    "@slidev/theme-seriph": "0.25.0",
+    "vue": "^3.5.33"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^9.0.0",
     "@types/node": "^24.12.4",
-    "@vitest/coverage-v8": "^4.1.6",
-    "changelogen": "^0.6.2",
     "eslint": "^10.3.0",
-    "jiti": "2.7.0",
-    "obuild": "^0.4.35",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.6"
+    "jiti": "^2.7.0",
+    "typescript": "^6.0.3"
   },
   "publishConfig": {
     "access": "public"

@@ -1,16 +1,4 @@
+shamefullyHoist: true
 shellEmulator: true
-
 trustPolicy: no-downgrade
-
-packages:
-  - playground
-
-peerDependencyRules:
-  ignoreMissing:
-    - rollup
-
-autoInstallPeers: false
-ignoreWorkspaceRootCheck: true
-allowBuilds:
-  esbuild: true
-  unrs-resolver: true
+trustPolicyIgnoreAfter: 10080
