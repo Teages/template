@@ -5,12 +5,12 @@ trustPolicy: no-downgrade
 packages:
   - playground
 
-onlyBuiltDependencies:
-  - esbuild
-  - unrs-resolver
-
 peerDependencyRules:
   ignoreMissing:
     - rollup
 
 autoInstallPeers: false
+ignoreWorkspaceRootCheck: true
+allowBuilds:
+  esbuild: true
+  unrs-resolver: true
