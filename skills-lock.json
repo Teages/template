@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "skills": {
+    "better-auth-best-practices": {
+      "source": "better-auth/skills",
+      "sourceType": "github",
+      "computedHash": "a4c830509e85557b59339d8d93a4e243e9e59c686e7678854d39230e12c2a6dc"
+    },
+    "better-auth-security-best-practices": {
+      "source": "better-auth/skills",
+      "sourceType": "github",
+      "computedHash": "5717187bba9c22030c7174c74012f01c359f21e2ce87e0eb80e24244d8b8c915"
+    },
+    "create-auth-skill": {
+      "source": "better-auth/skills",
+      "sourceType": "github",
+      "computedHash": "31c027d02dbf1faa37f58191f574b9443143042fb2b684fe32df53ab0270487c"
+    },
+    "document-writer": {
+      "source": "onmax/nuxt-skills",
+      "sourceType": "github",
+      "computedHash": "7a2b9799ece651b94b288a6b7d799da7ed603f24384897a370c1bfc6e75d74bb"
+    },
+    "drizzle": {
+      "source": "drizzle-team/drizzle-orm",
+      "ref": "ai",
+      "sourceType": "github",
+      "computedHash": "7e891c96606fb710e9592bc62918d5b696b131186b083e7ddbe5f715f2c90945"
+    },
+    "drizzle-generate": {
+      "source": "drizzle-team/drizzle-orm",
+      "ref": "ai",
+      "sourceType": "github",
+      "computedHash": "178cdd1f26242f3e86702c97efe18cc56c2c3de61b475cb9664fd30da2db2b93"
+    },
+    "drizzle-hints": {
+      "source": "drizzle-team/drizzle-orm",
+      "ref": "ai",
+      "sourceType": "github",
+      "computedHash": "52e05cb4bdb7ff446b9f97fef1a1131fd5fad07787fa136903fca84b1ca11d5c"
+    },
+    "drizzle-migrations": {
+      "source": "drizzle-team/drizzle-orm",
+      "ref": "ai",
+      "sourceType": "github",
+      "computedHash": "885306ccbfd561dd72f10b751581d58b739528d8ece8bfde9ee42dde399f9ff9"
+    },
+    "drizzle-push": {
+      "source": "drizzle-team/drizzle-orm",
+      "ref": "ai",
+      "sourceType": "github",
+      "computedHash": "8abe543788c589b069f4699356d0d55d8f2a1910725b3ac387322d14670510fa"
+    },
+    "drizzle-responses-and-errors": {
+      "source": "drizzle-team/drizzle-orm",
+      "ref": "ai",
+      "sourceType": "github",
+      "computedHash": "96341c06260b34e19d3f8ef829ff2a07bef5bf65e8ee5013db11b2afa7733426"
+    },
+    "email-and-password-best-practices": {
+      "source": "better-auth/skills",
+      "sourceType": "github",
+      "computedHash": "747d7f73bd9e2ec5317b8ef88dc70f97df716d00e3d02de4051feebaa48b062d"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "computedHash": "9e1c8b3103f92fa8092568a44fe64858de7c5c9dc65ce4bea8f168080e889cfd"
+    },
+    "gazania": {
+      "source": "Teages/gazania",
+      "sourceType": "github",
+      "computedHash": "2f43fdc9c7cdbba56bbdf9e56a10ebfb34edd302b7ae08d89b9add725be17282"
+    },
+    "motion": {
+      "source": "onmax/nuxt-skills",
+      "sourceType": "github",
+      "computedHash": "45d0803ea76f82fa40af91858472fb4528a8ce4c2a9a710b785e796cd5b3fe98"
+    },
+    "nuxt": {
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "computedHash": "9e8237ec92083db9a6f4c77d5e5bf4b1d9873d670671235bc75455ee1ca39c74"
+    },
+    "nuxt-modules": {
+      "source": "onmax/nuxt-skills",
+      "sourceType": "github",
+      "computedHash": "628065a8cf5cab196853ff5ef5538d3a7ff553293dde146380ec1b57f33def48"
+    },
+    "nuxt-seo": {
+      "source": "onmax/nuxt-skills",
+      "sourceType": "github",
+      "computedHash": "bffc66809f3a21055d2fd39d0bfa32eefdc681d2e93f4613fc3360addb3d3677"
+    },
+    "nuxt-ui": {
+      "source": "onmax/nuxt-skills",
+      "sourceType": "github",
+      "computedHash": "c793a5cefc7a23a1e2e9fb637372ab5c4f9d1c26f04a7abba91ffa51c9726485"
+    },
+    "organization-best-practices": {
+      "source": "better-auth/skills",
+      "sourceType": "github",
+      "computedHash": "79a5a85b43d10e9fe37582b3506b051a33a991817b938f349099baa5ddba21aa"
+    },
+    "pinia": {
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "computedHash": "897b6b0982956f41f5cc85128ca638b625e1b3c8bc619e303cd1e7661c95b7de"
+    },
+    "pnpm": {
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "computedHash": "318f9fca2441a3e06fedc336e195dd18be5dbe901064e4fa71b76b40b096ab3a"
+    },
+    "reka-ui": {
+      "source": "onmax/nuxt-skills",
+      "sourceType": "github",
+      "computedHash": "c4de68cf105e52e41f068f406cf4846884d6116742e175a02f16b1a5536eb77e"
+    },
+    "two-factor-authentication-best-practices": {
+      "source": "better-auth/skills",
+      "sourceType": "github",
+      "computedHash": "7e297aaf887e11fdc03e52bdbf44974e161e8f7c393170ced7dc66cace4f6d46"
+    },
+    "vite": {
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "computedHash": "867ff66238f3152e9c494339ad08dc432dd0df5bcf5cc7a00b61a72b580eb908"
+    },
+    "vitest": {
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "computedHash": "669c7275f7e1379b06b2bcfa593603aead4c983b951c7e8edbc09640aa38d0a1"
+    },
+    "vue": {
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "computedHash": "9c241141e07e836e4f0537c63e8f929fba3767c2997250be38e699f19b75e3f2"
+    },
+    "vue-best-practices": {
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "computedHash": "d7d22c8cb343583c3904692c4d1d7b50382945e433e4f6e053f4aabb9846cbc3"
+    },
+    "vue-router-best-practices": {
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "computedHash": "e27384f4e6c8c70a612e76b74e4387efb8e291a6a1e3aa14a69102a4ce4b4654"
+    },
+    "vue-testing-best-practices": {
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "computedHash": "18c7d8f42f350f927e37de055e34c97b8cfb9f79c12cf942f7f3d2a0821057b5"
+    },
+    "vueuse-functions": {
+      "source": "vueuse/skills",
+      "sourceType": "github",
+      "computedHash": "9b6b0afdbc577317e8c29e6ac0ee6890a2ec95d5ad7c8ce66247c1a62b95621d"
+    },
+    "web-design-guidelines": {
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "computedHash": "65a2e7d85753383ae0f88df15475d58b9e39723e9c4bb6891421d6144a85f79c"
+    },
+    "writing-web-documentation": {
+      "source": "onmax/nuxt-skills",
+      "sourceType": "github",
+      "computedHash": "78d28a486868c980c3962f459ddd18e9444cad0d8941b88778ee47489059c099"
+    }
+  }
+}

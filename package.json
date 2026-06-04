@@ -1,0 +1,19 @@
+{
+  "name": "apps",
+  "version": "0.0.0",
+  "packageManager": "pnpm@11.5.1",
+  "scripts": {
+    "dev": "pnpm --filter ./frontend --filter ./backend --parallel dev",
+    "lint": "eslint && pnpm -r lint",
+    "lint:fix": "eslint --fix && pnpm -r lint:fix",
+    "test": "pnpm --filter ./backend test && pnpm --filter ./frontend test:unit && pnpm --filter ./frontend test:nuxt",
+    "skills:install": "pnpx skills@1.5.1 experimental_install --agent universal",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^9.0.0",
+    "eslint": "^10.4.1",
+    "jiti": "^2.7.0"
+  }
+}

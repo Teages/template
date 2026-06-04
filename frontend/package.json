@@ -1,0 +1,50 @@
+{
+  "name": "nuxt-app",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "build:test": "nuxt build",
+    "dev": "TMPDIR=/tmp nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "validate:schema": "node --input-type=module -e \"import { readFileSync } from 'node:fs'; import { parse } from 'graphql'; parse(readFileSync(new URL('../backend/server/graphql/schema.graphql', import.meta.url), 'utf8'))\"",
+    "test": "vitest run",
+    "test:unit": "vitest run --project unit",
+    "test:nuxt": "vitest run --project nuxt",
+    "test:browser": "pnpm run build:test && playwright test",
+    "test:browser:ui": "pnpm run build:test && playwright test --ui"
+  },
+  "dependencies": {
+    "@vueuse/core": "^14.3.0",
+    "better-auth": "1.6.14",
+    "es-toolkit": "^1.47.0",
+    "gazania": "^0.15.0",
+    "graphql": "^16.14.1",
+    "nuxt": "^4.4.7",
+    "vue": "^3.5.35",
+    "vue-router": "^5.1.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^9.0.0",
+    "@nuxt/eslint": "1.15.2",
+    "@nuxt/icon": "^2.2.3",
+    "@nuxt/test-utils": "^4.0.3",
+    "@nuxt/ui": "4.8.1",
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.1",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "@vitest/browser-playwright": "^4.1.8",
+    "@vitest/coverage-v8": "^4.1.8",
+    "@vue/test-utils": "^2.4.10",
+    "@vueuse/nuxt": "^14.3.0",
+    "eslint": "^10.4.1",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^6.0.3",
+    "unplugin-auto-import": "^21.0.0",
+    "vitest": "^4.1.8"
+  }
+}
