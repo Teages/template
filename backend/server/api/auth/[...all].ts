@@ -13,7 +13,7 @@ if (import.meta.vitest) {
     const origin = 'http://localhost:20398'
     const jsonHeaders = {
       'Content-Type': 'application/json',
-      Origin: origin,
+      'Origin': origin,
     } as const
 
     function cookieHeader(res: Response): string {

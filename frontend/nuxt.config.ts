@@ -1,5 +1,7 @@
 import { env } from 'node:process'
 
+const backendOrigin = env.NUXT_BACKEND_ORIGIN ?? 'http://localhost:20398'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: 'latest',
@@ -35,8 +37,8 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/graphql': { proxy: 'http://localhost:20398/graphql' },
-    '/api/auth/**': { proxy: 'http://localhost:20398/api/auth/**' },
+    '/graphql': { proxy: `${backendOrigin}/graphql` },
+    '/api/auth/**': { proxy: `${backendOrigin}/api/auth/**` },
   },
 
   devServer: {

@@ -1,0 +1,60 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-passwd}
+      POSTGRES_DB: ${POSTGRES_DB:-mydb}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"'
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    build:
+      context: .
+      target: migrator
+    profiles: [migrate]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NITRO_DATABASE_URL: postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-passwd}@postgres:5432/${POSTGRES_DB:-mydb}
+
+  backend:
+    build:
+      context: .
+      target: backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NITRO_DATABASE_URL: postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-passwd}@postgres:5432/${POSTGRES_DB:-mydb}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?BETTER_AUTH_SECRET is required}
+      BETTER_AUTH_URL: ${APP_ORIGIN:-http://localhost:20397}
+      BETTER_AUTH_TRUSTED_ORIGINS: ${APP_ORIGIN:-http://localhost:20397}
+      BETTER_AUTH_ALLOWED_HOSTS: ${BETTER_AUTH_ALLOWED_HOSTS:-localhost,localhost:*,frontend,frontend:20397}
+    expose:
+      - '20398'
+
+  frontend:
+    build:
+      context: .
+      target: frontend
+      args:
+        NUXT_BACKEND_ORIGIN: http://backend:20398
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - '${FRONTEND_PORT:-20397}:20397'
+
+volumes:
+  postgres_data:
