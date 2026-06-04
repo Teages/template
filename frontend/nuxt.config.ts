@@ -23,7 +23,7 @@ export default defineNuxtConfig({
 
   vite: {
     optimizeDeps: {
-      include: ['gazania', 'graphql'],
+      include: ['gazania', 'graphql', 'better-auth/vue'],
     },
   },
 
