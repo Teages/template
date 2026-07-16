@@ -8,7 +8,7 @@ import { relations } from '../database/relations'
 import * as schema from '../database/schema'
 import { todos } from '../database/schema'
 
-export type DrizzleDatabase = PgAsyncDatabase<PgQueryResultHKT, typeof schema, typeof relations>
+export type DrizzleDatabase = PgAsyncDatabase<PgQueryResultHKT, typeof relations>
 
 const config: DrizzleConfig<typeof schema, typeof relations> & {
   schema: typeof schema

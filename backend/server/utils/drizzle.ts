@@ -5,7 +5,7 @@ import { useRuntimeConfig } from 'nitro/runtime-config'
 import { relations } from '../database/relations'
 import * as schema from '../database/schema'
 
-export type DrizzleDatabase = PgAsyncDatabase<PgQueryResultHKT, typeof schema, typeof relations>
+export type DrizzleDatabase = PgAsyncDatabase<PgQueryResultHKT, typeof relations>
 
 export const config: DrizzleConfig<typeof schema, typeof relations> & {
   schema: typeof schema
