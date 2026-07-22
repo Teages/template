@@ -9,7 +9,6 @@ export default defineNuxtConfig({
   experimental: {
     typescriptPlugin: true,
     typedPages: true,
-    viteEnvironmentApi: env.NODE_ENV !== 'development',
   },
 
   css: ['~/assets/css/main.css'],
@@ -67,6 +66,10 @@ export default defineNuxtConfig({
   gazania: {
     schema: '../backend/server/graphql/schema.graphql',
     scalars: {},
+  },
+
+  ui: {
+    fonts: false,
   },
 
   devtools: { enabled: true },

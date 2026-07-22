@@ -11,3 +11,6 @@ allowBuilds:
   unrs-resolver: true
   vue-demi: true
 sharedWorkspaceLockfile: false
+patchedDependencies:
+  '@nuxt/icon': patches/@nuxt__icon.patch
+allowUnusedPatches: true

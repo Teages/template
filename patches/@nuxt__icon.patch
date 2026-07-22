@@ -1,0 +1,27 @@
+diff --git a/dist/runtime/server/api.js b/dist/runtime/server/api.js
+index 3685dcb9e566d70d675d6557c95106dddff1d6d2..e9c1c639764d898ee12f56bcfdcd05a2361ccc95 100644
+--- a/dist/runtime/server/api.js
++++ b/dist/runtime/server/api.js
+@@ -1,9 +1,9 @@
+ import { getIcons } from "@iconify/utils";
+ import { hash } from "ohash";
+-import { createError } from "h3";
++import { defineCachedHandler } from "nitro/cache";
++import { createError } from "nitro/h3";
+ import { parseQuery, parsePath } from "ufo";
+ import { consola } from "consola";
+-import { useAppConfig, defineCachedEventHandler } from "#imports";
+ import { collections } from "#nuxt-icon-server-bundle";
+ const warnOnceSet = /* @__PURE__ */ new Set();
+ const DEFAULT_ENDPOINT = "https://api.iconify.design";
+@@ -14,8 +14,8 @@ function getInstallCommand(pkg) {
+   if (ua.startsWith("bun")) return `bun add -D ${pkg}`;
+   return `npm i -D ${pkg}`;
+ }
+-export default defineCachedEventHandler(async (event) => {
+-  const options = useAppConfig().icon;
++export default defineCachedHandler(async (event) => {
++  const options = { fallbackToApi: true };
+   const collectionName = event.context.params?.collection?.replace(/\.json$/, "");
+   const collection = collectionName && Object.hasOwn(collections, collectionName) ? await collections[collectionName]?.() : null;
+   const apiEndPoint = options.iconifyApiEndpoint || DEFAULT_ENDPOINT;

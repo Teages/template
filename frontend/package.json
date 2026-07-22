@@ -24,7 +24,7 @@
     "es-toolkit": "^1.49.0",
     "gazania": "^0.15.4",
     "graphql": "^16.14.1",
-    "nuxt": "^4.4.8",
+    "nuxt": "npm:nuxt-nightly@5.0.0-29743829.e99b20d2",
     "vue": "^3.5.40",
     "vue-router": "^5.2.0"
   },
