@@ -26,7 +26,7 @@ export const test = base.extend<{
   hydrationErrors: string[]
 }>({
   resetBackend: [
-    async (_, use) => {
+    async ({}, use) => {
       await resetBackendDatabase()
       await use()
     },

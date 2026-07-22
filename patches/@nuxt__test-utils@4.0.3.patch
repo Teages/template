@@ -1,5 +1,57 @@
+diff --git a/dist/chunks/suspended.mjs b/dist/chunks/suspended.mjs
+index 6a3f3e408149d34b74e6be8abf3b9c743701e86f..6ed2402d7b27d6e1a42cd1cf71727f1460f7a0e7 100644
+--- a/dist/chunks/suspended.mjs
++++ b/dist/chunks/suspended.mjs
+@@ -62,6 +62,10 @@ function wrapperSuspended(component, options, {
+   const { props = {}, attrs = {} } = options;
+   const { route = "/", scoped = false, ...wrapperFnOptions } = options;
+   const vueApp = tryUseNuxtApp()?.vueApp || globalThis.__unctx__.get("nuxt-app").tryUse().vueApp;
++  // [nuxt5-patch] record emits directly. VTU's devtools-based capture breaks
++  // under Nuxt 5 nightly + browser env (the vue runtime the devtools hook is
++  // set on differs from the vue runtime that actually fires emits).
++  const __emitted = /* @__PURE__ */ new Map();
+   const {
+     render: componentRender,
+     setup: componentSetup,
+@@ -118,8 +122,25 @@ function wrapperSuspended(component, options, {
+         __cssModules: componentRest.__cssModules,
+         setup: (props2, ctx) => {
+           patchInstanceAppContext();
++          // [nuxt5-patch] wrap ctx.emit so every emit() call is recorded in
++          // __emitted, then forwarded to the original emit (so onXxx listeners,
++          // v-model, etc still work).
++          setupContext = new Proxy(ctx, {
++            get(target, key, receiver) {
++              if (key === "emit") {
++                return (event, ...args) => {
++                  let list = __emitted.get(event);
++                  if (!list) __emitted.set(event, list = []);
++                  list.push(args);
++                  return target.emit(event, ...args);
++                };
++              }
++              const value = Reflect.get(target, key, receiver);
++              return typeof value === "function" ? value.bind(target) : value;
++            }
++          });
++          // [end nuxt5-patch]
+           wrappedInstance = getCurrentInstance();
+-          setupContext = ctx;
+           const nuxtRootSetupResult = runEffectScope(
+             () => NuxtRoot.setup(props2, {
+               ...ctx,
+@@ -148,6 +169,9 @@ function wrapperSuspended(component, options, {
+               isMountSettled = true;
+               wrapper.setupState = setupState;
+               resolve({
++                // [nuxt5-patch] expose the captured emits so mountSuspended can
++                // surface them through wrapper.emitted()
++                __emitted,
+                 wrapper,
+                 setProps: (props2) => {
+                   Object.assign(setProps, props2);
 diff --git a/dist/config.mjs b/dist/config.mjs
-index e79266c..ffe9f93 100644
+index e79266c9cfb09761e0dc0ca279484c489fbb4464..ffe9f9330416cc96c31be65e73a11b3e1244321e 100644
 --- a/dist/config.mjs
 +++ b/dist/config.mjs
 @@ -318,6 +318,18 @@ async function resolveConfig(config) {
@@ -21,3 +73,54 @@ index e79266c..ffe9f93 100644
      if (resolvedConfig.test.environment === "nuxt") {
        resolvedConfig.test.setupFiles = Array.isArray(resolvedConfig.test.setupFiles) ? resolvedConfig.test.setupFiles : [resolvedConfig.test.setupFiles].filter(Boolean);
        const resolver = createResolver(import.meta.url);
+diff --git a/dist/runtime-utils/index.mjs b/dist/runtime-utils/index.mjs
+index 52a96038dfcbd5371929402c572985c4da97c43a..9d43b46672d214fe0090c3a1b8cd38dcc2fba8ad 100644
+--- a/dist/runtime-utils/index.mjs
++++ b/dist/runtime-utils/index.mjs
+@@ -78,16 +78,16 @@ async function mountSuspended(component, options = {}) {
+   const suspendedHelperName = "MountSuspendedHelper";
+   const clonedComponentName = "MountSuspendedComponent";
+   cleanupAll();
+-  const { wrapper, setProps } = await wrapperSuspended(component, options, {
++  const { wrapper, setProps, __emitted } = await wrapperSuspended(component, options, {
+     wrapperFn: mount,
+     suspendedHelperName,
+     clonedComponentName
+   });
+   Object.assign(wrapper, { __setProps: setProps });
+   const clonedComponent = wrapper.findComponent({ name: clonedComponentName });
+-  return wrappedMountedWrapper(wrapper, clonedComponent);
++  return wrappedMountedWrapper(wrapper, clonedComponent, __emitted);
+ }
+-function wrappedMountedWrapper(wrapper, component) {
++function wrappedMountedWrapper(wrapper, component, emittedMap) {
+   const wrapperProps = [
+     "setProps",
+     "emitted",
+@@ -97,6 +97,26 @@ function wrappedMountedWrapper(wrapper, component) {
+   return new Proxy(wrapper, {
+     get: (_, prop, receiver) => {
+       if (prop === "getCurrentComponent") return getCurrentComponentPatchedProxy;
++      // [nuxt5-patch] prefer directly-captured emits (VTU's devtools-based
++      // capture is unreliable in the Nuxt 5 browser test env). Fall back to
++      // VTU's own recording when our Map is empty for the requested event
++      // (covers emits that bypass the outer setupContext and were captured
++      // normally in non-broken envs).
++      if (prop === "emitted") {
++        return (eventName) => {
++          if (eventName === void 0) {
++            const merged = /* @__PURE__ */ new Map(emittedMap);
++            for (const [k, v] of Object.entries(wrapper.emitted())) {
++              if (!merged.has(k) || !merged.get(k).length) merged.set(k, v);
++            }
++            return Object.fromEntries(merged);
++          }
++          const direct = emittedMap.get(eventName);
++          if (direct && direct.length) return direct;
++          return wrapper.emitted(eventName);
++        };
++      }
++      // [end nuxt5-patch]
+       const target = wrapperProps.includes(prop) ? wrapper : Reflect.has(component, prop) ? component : wrapper;
+       const value = Reflect.get(target, prop, receiver);
+       return typeof value === "function" ? value.bind(target) : value;

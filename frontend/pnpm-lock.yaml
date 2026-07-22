@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   '@nuxt/icon': 39b484f0e1e9c6d1169b310df6eec166e3d23581b30e160b002345d436bf857f
-  '@nuxt/test-utils@4.0.3': 1d7dd3c10d856d47d113ce69028abd948976dfadc8fe41feb0f5f395186fd67c
+  '@nuxt/test-utils@4.0.3': 143347a8a598b958185c84feac4469e256b76d02454a6bfe51bd79461ac6ca47
 
 importers:
 
@@ -48,7 +48,7 @@ importers:
         version: 2.3.1(patch_hash=39b484f0e1e9c6d1169b310df6eec166e3d23581b30e160b002345d436bf857f)(magic-string@1.0.0)(magicast@0.5.3)(oxc-parser@0.140.0)(rolldown@1.2.0)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.0)(vite@8.1.5))(vite@8.1.5)(vue@3.5.40(typescript@6.0.3))
       '@nuxt/test-utils':
         specifier: ^4.0.3
-        version: 4.0.3(patch_hash=1d7dd3c10d856d47d113ce69028abd948976dfadc8fe41feb0f5f395186fd67c)(@playwright/test@1.61.1)(@vue/test-utils@2.4.11(@vue/compiler-dom@3.5.40)(@vue/server-renderer@3.5.40)(vue@3.5.40(typescript@6.0.3)))(crossws@0.4.10(srvx@0.11.22))(esbuild@0.27.7)(magicast@0.5.3)(playwright-core@1.61.1)(rolldown@1.2.0)(typescript@6.0.3)(vite@8.1.5)(vitest@4.1.10)
+        version: 4.0.3(patch_hash=143347a8a598b958185c84feac4469e256b76d02454a6bfe51bd79461ac6ca47)(@playwright/test@1.61.1)(@vue/test-utils@2.4.11(@vue/compiler-dom@3.5.40)(@vue/server-renderer@3.5.40)(vue@3.5.40(typescript@6.0.3)))(crossws@0.4.10(srvx@0.11.22))(esbuild@0.27.7)(magicast@0.5.3)(playwright-core@1.61.1)(rolldown@1.2.0)(typescript@6.0.3)(vite@8.1.5)(vitest@4.1.10)
       '@nuxt/ui':
         specifier: 4.9.0
         version: 4.9.0(9ebef5b3de90f74311406899241883ff)
@@ -6378,7 +6378,7 @@ snapshots:
       rc9: 3.0.1
       std-env: 4.2.0
 
-  '@nuxt/test-utils@4.0.3(patch_hash=1d7dd3c10d856d47d113ce69028abd948976dfadc8fe41feb0f5f395186fd67c)(@playwright/test@1.61.1)(@vue/test-utils@2.4.11(@vue/compiler-dom@3.5.40)(@vue/server-renderer@3.5.40)(vue@3.5.40(typescript@6.0.3)))(crossws@0.4.10(srvx@0.11.22))(esbuild@0.27.7)(magicast@0.5.3)(playwright-core@1.61.1)(rolldown@1.2.0)(typescript@6.0.3)(vite@8.1.5)(vitest@4.1.10)':
+  '@nuxt/test-utils@4.0.3(patch_hash=143347a8a598b958185c84feac4469e256b76d02454a6bfe51bd79461ac6ca47)(@playwright/test@1.61.1)(@vue/test-utils@2.4.11(@vue/compiler-dom@3.5.40)(@vue/server-renderer@3.5.40)(vue@3.5.40(typescript@6.0.3)))(crossws@0.4.10(srvx@0.11.22))(esbuild@0.27.7)(magicast@0.5.3)(playwright-core@1.61.1)(rolldown@1.2.0)(typescript@6.0.3)(vite@8.1.5)(vitest@4.1.10)':
     dependencies:
       '@clack/prompts': 1.2.0
       '@nuxt/devtools-kit': 2.7.0(magicast@0.5.3)(vite@8.1.5)
@@ -10931,7 +10931,7 @@ snapshots:
 
   vitest-environment-nuxt@2.0.0(@playwright/test@1.61.1)(@vue/test-utils@2.4.11(@vue/compiler-dom@3.5.40)(@vue/server-renderer@3.5.40)(vue@3.5.40(typescript@6.0.3)))(crossws@0.4.10(srvx@0.11.22))(esbuild@0.27.7)(magicast@0.5.3)(playwright-core@1.61.1)(rolldown@1.2.0)(typescript@6.0.3)(vite@8.1.5)(vitest@4.1.10):
     dependencies:
-      '@nuxt/test-utils': 4.0.3(patch_hash=1d7dd3c10d856d47d113ce69028abd948976dfadc8fe41feb0f5f395186fd67c)(@playwright/test@1.61.1)(@vue/test-utils@2.4.11(@vue/compiler-dom@3.5.40)(@vue/server-renderer@3.5.40)(vue@3.5.40(typescript@6.0.3)))(crossws@0.4.10(srvx@0.11.22))(esbuild@0.27.7)(magicast@0.5.3)(playwright-core@1.61.1)(rolldown@1.2.0)(typescript@6.0.3)(vite@8.1.5)(vitest@4.1.10)
+      '@nuxt/test-utils': 4.0.3(patch_hash=143347a8a598b958185c84feac4469e256b76d02454a6bfe51bd79461ac6ca47)(@playwright/test@1.61.1)(@vue/test-utils@2.4.11(@vue/compiler-dom@3.5.40)(@vue/server-renderer@3.5.40)(vue@3.5.40(typescript@6.0.3)))(crossws@0.4.10(srvx@0.11.22))(esbuild@0.27.7)(magicast@0.5.3)(playwright-core@1.61.1)(rolldown@1.2.0)(typescript@6.0.3)(vite@8.1.5)(vitest@4.1.10)
     transitivePeerDependencies:
       - '@cucumber/cucumber'
       - '@farmfe/core'
