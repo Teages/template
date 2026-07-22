@@ -13,4 +13,5 @@ allowBuilds:
 sharedWorkspaceLockfile: false
 patchedDependencies:
   '@nuxt/icon': patches/@nuxt__icon.patch
+  '@nuxt/test-utils@4.0.3': patches/@nuxt__test-utils@4.0.3.patch
 allowUnusedPatches: true

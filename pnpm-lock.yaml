@@ -6,6 +6,7 @@ settings:
 
 patchedDependencies:
   '@nuxt/icon': 39b484f0e1e9c6d1169b310df6eec166e3d23581b30e160b002345d436bf857f
+  '@nuxt/test-utils@4.0.3': 1d7dd3c10d856d47d113ce69028abd948976dfadc8fe41feb0f5f395186fd67c
 
 importers:
 
