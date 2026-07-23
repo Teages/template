@@ -41,7 +41,7 @@ function initAuth(db: DrizzleDatabase) {
     }),
     plugins: [
       // keep non-mock enticement safe
-      ...(import.meta.MOCK_DATABASE ? [testUtils()] : []) as [ReturnType<typeof testUtils>],
+      ...(process.env.MOCK_DATABASE ? [testUtils()] : []) as [ReturnType<typeof testUtils>],
     ],
   })
 }

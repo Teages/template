@@ -25,6 +25,7 @@
     "validate:schema": "node --input-type=module -e \"import { readFileSync } from 'node:fs'; import { parse } from 'graphql'; parse(readFileSync(new URL('./server/graphql/schema.graphql', import.meta.url), 'utf8'))\"",
     "test": "vitest run",
     "test:unit": "vitest run --project unit",
+    "test:server": "MOCK_DATABASE=true vitest run --config vitest.server.config.ts",
     "test:nuxt": "vitest run --project nuxt",
     "test:browser": "pnpm run build:test && playwright test",
     "test:browser:ui": "pnpm run build:test && playwright test --ui"
@@ -77,6 +78,7 @@
     "auth": "1.7.0-rc.1",
     "drizzle-kit": "1.0.0-rc.4",
     "eslint": "^10.7.0",
+    "happy-dom": "^20.11.1",
     "nitro": "3.0.260610-beta",
     "tailwindcss": "^4.3.2",
     "typescript": "^6.0.3",

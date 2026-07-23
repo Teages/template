@@ -58,7 +58,7 @@ export async function seedDatabase(_db: DrizzleDatabase): Promise<void> {
 }
 
 export function assertMockDatabase(taskName: string): void {
-  if (!import.meta.MOCK_DATABASE) {
+  if (!process.env.MOCK_DATABASE) {
     throw new Error(`${taskName} is only allowed when using mock database`)
   }
 }
