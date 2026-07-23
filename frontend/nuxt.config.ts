@@ -7,6 +7,17 @@ export default defineNuxtConfig({
     typedPages: true,
   },
 
+  runtimeConfig: {
+    databaseUrl: '',
+  },
+
+  nitro: {
+    experimental: {
+      tasks: true,
+      asyncContext: true,
+    },
+  },
+
   css: ['~/assets/css/main.css'],
 
   imports: {
@@ -19,6 +30,10 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: ['gazania', 'graphql', 'better-auth/vue'],
+    },
+    define: {
+      'import.meta.MOCK_DATABASE': process.env.MOCK_DATABASE ?? 'undefined',
+      'import.meta.vitest': 'undefined',
     },
   },
 
