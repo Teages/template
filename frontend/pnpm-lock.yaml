@@ -43,6 +43,9 @@ importers:
       consola:
         specifier: ^3.4.2
         version: 3.4.2
+      defu:
+        specifier: ^6.1.7
+        version: 6.1.7
       drizzle-orm:
         specifier: 1.0.0-rc.4
         version: 1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.0)(pg@8.22.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.4.3)
@@ -70,6 +73,9 @@ importers:
       postgres:
         specifier: ^3.4.9
         version: 3.4.9
+      ufo:
+        specifier: ^1.6.4
+        version: 1.6.4
       vue:
         specifier: ^3.5.40
         version: 3.5.40(typescript@6.0.3)

@@ -3,10 +3,11 @@
   "version": "0.0.0",
   "packageManager": "pnpm@11.5.1",
   "scripts": {
-    "dev": "pnpm --filter ./frontend --filter ./backend --parallel dev",
+    "dev": "pnpm --filter ./frontend dev",
+    "dev:mock": "pnpm --filter ./frontend dev:mock",
     "lint": "eslint && pnpm -r lint",
     "lint:fix": "eslint --fix && pnpm -r lint:fix",
-    "test": "pnpm --filter ./backend test && pnpm --filter ./frontend test:unit && pnpm --filter ./frontend test:nuxt",
+    "test": "pnpm --filter ./frontend test:unit && pnpm --filter ./frontend test:nuxt",
     "skills:install": "skills experimental_install --agent universal",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down"

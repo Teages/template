@@ -10,25 +10,11 @@ FROM base AS deps
 COPY . .
 RUN pnpm install --frozen-lockfile
 
-FROM deps AS build-backend
-RUN pnpm --filter ./backend build
-
 FROM deps AS build-frontend
-ARG NUXT_BACKEND_ORIGIN=http://backend:20398
-ENV NUXT_BACKEND_ORIGIN=$NUXT_BACKEND_ORIGIN
 RUN pnpm --filter ./frontend build
 
 FROM deps AS migrator
-CMD ["pnpm", "--filter", "./backend", "db:migrate"]
-
-FROM node:24-alpine AS backend
-WORKDIR /app
-ENV NODE_ENV=production
-ENV NITRO_HOST=0.0.0.0
-ENV NITRO_PORT=20398
-COPY --from=build-backend /app/backend/.output ./.output
-EXPOSE 20398
-CMD ["node", ".output/server/index.mjs"]
+CMD ["pnpm", "--filter", "./frontend", "db:migrate"]
 
 FROM node:24-alpine AS frontend
 WORKDIR /app
