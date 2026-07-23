@@ -30,6 +30,8 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^9.1.0",
+    "@iconify-json/lucide": "^1.2.118",
+    "@iconify-json/simple-icons": "^1.2.91",
     "@nuxt/eslint": "1.16.0",
     "@nuxt/icon": "^2.3.1",
     "@nuxt/test-utils": "^4.0.3",
@@ -42,6 +44,7 @@
     "@vue/test-utils": "^2.4.11",
     "@vueuse/nuxt": "^14.3.0",
     "eslint": "^10.7.0",
+    "nitro": "3.0.260610-beta",
     "tailwindcss": "^4.3.2",
     "typescript": "^6.0.3",
     "unplugin-auto-import": "^21.0.0",

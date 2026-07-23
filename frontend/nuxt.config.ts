@@ -1,7 +1,3 @@
-import { env } from 'node:process'
-
-const backendOrigin = env.NUXT_BACKEND_ORIGIN ?? 'http://localhost:20398'
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: 'latest',
@@ -35,10 +31,10 @@ export default defineNuxtConfig({
     },
   },
 
-  routeRules: {
-    '/graphql': { proxy: `${backendOrigin}/graphql` },
-    '/api/auth/**': { proxy: `${backendOrigin}/api/auth/**` },
-  },
+  // `/graphql` and `/api/auth/**` are proxied via explicit server routes
+  // (see server/routes/graphql.ts, server/api/auth/[...].ts). Do NOT switch
+  // back to routeRules.proxy — Nitro 3 beta's proxy recurses onto itself under
+  // Nuxt 5 nightly's globalThis.fetch override.
 
   devServer: {
     port: 20397,
@@ -79,6 +75,6 @@ export default defineNuxtConfig({
   },
 
   icon: {
-    provider: 'iconify',
+    provider: 'server',
   },
 })
