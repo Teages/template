@@ -46,11 +46,6 @@ export default defineNuxtConfig({
     },
   },
 
-  // `/graphql` and `/api/auth/**` are proxied via explicit server routes
-  // (see server/routes/graphql.ts, server/api/auth/[...].ts). Do NOT switch
-  // back to routeRules.proxy — Nitro 3 beta's proxy recurses onto itself under
-  // Nuxt 5 nightly's globalThis.fetch override.
-
   devServer: {
     port: 20397,
   },
@@ -75,7 +70,7 @@ export default defineNuxtConfig({
   },
 
   gazania: {
-    schema: '../backend/server/graphql/schema.graphql',
+    schema: './server/graphql/schema.graphql',
     scalars: {},
   },
 
