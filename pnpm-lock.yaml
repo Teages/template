@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
+  '@better-auth/kysely-adapter@1.7.0-rc.1': 6ed6867c4be5d0b77f4c93c169b5219d78ea61349ff5a45d4c4875c9d5d0e4f3
   '@nuxt/icon': 39b484f0e1e9c6d1169b310df6eec166e3d23581b30e160b002345d436bf857f
   '@nuxt/test-utils@4.0.3': 143347a8a598b958185c84feac4469e256b76d02454a6bfe51bd79461ac6ca47
 

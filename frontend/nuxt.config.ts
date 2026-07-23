@@ -5,6 +5,7 @@ export default defineNuxtConfig({
   experimental: {
     typescriptPlugin: true,
     typedPages: true,
+    nitroViteEnvironment: true,
   },
 
   runtimeConfig: {
@@ -32,7 +33,7 @@ export default defineNuxtConfig({
       include: ['gazania', 'graphql', 'better-auth/vue'],
     },
     define: {
-      'import.meta.MOCK_DATABASE': process.env.MOCK_DATABASE ?? 'undefined',
+      'import.meta.MOCK_DATABASE': JSON.stringify(process.env.MOCK_DATABASE ?? ''),
       'import.meta.vitest': 'undefined',
     },
   },
