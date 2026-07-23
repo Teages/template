@@ -5,10 +5,6 @@ export default defineNuxtConfig({
   experimental: {
     typescriptPlugin: true,
     typedPages: true,
-    // Nitro Vite environment gives us import.meta.glob + vite.define in dev.
-    // Disable under vitest — the env runner isn't initialized there and vitest
-    // already provides Vite transforms natively.
-    nitroViteEnvironment: !process.env.VITEST,
   },
 
   runtimeConfig: {

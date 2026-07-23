@@ -1,3 +1,4 @@
+import type { Plugin } from 'vite'
 import { nitro } from 'nitro/vite'
 import { defineConfig } from 'vitest/config'
 
@@ -9,6 +10,7 @@ export default defineConfig({
       rootDir,
       serverDir: `${rootDir}/server`,
     }),
+    nitroTestPlugin(),
   ],
   resolve: {
     alias: {
@@ -23,3 +25,19 @@ export default defineConfig({
     setupFiles: ['./test/server-setup.ts'],
   },
 })
+
+function nitroTestPlugin(): Plugin[] {
+  const cleanups = new Set<() => Promise<void> | void>()
+
+  return [{
+    name: 'nitro:test',
+    nitro: {
+      setup(nitro) {
+        cleanups.add(async () => nitro.close())
+      },
+    },
+    async closeBundle() {
+      await Promise.allSettled(Array.from(cleanups, async fn => fn()))
+    },
+  }]
+}

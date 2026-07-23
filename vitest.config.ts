@@ -34,9 +34,6 @@ export default defineConfig({
                   vue: {
                     runtimeCompiler: true,
                   },
-                  experimental: {
-                    viteEnvironmentApi: false,
-                  },
                 },
               },
             },
