@@ -3,7 +3,7 @@ import { injectDrizzle } from '../utils/drizzle'
 import { createPgliteDatabase } from '../utils/pglite-db'
 
 export default definePlugin((nitro) => {
-  if (process.env.MOCK_DATABASE) {
+  if (process.env.MOCK_DATABASE && !process.env.VITEST) {
     async function setup() {
       const db = await createPgliteDatabase({
         seed: process.env.MOCK_DATABASE === 'seed',
