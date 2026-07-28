@@ -10,7 +10,7 @@ export default mergeConfig(viteConfig, defineConfig({
     name: 'server',
     setupFiles: './test/setup.ts',
     include: [
-      'test/server/**/*.test.ts',
+      'test/e2e/**/*.test.ts',
     ],
     includeSource: [
       'server/**/*.ts',
