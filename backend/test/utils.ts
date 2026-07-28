@@ -2,13 +2,34 @@ import type { TestHelpers } from 'better-auth/plugins'
 import { createClient } from '@teages/oh-my-graphql'
 import { createFetch } from 'ofetch'
 import { useAuth } from '~/server/utils/auth'
+import { useDrizzle } from '~/server/utils/drizzle'
+import { clearDatabase } from '~/server/utils/pglite-db'
 
-/** Unique title prefix for a single test case (safe under parallel Vitest). */
+/**
+ * Resets the shared e2e database to a pristine state (drops and recreates
+ * all tables from the Drizzle schema).
+ *
+ * Use this in `beforeEach` / `beforeAll` when a test needs a fully clean slate
+ * (e.g. counting exact row numbers). Most tests should prefer unique-prefix
+ * isolation (`uniqueTodoTitle` / `uniqueAuthEmail`) instead, which is cheaper
+ * and safe under the single-worker shared-Nitro model.
+ *
+ * @requires import.meta.MOCK_DATABASE — only valid in the e2e PGlite environment.
+ */
+export async function resetTestDatabase(): Promise<void> {
+  if (!import.meta.MOCK_DATABASE) {
+    throw new Error('resetTestDatabase() is only available in the e2e mock-database environment.')
+  }
+  const { db } = useDrizzle()
+  await clearDatabase(db)
+}
+
+/** Unique title prefix for a single test case (safe under shared-worker Vitest). */
 export function uniqueTodoTitle(scope: string): string {
   return `todo-${scope}-${crypto.randomUUID()}`
 }
 
-/** Unique email for a single auth test case (safe under parallel Vitest). */
+/** Unique email for a single auth test case (safe under shared-worker Vitest). */
 export function uniqueAuthEmail(scope: string): string {
   return `auth-${scope}-${crypto.randomUUID()}@test.local`
 }

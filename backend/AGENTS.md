@@ -38,5 +38,5 @@ Refer to `node_modules/nitro/dist/docs/README.md` when working on server (your k
 - Vitest + in-memory PGlite (`test/setup.ts` mocks `useDrizzle()`).
 - GraphQL: co-located tests in `server/graphql/schema/**/operations/*.ts` via `createGraphQLTestClient(serverFetch)` + `gazania`.
 - DB setup in a test: `useDrizzle()` + insert rows; do not rely on global seed counts.
-- **Tests run concurrently.** Each `it` must use its own unique fixture key (e.g. `uniqueTodoTitle()` in `test/utils.ts`) and assert only on rows matching that key. Never assume exclusive DB state or fixed row counts.
+- **Shared single-worker model (e2e):** the e2e project uses `isolate: false` + `maxWorkers: 1` so **all e2e files share ONE Nitro instance and ONE PGlite database** in ONE worker process (see `vitest.config.ts`). This avoids re-booting Nitro per file. Each `it` must use its own unique fixture key (e.g. `uniqueTodoTitle()` in `test/utils.ts`) and assert only on rows matching that key. Never assume exclusive DB state or fixed row counts. Call `resetTestDatabase()` (from `test/utils.ts`) in `beforeEach` only when a test needs a fully clean slate.
 - `pnpm test` / `pnpm test:watch`; `pnpm typecheck`.

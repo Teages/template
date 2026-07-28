@@ -25,7 +25,12 @@ export default defineConfig({
           'import.meta.MOCK_DATABASE': 'true',
         },
       }),
-      // E2E / integration tests — boots an in-memory Nitro server.
+      // E2E / integration tests — share ONE in-memory Nitro instance across all
+      // files (isolate:false + maxWorkers:1 → Vitest reuses a single worker).
+      // This avoids re-booting Nitro/PGlite per file, drastically cutting memory
+      // and startup time when the test suite grows. Tests must isolate data via
+      // unique prefixes (see `uniqueTodoTitle` / `uniqueAuthEmail` in test/utils)
+      // or call `resetTestDatabase()` between tests.
       () => mergeConfig(viteConfig, defineConfig({
         plugins: [nitroTestPlugin()],
         test: {
@@ -33,6 +38,11 @@ export default defineConfig({
           setupFiles: './test/setup.ts',
           include: ['test/e2e/**/*.test.ts'],
           environment: './test/env.ts',
+          isolate: false,
+          maxWorkers: 1,
+          // Distinct groupOrder so Vitest can schedule this single-worker
+          // project alongside the (parallel) unit project without conflict.
+          sequence: { groupOrder: 1 },
         },
         define: {
           'import.meta.MOCK_DATABASE': 'true',

@@ -6,7 +6,6 @@ import { sql } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/pglite'
 import { relations } from '../database/relations'
 import * as schema from '../database/schema'
-import { todos } from '../database/schema'
 
 export type DrizzleDatabase = PgAsyncDatabase<PgQueryResultHKT, typeof relations>
 
@@ -25,6 +24,15 @@ export interface CreatePgliteDatabaseOptions {
   seed?: boolean
 }
 
+/** Pushes the Drizzle schema onto the database (creates/updates all tables). */
+async function applySchema(db: DrizzleDatabase): Promise<void> {
+  const { apply } = await pushSchema(
+    config.schema,
+    db as unknown as PgAsyncDatabase<never>,
+  )
+  await apply()
+}
+
 export async function createPgliteDatabase(
   options: CreatePgliteDatabaseOptions = {},
 ): Promise<DrizzleDatabase> {
@@ -36,12 +44,7 @@ export async function createPgliteDatabase(
     client,
   })
 
-  const { apply } = await pushSchema(
-    config.schema,
-    db as unknown as PgAsyncDatabase<never>,
-  )
-
-  await apply()
+  await applySchema(db)
 
   if (seed) {
     await seedDatabase(db)
@@ -50,8 +53,15 @@ export async function createPgliteDatabase(
   return db
 }
 
+/**
+ * Resets the database to a pristine state by dropping and recreating every
+ * table from the Drizzle schema. Table-agnostic: no need to maintain a list
+ * of table names — schema changes are picked up automatically.
+ */
 export async function clearDatabase(db: DrizzleDatabase): Promise<void> {
-  await db.execute(sql`TRUNCATE TABLE ${todos} RESTART IDENTITY`)
+  await db.execute(sql`DROP SCHEMA public CASCADE`)
+  await db.execute(sql`CREATE SCHEMA public`)
+  await applySchema(db)
 }
 
 export async function seedDatabase(_db: DrizzleDatabase): Promise<void> {
