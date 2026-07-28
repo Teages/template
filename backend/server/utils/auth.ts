@@ -63,3 +63,55 @@ export function useAuth(): Auth {
  * @deprecated Only for Better Auth CLI.
  */
 export const auth = initAuth({} as never)
+
+if (import.meta.vitest) {
+  const { describe, expect, it, vi, beforeEach, afterEach } = import.meta.vitest
+
+  describe('trustedOrigins', () => {
+    const KEY = 'BETTER_AUTH_TRUSTED_ORIGINS'
+    const DEFAULTS = ['http://localhost:20397', 'http://localhost:20398']
+
+    let original: string | undefined
+    let existed: boolean
+
+    beforeEach(() => {
+      original = env[KEY]
+      existed = Object.hasOwn(env, KEY)
+    })
+
+    afterEach(() => {
+      vi.unstubAllEnvs()
+      if (existed) {
+        env[KEY] = original
+      }
+      else {
+        delete env[KEY]
+      }
+    })
+
+    it('returns only localhost defaults when the env var is unset', () => {
+      delete env[KEY]
+      expect(trustedOrigins()).toEqual(DEFAULTS)
+    })
+
+    it('returns only localhost defaults when the env var is an empty string', () => {
+      vi.stubEnv(KEY, '')
+      expect(trustedOrigins()).toEqual(DEFAULTS)
+    })
+
+    it('appends a single configured origin after the defaults', () => {
+      vi.stubEnv(KEY, 'https://example.com')
+      expect(trustedOrigins()).toEqual([...DEFAULTS, 'https://example.com'])
+    })
+
+    it('parses multiple comma-separated origins and trims surrounding whitespace', () => {
+      vi.stubEnv(KEY, ' https://a.com , https://b.com ')
+      expect(trustedOrigins()).toEqual([...DEFAULTS, 'https://a.com', 'https://b.com'])
+    })
+
+    it('drops empty entries produced by consecutive or trailing commas', () => {
+      vi.stubEnv(KEY, ', , https://c.com ,')
+      expect(trustedOrigins()).toEqual([...DEFAULTS, 'https://c.com'])
+    })
+  })
+}
