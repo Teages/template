@@ -1,4 +1,3 @@
-import process from 'node:process'
 import { builder } from './builder'
 
 import.meta.glob('./schema/*/operations/*.ts', { eager: true })
@@ -6,7 +5,7 @@ import.meta.glob('./schema/*/*.*.ts', { eager: true })
 
 export const schema = builder.toSchema()
 
-if (import.meta.dev && process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
+if (import.meta.dev && import.meta.env.NODE_ENV !== 'test' && !import.meta.env.VITEST) {
   async function updateFile(path: string, content: string) {
     const { resolve } = await import('node:path')
     const { readFile, writeFile } = await import('node:fs/promises')

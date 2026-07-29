@@ -1,5 +1,4 @@
 import type { DrizzleDatabase } from '~/server/utils/drizzle'
-import { env } from 'node:process'
 import { drizzleAdapter } from '@better-auth/drizzle-adapter/relations-v2'
 import { betterAuth } from 'better-auth'
 import { testUtils } from 'better-auth/plugins'
@@ -9,7 +8,8 @@ import { schema } from '../database'
 type Auth = ReturnType<typeof initAuth>
 
 function trustedOrigins() {
-  const configured = env.BETTER_AUTH_TRUSTED_ORIGINS
+  const trusted = import.meta.env.BETTER_AUTH_TRUSTED_ORIGINS
+  const configured = trusted
     ?.split(',')
     .map(origin => origin.trim())
     .filter(Boolean) ?? []
@@ -29,11 +29,8 @@ function initAuth(db: DrizzleDatabase) {
     },
     trustedOrigins: trustedOrigins(),
     baseURL: {
-      allowedHosts: env.BETTER_AUTH_ALLOWED_HOSTS
-        ?.split(',')
-        .map(host => host.trim())
-        .filter(Boolean) ?? ['localhost', 'localhost:*'],
-      fallback: env.BETTER_AUTH_URL ?? 'http://localhost:20398',
+      allowedHosts: import.meta.env.BETTER_AUTH_ALLOWED_HOSTS?.split(',').map(host => host.trim()).filter(Boolean) ?? ['localhost', 'localhost:*'],
+      fallback: import.meta.env.BETTER_AUTH_URL ?? 'http://localhost:20398',
     },
     database: drizzleAdapter(db, {
       provider: 'pg',
@@ -75,22 +72,22 @@ if (import.meta.vitest) {
     let existed: boolean
 
     beforeEach(() => {
-      original = env[KEY]
-      existed = Object.hasOwn(env, KEY)
+      original = import.meta.env[KEY]
+      existed = Object.hasOwn(import.meta.env, KEY)
     })
 
     afterEach(() => {
       vi.unstubAllEnvs()
       if (existed) {
-        env[KEY] = original
+        import.meta.env[KEY] = original
       }
       else {
-        delete env[KEY]
+        delete import.meta.env[KEY]
       }
     })
 
     it('returns only localhost defaults when the env var is unset', () => {
-      delete env[KEY]
+      delete import.meta.env[KEY]
       expect(trustedOrigins()).toEqual(DEFAULTS)
     })
 

@@ -1,5 +1,4 @@
 import type { H3Event } from 'nitro/h3'
-import process from 'node:process'
 import SchemaBuilder from '@pothos/core'
 import DrizzlePlugin from '@pothos/plugin-drizzle'
 import RelayPlugin from '@pothos/plugin-relay'
@@ -49,6 +48,6 @@ builder.scalarType('UUID', {
 builder.queryType({})
 builder.mutationType({})
 
-if (import.meta.dev && process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
+if (import.meta.dev && import.meta.env.NODE_ENV !== 'test' && !import.meta.env.VITEST) {
   void import('./schema.ts')
 }
