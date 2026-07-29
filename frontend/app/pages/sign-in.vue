@@ -62,6 +62,7 @@ useSeoMeta({ title: 'Sign in' })
             autocomplete="email"
             placeholder="you@example.com"
             required
+            class="w-full"
           />
         </UFormField>
 
@@ -71,6 +72,7 @@ useSeoMeta({ title: 'Sign in' })
             type="password"
             autocomplete="current-password"
             required
+            class="w-full"
           />
         </UFormField>
 
