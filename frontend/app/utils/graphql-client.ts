@@ -1,7 +1,6 @@
 import type { ResultOf, TypedDocumentNode, VariablesOf } from 'gazania'
 import type { OperationDefinitionNode } from 'graphql'
 import { print } from 'graphql'
-import { GRAPHQL_PATH } from '#shared/utils/graphql-path'
 
 export type GraphQLFetch = typeof $fetch
 
@@ -56,7 +55,7 @@ export async function request<TDocument extends TypedDocumentNode<any, any>>(
     RequestOptions | undefined,
   ]
 
-  const url = options?.url ?? GRAPHQL_PATH
+  const url = options?.url ?? '/graphql'
   const fetcher = resolveFetch(options)
   const queryString = print(document)
   const definition = getOperationDefinition(document)
