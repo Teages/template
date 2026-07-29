@@ -13,8 +13,7 @@ export default defineLazyEventHandler(() => {
     maskedErrors: !(import.meta.dev || isTest),
   })
 
-  return defineEventHandler(async (event) => {
-    const ctx = { event }
-    return yoga.handleRequest(event.req, ctx as never)
-  })
+  return defineEventHandler(async event =>
+    yoga.handleRequest(event.req, { event }),
+  )
 })
