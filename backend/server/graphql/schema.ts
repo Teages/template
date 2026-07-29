@@ -27,14 +27,14 @@ if (import.meta.dev && import.meta.env.NODE_ENV !== 'test' && !import.meta.env.V
     let updated = false
 
     const sdl = printGraphQLSchema(schema)
-    updated ||= await updateFile('./schema.graphql', sdl)
+    updated ||= await updateFile('../../../shared/schema.graphql', sdl)
 
     const types = (await generate({
       source: sdl,
       scalars: {},
       url: 'http://localhost',
     })).replace('/* eslint-disable */\n', '')
-    updated ||= await updateFile('./gazania.ts', types)
+    updated ||= await updateFile('../../../shared/gazania.ts', types)
 
     if (updated) {
       logger.info('Schema updated.')

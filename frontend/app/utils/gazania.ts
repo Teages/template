@@ -1,4 +1,4 @@
-import type { Schema } from '#gazania/schema'
+import type { Schema } from '~~/../shared/gazania'
 import { createGazania } from 'gazania'
 
 export const gazania = createGazania({} as Schema)

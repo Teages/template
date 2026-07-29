@@ -50,7 +50,6 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui',
     '@vueuse/nuxt',
-    './modules/gazania',
   ],
 
   $test: {
@@ -62,11 +61,6 @@ export default defineNuxtConfig({
       // @nuxt/test-utils clones while building the Vitest project.
       debugModuleMutation: false,
     },
-  },
-
-  gazania: {
-    schema: '../backend/server/graphql/schema.graphql',
-    scalars: {},
   },
 
   devtools: { enabled: true },

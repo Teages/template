@@ -9,6 +9,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "validate:schema": "node --input-type=module -e \"import { readFileSync } from 'node:fs'; import { parse } from 'graphql'; parse(readFileSync(new URL('../backend/server/graphql/schema.graphql', import.meta.url), 'utf8'))\"",
@@ -45,6 +46,7 @@
     "tailwindcss": "^4.3.2",
     "typescript": "^6.0.3",
     "unplugin-auto-import": "^21.0.0",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "vue-tsc": "^3.3.8"
   }
 }
