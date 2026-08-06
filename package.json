@@ -13,7 +13,7 @@
     "dev:prod": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "pnpm prepare && vue-tsc --noEmit",
+    "typecheck": "pnpm prepare && vue-tsc --build --noEmit",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "test": "vitest run",

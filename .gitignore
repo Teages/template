@@ -17,6 +17,7 @@ nitro.d.ts
 .temp
 .tmp
 .cache
+*.tsbuildinfo
 .DS_Store
 
 # Coverage
