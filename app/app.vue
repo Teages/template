@@ -48,9 +48,14 @@ const displayName = computed(() => session.value?.user.name ?? 'Account')
 
 const navItems = computed(() =>
   session.value?.user
-    ? [{ label: 'Count', to: '/' }, { label: 'tRPC', to: '/trpc' }]
+    ? [
+        { label: 'GraphQL', to: '/' },
+        { label: 'REST', to: '/rest' },
+        { label: 'tRPC', to: '/trpc' },
+      ]
     : [
-        { label: 'Count', to: '/' },
+        { label: 'GraphQL', to: '/' },
+        { label: 'REST', to: '/rest' },
         { label: 'tRPC', to: '/trpc' },
         { label: 'Sign in', to: '/sign-in' },
         { label: 'Sign up', to: '/sign-up' },

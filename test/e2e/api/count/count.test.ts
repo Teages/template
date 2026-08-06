@@ -9,58 +9,65 @@ import {
   uniqueAuthEmail,
 } from '~/test/utils'
 
-describe('count /api/count', () => {
+describe('rest /api/count-events', () => {
   beforeEach(async () => {
+    // Ensure Nitro's request hook has initialized the in-memory database.
+    await serverFetch('/api/auth/get-session')
     await resetTestDatabase()
   })
 
-  it('returns 401 when posting without a session', async () => {
-    const res = await serverFetch('/api/count', {
+  it('returns 401 without a session', async () => {
+    const getRes = await serverFetch('/api/count-events')
+    const postRes = await serverFetch('/api/count-events', {
       method: 'POST',
       headers: { Origin: testOrigin },
     })
 
-    expect(res.status).toBe(401)
+    expect(getRes.status).toBe(401)
+    expect(postRes.status).toBe(401)
   })
 
-  it('records a count event for the signed-in user', async () => {
+  it('creates a resource and exposes its canonical location', async () => {
     const { cookie } = await signInTestUser('count-one')
     const headers = {
       Origin: testOrigin,
       Cookie: cookie,
     }
 
-    const postRes = await serverFetch('/api/count', {
+    const postRes = await serverFetch('/api/count-events', {
       method: 'POST',
       headers,
     })
 
-    expect(postRes.status).toBe(200)
+    expect(postRes.status).toBe(201)
     const body = await postRes.json() as {
-      count: number
-      events: Array<{ userName: string, userEmail: string, createdAt: string }>
+      data: { id: string, userName: string, userEmail: string, createdAt: string }
     }
-    expect(body.count).toBe(1)
-    expect(body.events).toHaveLength(1)
-    expect(body.events[0]?.userName).toBe('Vitest User')
-    expect(body.events[0]?.createdAt.length).toBeGreaterThan(0)
+    expect(body.data.userName).toBe('Vitest User')
+    expect(body.data.createdAt.length).toBeGreaterThan(0)
+    expect(postRes.headers.get('location')).toBe(`/api/count-events/${body.data.id}`)
 
-    const getRes = await serverFetch('/api/count', { headers })
+    const itemRes = await serverFetch(`/api/count-events/${body.data.id}`, { headers })
+    expect(itemRes.status).toBe(200)
+    expect(await itemRes.json()).toEqual({ data: body.data })
+
+    const getRes = await serverFetch('/api/count-events', { headers })
     expect(getRes.status).toBe(200)
-    const snapshot = await getRes.json() as { count: number }
-    expect(snapshot.count).toBe(1)
+    const page = await getRes.json() as { data: unknown[], meta: { total: number } }
+    expect(page.meta.total).toBe(1)
+    expect(page.data).toHaveLength(1)
   })
 
   it('shows events from multiple users in reverse chronological order', async () => {
     const first = await signInTestUser('count-user-a')
-    const firstPost = await serverFetch('/api/count', {
+    const firstPost = await serverFetch('/api/count-events', {
       method: 'POST',
       headers: {
         Origin: testOrigin,
         Cookie: first.cookie,
       },
     })
-    expect(firstPost.status).toBe(200)
+    expect(firstPost.status).toBe(201)
 
     const email = uniqueAuthEmail('count-user-b')
     const signUpRes = await serverFetch('/api/auth/sign-up/email', {
@@ -75,20 +82,44 @@ describe('count /api/count', () => {
     expect(signUpRes.status).toBe(200)
     const secondCookie = cookieHeader(signUpRes)
 
-    const secondPost = await serverFetch('/api/count', {
+    const secondPost = await serverFetch('/api/count-events', {
       method: 'POST',
       headers: {
         Origin: testOrigin,
         Cookie: secondCookie,
       },
     })
-    expect(secondPost.status).toBe(200)
+    expect(secondPost.status).toBe(201)
 
-    const body = await secondPost.json() as {
-      count: number
-      events: Array<{ userName: string }>
+    const listRes = await serverFetch('/api/count-events?limit=1', {
+      headers: { Cookie: secondCookie },
+    })
+    const firstPage = await listRes.json() as {
+      data: Array<{ id: string, userName: string }>
+      meta: { total: number, nextCursor: string | null }
     }
-    expect(body.count).toBe(2)
-    expect(body.events.map(event => event.userName)).toEqual(['Second User', 'Vitest User'])
+    expect(firstPage.meta.total).toBe(2)
+    expect(firstPage.data).toHaveLength(1)
+    expect(firstPage.meta.nextCursor).toBeTruthy()
+
+    const secondPage = await serverFetch(
+      `/api/count-events?limit=1&cursor=${encodeURIComponent(firstPage.meta.nextCursor!)}`,
+      { headers: { Cookie: secondCookie } },
+    ).then(res => res.json()) as {
+      data: Array<{ id: string, userName: string }>
+      meta: { total: number, nextCursor: string | null }
+    }
+    expect(secondPage.meta.total).toBe(2)
+    expect(secondPage.data).toHaveLength(1)
+    expect(secondPage.data[0]?.id).not.toBe(firstPage.data[0]?.id)
+    expect(secondPage.meta.nextCursor).toBeNull()
+  })
+
+  it('rejects invalid pagination parameters', async () => {
+    const { cookie } = await signInTestUser('count-invalid-page')
+    const headers = { Cookie: cookie }
+
+    expect((await serverFetch('/api/count-events?limit=0', { headers })).status).toBe(400)
+    expect((await serverFetch('/api/count-events?cursor=broken', { headers })).status).toBe(400)
   })
 })
