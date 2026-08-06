@@ -1,4 +1,5 @@
 import type { DrizzleDatabase } from '~/server/utils/drizzle'
+import { TRPCError } from '@trpc/server'
 import { and, count, desc, eq, lt, or } from 'drizzle-orm'
 import { countEvents, users } from '~/server/database/schema'
 
@@ -20,6 +21,13 @@ export async function listCountEvents(
         .where(eq(countEvents.id, options.cursor))
         .limit(1)
     : []
+
+  if (options.cursor && !cursorRow) {
+    throw new TRPCError({
+      code: 'BAD_REQUEST',
+      message: 'cursor is invalid',
+    })
+  }
 
   const cursorFilter = cursorRow
     ? or(

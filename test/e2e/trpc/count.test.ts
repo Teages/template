@@ -83,5 +83,10 @@ describe('trpc count', () => {
 
     await expect(client.count.list.query({ limit: 0 })).rejects.toThrow()
     await expect(client.count.list.query({ cursor: 'not-a-uuid' })).rejects.toThrow()
+    await expect(client.count.list.query({
+      cursor: '00000000-0000-4000-8000-000000000000',
+    })).rejects.toMatchObject({
+      data: { code: 'BAD_REQUEST' },
+    })
   })
 })
