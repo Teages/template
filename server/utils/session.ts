@@ -2,7 +2,7 @@ import type { H3Event } from 'nitro/h3'
 import { HTTPError } from 'nitro/h3'
 import { useAuth } from './auth'
 
-type AuthSession = NonNullable<Awaited<ReturnType<typeof fetchAuthSession>>>
+export type AuthSession = NonNullable<Awaited<ReturnType<typeof fetchAuthSession>>>
 
 const CACHE_MAP = new WeakMap<H3Event, AuthSession | null>()
 
