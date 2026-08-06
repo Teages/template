@@ -1,6 +1,6 @@
 import type { AuthSession } from './auth-session'
 
-const publicPaths = new Set(['/sign-in', '/sign-up', '/trpc'])
+const publicPaths = new Set(['/sign-in', '/sign-up'])
 
 export function authRedirectFor(
   path: string,
