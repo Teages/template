@@ -34,6 +34,48 @@ type StudioRequest
     | { type: 'bproxy', data: { query: StudioProxyData, repeats?: number } }
     | { type: 'defaults', data: Array<{ schema: string, table: string, column: string }> }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function isStudioProxyData(value: unknown): value is StudioProxyData {
+  if (!isRecord(value) || typeof value.sql !== 'string')
+    return false
+  if (value.params !== undefined && !Array.isArray(value.params))
+    return false
+  if (value.mode !== undefined && value.mode !== 'array' && value.mode !== 'object')
+    return false
+  return value.method === undefined
+    || ['values', 'get', 'all', 'run', 'execute'].includes(String(value.method))
+}
+
+function isStudioRequest(value: unknown): value is StudioRequest {
+  if (!isRecord(value) || typeof value.type !== 'string')
+    return false
+
+  switch (value.type) {
+    case 'init':
+      return true
+    case 'proxy':
+      return isStudioProxyData(value.data)
+    case 'tproxy':
+      return Array.isArray(value.data)
+        && value.data.every(item => isRecord(item) && isStudioProxyData(item))
+    case 'bproxy':
+      return isRecord(value.data)
+        && isStudioProxyData(value.data.query)
+        && (value.data.repeats === undefined || typeof value.data.repeats === 'number')
+    case 'defaults':
+      return Array.isArray(value.data)
+        && value.data.every(item => isRecord(item)
+          && typeof item.schema === 'string'
+          && typeof item.table === 'string'
+          && typeof item.column === 'string')
+    default:
+      return false
+  }
+}
+
 function prepareParams(params: unknown[]): unknown[] {
   return params.map((param) => {
     if (
@@ -103,9 +145,19 @@ async function runTransactionProxy(
 
 export async function handleStudioProtocol(
   client: PGlite,
-  body: StudioRequest,
+  body: unknown,
 ): Promise<Response> {
   try {
+    if (!isStudioRequest(body)) {
+      return Response.json({
+        status: 'error',
+        error: 'Invalid Studio protocol request',
+      }, {
+        status: 400,
+        headers: studioCorsHeaders,
+      })
+    }
+
     switch (body.type) {
       case 'init': {
         return Response.json({
