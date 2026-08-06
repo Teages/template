@@ -14,7 +14,7 @@ import serverAssets from './entry-server.ts?assets=ssr'
 
 import { APP_CONTEXT_KEY, createAppContext } from './utils/app-context.ts'
 import { authRedirectFor } from './utils/auth-routes.ts'
-import { isAuthSession } from './utils/auth-session.ts'
+import { fetchAuthSession } from './utils/auth-session.ts'
 import { serializePayloadScript } from './utils/payload.ts'
 import { createSsrFetchContext } from './utils/ssr-fetch.ts'
 import './assets/css/main.css'
@@ -39,8 +39,7 @@ async function handler(request: Request): Promise<Response> {
     (input, init) => fetchViteEnv('nitro', input, init),
   )
   const url = new URL(request.url)
-  const sessionValue: unknown = await fetchContext.$requestFetch('/api/auth/get-session')
-  const session = isAuthSession(sessionValue) ? sessionValue : null
+  const session = await fetchAuthSession(fetchContext.$requestFetch)
   const redirect = authRedirectFor(
     url.pathname,
     `${url.pathname}${url.search}`,

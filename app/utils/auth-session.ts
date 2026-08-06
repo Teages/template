@@ -1,4 +1,6 @@
+import type { $Fetch } from 'ofetch'
 import type { authClient } from './auth-client.ts'
+import { parseJSON } from 'better-auth/client'
 
 export type AuthSession = typeof authClient.$Infer.Session
 
@@ -25,4 +27,11 @@ export function isAuthSession(value: unknown): value is AuthSession {
     && session.createdAt instanceof Date
     && session.updatedAt instanceof Date
     && session.expiresAt instanceof Date
+}
+
+export async function fetchAuthSession($fetch: $Fetch): Promise<AuthSession | null> {
+  const value: unknown = await $fetch('/api/auth/get-session', {
+    parseResponse: text => parseJSON(text, { strict: false }),
+  })
+  return isAuthSession(value) ? value : null
 }
