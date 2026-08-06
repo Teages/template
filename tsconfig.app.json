@@ -1,7 +1,7 @@
 {
   "extends": [
     "@tsconfig/node24/tsconfig.json",
-    "@vue/tsconfig/tsconfig.json"
+    "@vue/tsconfig/tsconfig.dom.json"
   ],
   "compilerOptions": {
     "paths": {
