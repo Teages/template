@@ -31,6 +31,12 @@
       "skillPath": "skills/gazania/SKILL.md",
       "computedHash": "2f43fdc9c7cdbba56bbdf9e56a10ebfb34edd302b7ae08d89b9add725be17282"
     },
+    "nitro": {
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "skillPath": "skills/nitro/SKILL.md",
+      "computedHash": "f8341eaf6fbdc604c2c8123a275407acea5a74ad3b0870cdd0ed2a3007e36c12"
+    },
     "nuxt-ui": {
       "source": "nuxt/ui",
       "sourceType": "github",
