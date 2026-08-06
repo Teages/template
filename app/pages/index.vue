@@ -188,10 +188,10 @@ async function loadMore(): Promise<void> {
   <div class="flex flex-col gap-8 py-10">
     <div class="text-center">
       <h1 class="text-4xl font-bold text-highlighted">
-        Count App
+        GraphQL Demo
       </h1>
       <p class="mt-2 text-muted">
-        Every click is recorded with who and when.
+        Code-first schema and Relay pagination at <code class="text-primary">/api/graphql</code>.
       </p>
     </div>
 

@@ -50,7 +50,7 @@ async function onSignOut(): Promise<void> {
 
 <template>
   <UApp>
-    <UHeader title="Count App" to="/">
+    <UHeader title="API Template" to="/">
       <template #right>
         <div class="flex items-center gap-3">
           <UNavigationMenu :items="navItems" />

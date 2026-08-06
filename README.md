@@ -1,6 +1,6 @@
-# fullstack template
+# Full-stack API template
 
-Login-required Count App built with Vue SSR, Vue Router, Vite, Nitro, Drizzle, Better Auth, and [Nuxt UI](https://ui.nuxt.com).
+Login-required Count App demonstrating interchangeable REST, GraphQL, and tRPC API designs on Vue SSR, Nitro, Drizzle, Better Auth, and [Nuxt UI](https://ui.nuxt.com).
 
 Bootstrapped from the [nitro vite-ssr-vue-router example](https://github.com/nitrojs/nitro/tree/main/examples/vite-ssr-vue-router), with database/auth/testing patterns from [Teages/template@fullstack](https://github.com/Teages/template/tree/fullstack).
 
@@ -22,7 +22,13 @@ pnpm db:migrate
 pnpm dev:prod
 ```
 
-Open http://localhost:20398 — sign up, sign in, click **Count**. Each click records who clicked and when in the event feed.
+Open http://localhost:20398, sign up, and choose an API implementation:
+
+- `/` — GraphQL with a code-first schema and Relay pagination
+- `/rest` — resource-oriented REST with HTTP status and cursor conventions
+- `/trpc` — end-to-end typed procedures with Zod input validation
+
+All three operate on the same count-event business model. A real project is expected to keep the API style it needs rather than ship all three.
 
 ## Scripts
 
@@ -33,10 +39,10 @@ pnpm build
 pnpm preview
 pnpm typecheck
 
-pnpm test           # unit only (fast default)
+pnpm test           # all unit and e2e tests
 pnpm test:unit      # pure Node + in-source
 pnpm test:e2e       # full Nitro + Vue stack
-pnpm test:watch     # unit + api watch mode
+pnpm test:watch     # unit tests in watch mode
 
 pnpm db:generate    # generate Drizzle migrations
 pnpm db:migrate     # apply migrations (prod DB)
@@ -51,9 +57,27 @@ pnpm task:db:reset   # reset mock DB (dev only)
 
 - **Auth**: Better Auth email/password at `/api/auth/*`
 - **DB**: Drizzle ORM + Postgres (prod) / PGlite (dev & tests)
-- **API**: `GET/POST /api/count` — requires session; returns `{ count, events }`
-- **GraphQL**: Pothos + Yoga at `/api/graphql` — `count`, `countEvents`, `recordCount` (code-first; SDL in `schema.graphql`)
-- **Tests**: Vitest projects — `unit` (pure Node), `api` (Nitro/PGlite), `e2e` (Nitro + Vue)
+- **REST**: `/api/count-events` — collection/detail resources, `201 Location`, opaque cursor pagination
+- **GraphQL**: Pothos + Yoga at `/api/graphql` — Relay connections and mutation payloads; generated SDL in `schema.graphql`
+- **tRPC**: `/api/trpc` — inferred client types, protected procedures, and Zod-validated cursor input
+- **Tests**: Vitest projects — `unit` (pure Node) and `e2e` (Nitro/PGlite + Vue SSR)
+
+## API design contract
+
+The transports intentionally use their ecosystem conventions rather than sharing one response envelope:
+
+| Capability | REST | GraphQL | tRPC |
+|---|---|---|---|
+| List events | `GET /api/count-events` | `countEvents` Relay connection | `count.list` query |
+| Total | `meta.total` | `count` field | `total` |
+| Record click | `POST /api/count-events` | `recordCount` mutation payload | `count.create` mutation |
+| Pagination | opaque HTTP cursor | Relay `first` / `after` | typed `limit` / `cursor` input |
+
+The e2e contract test creates data through all three transports and verifies that they expose the same totals, event identities, ordering, and ownership.
+
+## Request-scoped `$fetch`
+
+The Vue app context exposes an ofetch instance as `$fetch`, similar to Nuxt. During SSR it is created per request, resolves relative URLs through Nitro, and forwards only that request's cookies. API clients must be created from `useAppContext().$fetch`; never replace `globalThis.fetch`.
 
 ## Nuxt UI
 

@@ -149,7 +149,7 @@ function htmlTemplate(body: string, payloadScript: string): string {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Count App</title>
+  <title>Full-stack API Template</title>
 </head>
 <body>
   <div id="root" class="isolate">${body}</div>

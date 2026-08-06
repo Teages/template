@@ -10,7 +10,7 @@ builder.queryFields(t => ({
       const { db } = useDrizzle()
       return db.query.countEvents.findMany(
         query({
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: 'desc', id: 'desc' },
         }),
       )
     },
