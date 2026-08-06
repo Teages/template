@@ -16,16 +16,22 @@ describe('mutation recordCount', () => {
       gazania.mutation('RecordCount')
         .select($ => $.select([{
           recordCount: $ => $.select([
-            'id',
-            'createdAt',
-            { user: $ => $.select(['name', 'email']) },
+            'totalCount',
+            {
+              countEvent: $ => $.select([
+                'id',
+                'createdAt',
+                { user: $ => $.select(['name', 'email']) },
+              ]),
+            },
           ]),
         }])),
     )
 
-    expect(res.recordCount?.id).toBeTruthy()
-    expect(res.recordCount?.user?.name).toBe('Vitest User')
-    expect(res.recordCount?.createdAt).toBeTruthy()
+    expect(res.recordCount.countEvent.id).toBeTruthy()
+    expect(res.recordCount.countEvent.user.name).toBe('Vitest User')
+    expect(res.recordCount.countEvent.createdAt).toBeTruthy()
+    expect(res.recordCount.totalCount).toBe(1)
   })
 
   it('rejects unauthenticated requests', async () => {
@@ -34,7 +40,9 @@ describe('mutation recordCount', () => {
       unauthenticated.mutation(
         gazania.mutation('RecordCountUnauth')
           .select($ => $.select([{
-            recordCount: $ => $.select(['id']),
+            recordCount: $ => $.select([{
+              countEvent: $ => $.select(['id']),
+            }]),
           }])),
       ),
     ).rejects.toThrow(/Unauthorized/)

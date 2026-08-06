@@ -31,12 +31,12 @@ describe('ssr app payload', () => {
         'cookie': cookie,
       },
       body: JSON.stringify({
-        query: 'mutation { recordCount { id } }',
+        query: 'mutation { recordCount { countEvent { id } } }',
       }),
     })
     expect(recordRes.status).toBe(200)
     expect(await recordRes.json()).toEqual({
-      data: { recordCount: { id: expect.any(String) } },
+      data: { recordCount: { countEvent: { id: expect.any(String) } } },
     })
 
     const res = await fetch('/', {

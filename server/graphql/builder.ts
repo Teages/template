@@ -10,12 +10,14 @@ import { useDrizzle } from '~/server/utils/drizzle'
 
 export const builder = new SchemaBuilder<{
   Context: { event: H3Event }
+  DefaultFieldNullability: false
   DrizzleRelations: typeof relations
   Scalars: {
     Date: { Input: Date, Output: Date }
     UUID: { Input: string, Output: string }
   }
 }>({
+  defaultFieldNullability: false,
   plugins: [DrizzlePlugin, RelayPlugin, SimpleObjectsPlugin, WithInputPlugin],
   drizzle: {
     client: () => useDrizzle().db,

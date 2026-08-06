@@ -21,7 +21,9 @@ describe('query countEvents', () => {
     await firstClient.mutation(
       gazania.mutation('RecordForEventsA')
         .select($ => $.select([{
-          recordCount: $ => $.select(['id']),
+          recordCount: $ => $.select([{
+            countEvent: $ => $.select(['id']),
+          }]),
         }])),
     )
 
@@ -41,7 +43,9 @@ describe('query countEvents', () => {
     await secondClient.mutation(
       gazania.mutation('RecordForEventsB')
         .select($ => $.select([{
-          recordCount: $ => $.select(['id']),
+          recordCount: $ => $.select([{
+            countEvent: $ => $.select(['id']),
+          }]),
         }])),
     )
 
@@ -59,10 +63,52 @@ describe('query countEvents', () => {
         }])),
     )
 
-    const names = (res.countEvents?.edges ?? [])
-      .map(edge => edge?.node?.user?.name)
-      .filter((name): name is string => typeof name === 'string')
+    const names = res.countEvents.edges.map(edge => edge.node.user.name)
     expect(names).toEqual(['Second User', 'Vitest User'])
+  })
+
+  it('supports Relay forward pagination', async () => {
+    const auth = await signInTestUser('gql-page')
+    const client = createGraphQLTestClient(serverFetch, { cookie: auth.cookie })
+    for (let index = 0; index < 3; index++) {
+      await client.mutation(
+        gazania.mutation(`RecordForPage${index}`)
+          .select($ => $.select([{
+            recordCount: $ => $.select([{
+              countEvent: $ => $.select(['id']),
+            }]),
+          }])),
+      )
+    }
+
+    const first = await client.query(
+      gazania.query('FirstCountEventsPage')
+        .select($ => $.select([{
+          countEvents: $ => $.args({ first: 2 }).select([
+            { edges: $ => $.select(['cursor', { node: $ => $.select(['id']) }]) },
+            { pageInfo: $ => $.select(['endCursor', 'hasNextPage']) },
+          ]),
+        }])),
+    )
+    expect(first.countEvents.edges).toHaveLength(2)
+    expect(first.countEvents.pageInfo.hasNextPage).toBe(true)
+    expect(first.countEvents.pageInfo.endCursor).toBeTruthy()
+
+    const second = await client.query(
+      gazania.query('SecondCountEventsPage')
+        .select($ => $.select([{
+          countEvents: $ => $.args({
+            first: 2,
+            after: first.countEvents.pageInfo.endCursor,
+          }).select([
+            { edges: $ => $.select([{ node: $ => $.select(['id']) }]) },
+            { pageInfo: $ => $.select(['hasNextPage']) },
+          ]),
+        }])),
+    )
+    expect(second.countEvents.edges).toHaveLength(1)
+    expect(second.countEvents.pageInfo.hasNextPage).toBe(false)
+    expect(second.countEvents.edges[0]!.node.id).not.toBe(first.countEvents.edges[0]!.node.id)
   })
 
   it('rejects unauthenticated requests', async () => {

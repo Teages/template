@@ -15,7 +15,9 @@ describe('query count', () => {
     await client.mutation(
       gazania.mutation('RecordForCountQuery')
         .select($ => $.select([{
-          recordCount: $ => $.select(['id']),
+          recordCount: $ => $.select([{
+            countEvent: $ => $.select(['id']),
+          }]),
         }])),
     )
 

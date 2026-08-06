@@ -14,13 +14,20 @@ interface CountEvent {
 interface CountSnapshot {
   readonly count: number
   readonly events: readonly CountEvent[]
+  readonly pageInfo: {
+    readonly endCursor: string | null
+    readonly hasNextPage: boolean
+  }
 }
 
+const PAGE_SIZE = 20
+
 const CountSnapshotQuery = gazania.query('CountSnapshot')
-  .select($ => $.select([
+  .vars({ first: 'Int!', after: 'String' })
+  .select(($, vars) => $.select([
     'count',
     {
-      countEvents: $ => $.select([{
+      countEvents: $ => $.args({ first: vars.first, after: vars.after }).select([{
         edges: $ => $.select([{
           node: $ => $.select([
             'id',
@@ -28,6 +35,7 @@ const CountSnapshotQuery = gazania.query('CountSnapshot')
             { user: $ => $.select(['name', 'email']) },
           ]),
         }]),
+        pageInfo: $ => $.select(['endCursor', 'hasNextPage']),
       }]),
     },
   ]))
@@ -49,27 +57,36 @@ function formatCreatedAt(value: unknown): string {
   throw new Error('Invalid createdAt value')
 }
 
-function mapSnapshot(data: Awaited<ReturnType<typeof fetchSnapshot>>): CountSnapshot {
-  const mapped: CountEvent[] = []
-  for (const edge of data.countEvents?.edges ?? []) {
-    const node = edge?.node
-    if (!node?.id || !node.createdAt || !node.user?.name || !node.user?.email)
-      continue
-    mapped.push({
-      id: String(node.id),
-      userName: node.user.name,
-      userEmail: node.user.email,
-      createdAt: formatCreatedAt(node.createdAt),
-    })
-  }
+function mapEvent(node: {
+  id: string | number
+  createdAt: unknown
+  user: { name: string, email: string }
+}): CountEvent {
   return {
-    count: data.count ?? 0,
-    events: mapped,
+    id: String(node.id),
+    userName: node.user.name,
+    userEmail: node.user.email,
+    createdAt: formatCreatedAt(node.createdAt),
   }
 }
 
-async function fetchSnapshot() {
-  return graphql.request(CountSnapshotQuery)
+function mapSnapshot(data: Awaited<ReturnType<typeof fetchSnapshot>>): CountSnapshot {
+  const mapped: CountEvent[] = []
+  for (const edge of data.countEvents.edges) {
+    mapped.push(mapEvent(edge.node))
+  }
+  return {
+    count: data.count,
+    events: mapped,
+    pageInfo: data.countEvents.pageInfo,
+  }
+}
+
+async function fetchSnapshot(after?: string) {
+  return graphql.request(CountSnapshotQuery, {
+    first: PAGE_SIZE,
+    after,
+  })
 }
 
 function toUserMessage(e: unknown): string {
@@ -91,12 +108,15 @@ const {
   data,
   pending,
   error,
-  refresh,
 } = await useAsyncData(
   'count-snapshot',
   async () => mapSnapshot(await fetchSnapshot()),
   {
-    default: (): CountSnapshot => ({ count: 0, events: [] }),
+    default: (): CountSnapshot => ({
+      count: 0,
+      events: [],
+      pageInfo: { endCursor: null, hasNextPage: false },
+    }),
   },
 )
 
@@ -107,27 +127,59 @@ const errorMessage = computed(() => {
 })
 
 const mutating = ref(false)
+const loadingMore = ref(false)
 
 async function increment(): Promise<void> {
   mutating.value = true
   try {
-    await graphql.request(
+    const result = await graphql.request(
       gazania.mutation('RecordCount')
         .select($ => $.select([{
           recordCount: $ => $.select([
-            'id',
-            'createdAt',
-            { user: $ => $.select(['name', 'email']) },
+            'totalCount',
+            {
+              countEvent: $ => $.select([
+                'id',
+                'createdAt',
+                { user: $ => $.select(['name', 'email']) },
+              ]),
+            },
           ]),
         }])),
     )
-    await refresh()
+    data.value = {
+      ...data.value,
+      count: result.recordCount.totalCount,
+      events: [mapEvent(result.recordCount.countEvent), ...data.value.events],
+    }
+    error.value = null
   }
   catch (e) {
     error.value = e instanceof Error ? e : new Error(toUserMessage(e))
   }
   finally {
     mutating.value = false
+  }
+}
+
+async function loadMore(): Promise<void> {
+  const { endCursor, hasNextPage } = data.value.pageInfo
+  if (!hasNextPage || !endCursor)
+    return
+  loadingMore.value = true
+  try {
+    const next = mapSnapshot(await fetchSnapshot(endCursor))
+    data.value = {
+      count: next.count,
+      events: [...data.value.events, ...next.events],
+      pageInfo: next.pageInfo,
+    }
+  }
+  catch (e) {
+    error.value = e instanceof Error ? e : new Error(toUserMessage(e))
+  }
+  finally {
+    loadingMore.value = false
   }
 }
 </script>
@@ -195,6 +247,16 @@ async function increment(): Promise<void> {
       <p v-else class="text-sm text-muted">
         No counts yet. Be the first to click.
       </p>
+
+      <template v-if="data.pageInfo.hasNextPage" #footer>
+        <UButton
+          label="Load more"
+          color="neutral"
+          variant="soft"
+          :loading="loadingMore"
+          @click="loadMore"
+        />
+      </template>
     </UCard>
   </div>
 </template>

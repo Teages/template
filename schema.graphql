@@ -1,13 +1,13 @@
 type CountEvent {
-  createdAt: Date
-  id: ID
-  user: User
+  createdAt: Date!
+  id: ID!
+  user: User!
 }
 
 scalar Date
 
 type Mutation {
-  recordCount: CountEvent
+  recordCount: RecordCountPayload!
 }
 
 type PageInfo {
@@ -18,24 +18,29 @@ type PageInfo {
 }
 
 type Query {
-  count: Int
-  countEvents(after: String, before: String, first: Int, last: Int): QueryCountEventsConnection
+  count: Int!
+  countEvents(after: String, before: String, first: Int, last: Int): QueryCountEventsConnection!
 }
 
 type QueryCountEventsConnection {
-  edges: [QueryCountEventsConnectionEdge]
+  edges: [QueryCountEventsConnectionEdge!]!
   pageInfo: PageInfo!
 }
 
 type QueryCountEventsConnectionEdge {
   cursor: String!
-  node: CountEvent
+  node: CountEvent!
+}
+
+type RecordCountPayload {
+  countEvent: CountEvent!
+  totalCount: Int!
 }
 
 scalar UUID
 
 type User {
-  email: String
-  id: ID
-  name: String
+  email: String!
+  id: ID!
+  name: String!
 }
