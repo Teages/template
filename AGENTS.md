@@ -97,4 +97,16 @@ When business behavior changes, update all three implementations or explicitly d
 
 ## Skills
 
-Use a repository skill when its trigger matches the task. Prefer skills from framework maintainers or established ecosystem owners. Do not use Nuxt-specific skills merely because the project uses Nuxt UI; this repository uses Vue and Nitro directly.
+Use a repository skill when its trigger matches the task. Read the full `SKILL.md` before acting, then load only the references relevant to the current work.
+
+- Vue components and composables: start with `vue-best-practices`, then use `vue` for framework API details. Add `vue-router-best-practices` for routing and `vue-testing-best-practices` plus `vitest` for tests.
+- UI implementation and review: use the official `nuxt-ui` skill for components and theming, and `web-design-guidelines` for accessibility or UX review. Nuxt UI works with Vue and Vite; do not load Nuxt framework skills.
+- Client and build tooling: use `vite` for Vite configuration and plugins, and `pnpm` for dependency, workspace, or package-manager work.
+- Nitro server work: use `nitro` for configuration, handlers, routing, storage, caching, and deployment. Keep imports and runtime behavior consistent with the versions installed in this repository.
+- tRPC: start with `trpc-router`, then load the task-specific official skill: `client-setup`, `adapter-fetch`, `validators`, or `error-handling`.
+- GraphQL: use `graphql-schema` for schema and resolver design, `graphql-operations` for queries and mutations, and `gazania` when authoring typed client documents. The nested GraphQL `AGENTS.md` still takes precedence for file layout and local conventions.
+- Better Auth: use `better-auth-best-practices` for general integration, `better-auth-security-best-practices` for security-sensitive changes, and `email-and-password-best-practices` for credential flows.
+- Drizzle migrations: use the matching local workflow skill: `drizzle-migrations`, `drizzle-generate`, `drizzle-push`, `drizzle-hints`, `drizzle-output-modes`, or `drizzle-responses-and-errors`. Do not use `drizzle-push` when the task requires a committed migration.
+- Documentation and skill maintenance: use `writing-web-documentation` for repository docs and `find-skills` only when the current inventory does not cover the task.
+
+Prefer framework-maintainer or established ecosystem-owner skills. A skill is guidance, not authority to overwrite repository conventions, installed dependency behavior, or a nearer `AGENTS.md`.
