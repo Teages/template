@@ -9,11 +9,15 @@ export interface AuthSession {
   readonly session?: Record<string, unknown>
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
 export function isAuthSession(value: unknown): value is AuthSession {
-  if (typeof value !== 'object' || value === null || !('user' in value))
+  if (!isRecord(value))
     return false
   const user = value.user
-  if (typeof user !== 'object' || user === null)
+  if (!isRecord(user))
     return false
   return typeof user.name === 'string'
     && typeof user.email === 'string'

@@ -1,9 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
 import { createSsrFetchContext } from '~/app/utils/ssr-fetch.ts'
 
+type FetchInput = Parameters<typeof globalThis.fetch>[0]
+
 function createHarness() {
-  const calls: Array<{ input: RequestInfo | URL, init?: RequestInit }> = []
-  const transport = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+  const calls: Array<{ input: FetchInput, init?: RequestInit }> = []
+  const transport = vi.fn(async (input: FetchInput, init?: RequestInit) => {
     calls.push({ input, init })
     return new Response(JSON.stringify({ ok: true }), {
       headers: { 'Content-Type': 'application/json' },

@@ -1,4 +1,4 @@
-import type { AuthSession } from './auth-session'
+import type { AuthSession } from './auth-session.ts'
 
 const publicPaths = new Set(['/sign-in', '/sign-up'])
 

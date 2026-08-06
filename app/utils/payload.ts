@@ -6,6 +6,15 @@ import {
   createEmptyPayload,
 } from './app-context.ts'
 
+interface PayloadElement {
+  readonly textContent: string | null
+  remove: () => void
+}
+
+interface PayloadDocument {
+  getElementById: (id: string) => PayloadElement | null
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
@@ -62,13 +71,23 @@ export function parsePayloadScript(scriptHtml: string): AppPayload {
 }
 
 export function readPayloadFromDocument(
-  doc: Pick<Document, 'getElementById'> = document,
+  doc?: PayloadDocument,
 ): AppPayload {
-  const el = doc.getElementById(APP_PAYLOAD_ELEMENT_ID)
+  const target = doc ?? getBrowserDocument()
+  const el = target.getElementById(APP_PAYLOAD_ELEMENT_ID)
   if (!el?.textContent) {
     return createEmptyPayload()
   }
   const payload = parseAppPayload(parse(unescapePayloadText(el.textContent)))
   el.remove()
   return payload
+}
+
+function getBrowserDocument(): PayloadDocument {
+  const browserGlobal = globalThis as typeof globalThis & {
+    document?: PayloadDocument
+  }
+  if (!browserGlobal.document)
+    throw new TypeError('Document is not available')
+  return browserGlobal.document
 }

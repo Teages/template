@@ -8,7 +8,9 @@ export interface SsrFetchContext {
   $requestFetch: $Fetch
 }
 
-function isInternalPath(input: RequestInfo | URL): input is string {
+type FetchInput = Parameters<typeof globalThis.fetch>[0]
+
+function isInternalPath(input: FetchInput): input is string {
   return typeof input === 'string'
     && input.startsWith('/')
     && !input.startsWith('//')
@@ -22,7 +24,7 @@ function createSsrNativeFetch(
   const origin = new URL(request.url).origin
   const requestCookie = request.headers.get('cookie')
 
-  return (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+  return (input: FetchInput, init?: RequestInit): Promise<Response> => {
     const internal = isInternalPath(input)
     const target = internal ? new URL(input, origin) : input
     const headers = new Headers(
