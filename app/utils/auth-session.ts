@@ -1,13 +1,6 @@
-export interface AuthUser {
-  readonly id: string
-  readonly name: string
-  readonly email: string
-}
+import type { AuthSession } from './auth-client.ts'
 
-export interface AuthSession {
-  readonly user: AuthUser
-  readonly session?: Record<string, unknown>
-}
+export type { AuthSession } from './auth-client.ts'
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
@@ -17,9 +10,19 @@ export function isAuthSession(value: unknown): value is AuthSession {
   if (!isRecord(value))
     return false
   const user = value.user
-  if (!isRecord(user))
+  const session = value.session
+  if (!isRecord(user) || !isRecord(session))
     return false
   return typeof user.name === 'string'
     && typeof user.email === 'string'
     && typeof user.id === 'string'
+    && typeof user.emailVerified === 'boolean'
+    && user.createdAt instanceof Date
+    && user.updatedAt instanceof Date
+    && typeof session.id === 'string'
+    && typeof session.userId === 'string'
+    && typeof session.token === 'string'
+    && session.createdAt instanceof Date
+    && session.updatedAt instanceof Date
+    && session.expiresAt instanceof Date
 }

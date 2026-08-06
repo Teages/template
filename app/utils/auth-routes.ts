@@ -1,11 +1,13 @@
-import type { AuthSession } from './auth-session.ts'
-
 const publicPaths = new Set(['/sign-in', '/sign-up'])
+
+interface AuthRouteSession {
+  readonly user: object
+}
 
 export function authRedirectFor(
   path: string,
   fullPath: string,
-  session: AuthSession | null,
+  session: AuthRouteSession | null,
 ): string | null {
   if (publicPaths.has(path)) {
     return session?.user && (path === '/sign-in' || path === '/sign-up')

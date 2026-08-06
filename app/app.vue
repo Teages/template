@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { AuthSession } from '~/app/utils/auth-session'
+import { parseJSON } from 'better-auth/client'
 import { authClient } from '~/app/utils/auth-client'
 import { isAuthSession } from '~/app/utils/auth-session'
 
@@ -8,7 +9,9 @@ const { $requestFetch } = useAppContext()
 const { data: session } = await useAsyncData(
   'auth:session',
   async () => {
-    const body: unknown = await $requestFetch('/api/auth/get-session')
+    const body: unknown = await $requestFetch('/api/auth/get-session', {
+      parseResponse: text => parseJSON(text, { strict: false }),
+    })
     return isAuthSession(body) ? body : null
   },
   {

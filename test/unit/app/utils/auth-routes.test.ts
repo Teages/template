@@ -1,8 +1,7 @@
-import type { AuthSession } from '~/app/utils/auth-session.ts'
 import { describe, expect, it } from 'vitest'
 import { authRedirectFor } from '~/app/utils/auth-routes.ts'
 
-const session: AuthSession = {
+const session = {
   user: {
     id: 'user-1',
     name: 'Test User',
