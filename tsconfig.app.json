@@ -4,6 +4,7 @@
     "@vue/tsconfig/tsconfig.dom.json"
   ],
   "compilerOptions": {
+    "rootDir": ".",
     "paths": {
       "~/*": ["./*"],
       "#build/ui": ["./node_modules/.nuxt-ui/ui"],
@@ -13,11 +14,11 @@
     "types": ["node", "vite/client", "nitro/vite/types"]
   },
   "include": [
+    "env.d.ts",
     ".generated/app/**/*.ts",
     ".generated/shared/**/*.ts",
     "app/**/*.ts",
-    "app/**/*.vue",
-    "test/e2e/app/**/*.ts"
+    "app/**/*.vue"
   ],
   "vueCompilerOptions": {
     "plugins": [

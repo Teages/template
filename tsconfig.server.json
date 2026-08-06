@@ -9,11 +9,14 @@
     "types": ["node", "vite/client", "nitro/vite/types"]
   },
   "include": [
+    "env.d.ts",
     ".generated/server/**/*.ts",
     ".generated/shared/**/*.ts",
     "server/**/*.ts",
+    "test/e2e/app/**/*.ts",
     "test/e2e/api/**/*.ts",
     "test/e2e/graphql/**/*.ts",
+    "test/setup.ts",
     "test/utils.ts"
   ]
 }

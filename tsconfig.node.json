@@ -9,7 +9,11 @@
     "noEmit": true
   },
   "include": [
-    "test/*.ts",
+    "env.d.ts",
+    "test/env-runner-bridge.ts",
+    "test/env.ts",
+    "test/global-setup.ts",
+    "test/plugin.ts",
     "test/unit/**/*.ts",
     "scripts/**/*.ts",
     "plugins/**/*.ts",
