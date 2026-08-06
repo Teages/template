@@ -130,7 +130,7 @@ async function startStudioProxy(
 
 declare global {
   // Survives Vite plugin-module reloads so we can close the previous proxy.
-  // eslint-disable-next-line vars-on-top, no-var
+  // eslint-disable-next-line vars-on-top
   var __DRIZZLE_STUDIO_PROXY__: Server | undefined
 }
 

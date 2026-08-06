@@ -44,7 +44,7 @@ export function useDrizzle(): {
   return { db: _db, schema, relations }
 }
 
-/** @internal Mock-database only. */
+/** @internal */
 export function usePgliteClient(): PGlite {
   if (!_pglite) {
     throw new Error(

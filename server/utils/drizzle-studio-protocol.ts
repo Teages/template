@@ -1,4 +1,5 @@
 import type { PGlite } from '@electric-sql/pglite'
+import { Buffer } from 'node:buffer'
 import { createHash } from 'node:crypto'
 import { types } from '@electric-sql/pglite'
 
@@ -19,19 +20,19 @@ export const studioCorsHeaders = {
   'Access-Control-Allow-Private-Network': 'true',
 } as const
 
-type StudioProxyData = {
+interface StudioProxyData {
   sql: string
   params?: unknown[]
   mode?: 'array' | 'object'
   method?: 'values' | 'get' | 'all' | 'run' | 'execute'
 }
 
-type StudioRequest =
-  | { type: 'init' }
-  | { type: 'proxy', data: StudioProxyData }
-  | { type: 'tproxy', data: Array<{ sql: string, method?: StudioProxyData['method'] }> }
-  | { type: 'bproxy', data: { query: StudioProxyData, repeats?: number } }
-  | { type: 'defaults', data: Array<{ schema: string, table: string, column: string }> }
+type StudioRequest
+  = | { type: 'init' }
+    | { type: 'proxy', data: StudioProxyData }
+    | { type: 'tproxy', data: Array<{ sql: string, method?: StudioProxyData['method'] }> }
+    | { type: 'bproxy', data: { query: StudioProxyData, repeats?: number } }
+    | { type: 'defaults', data: Array<{ schema: string, table: string, column: string }> }
 
 function prepareParams(params: unknown[]): unknown[] {
   return params.map((param) => {
@@ -63,6 +64,7 @@ function studioJson(data: unknown): string {
       return Buffer.from((value as { data: number[] }).data).toString('base64')
     }
     if (value instanceof ArrayBuffer || value instanceof Buffer)
+      // @ts-expect-error Buffer type error
       return Buffer.from(value).toString('base64')
     return value
   })

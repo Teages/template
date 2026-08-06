@@ -1,9 +1,9 @@
 import { defineHandler, HTTPError } from 'nitro/h3'
+import { usePgliteClient } from '~/server/utils/drizzle'
 import {
   handleStudioProtocol,
   studioCorsHeaders,
 } from '~/server/utils/drizzle-studio-protocol'
-import { usePgliteClient } from '~/server/utils/drizzle'
 
 export default defineHandler(async (event) => {
   if (!import.meta.MOCK_DATABASE) {
