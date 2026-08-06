@@ -3,7 +3,7 @@ import ui from '@nuxt/ui/vite'
 import { DevTools } from '@vitejs/devtools'
 import vue from '@vitejs/plugin-vue'
 import { nitro } from 'nitro/vite'
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import devtoolsJson from 'vite-plugin-devtools-json'
 import VueRouter from 'vue-router/vite'
 import DrizzleStudio from './plugins/drizzle-studio/index.ts'
@@ -48,9 +48,11 @@ export default defineConfig({
       },
     }),
     // Embedded mode: HTML is rendered by Nitro/SSR, so client inject lives in entry-client.
-    DevTools(),
+    // DevTools / devtoolsJson open a 127.0.0.1:7812 server with no close hook —
+    // skip under Vitest so the process can exit within the 10s close timeout.
+    // Upstream fix tracked in https://github.com/vitejs/devtools/pull/519
+    ...(env.VITEST ? [] : [DevTools(), devtoolsJson()] as Plugin[]),
     DrizzleStudio(),
-    devtoolsJson(),
     nitro(),
   ],
   build: {
