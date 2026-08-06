@@ -1,5 +1,7 @@
 import type { TestHelpers } from 'better-auth/plugins'
+import type { AppRouter } from '~/server/trpc/root'
 import { createClient } from '@teages/oh-my-graphql'
+import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
 import { createFetch } from 'ofetch'
 import { useAuth } from '~/server/utils/auth'
 import { useDrizzle } from '~/server/utils/drizzle'
@@ -77,5 +79,28 @@ export function createGraphQLTestClient(
 
   return createClient('http://localhost/api/graphql', {
     ofetch: createFetch({ fetch: authedFetch }),
+  })
+}
+
+export function createTRPCTestClient(
+  fetch: typeof globalThis.fetch,
+  options?: { cookie?: string },
+) {
+  const cookie = options?.cookie
+  const authedFetch: typeof globalThis.fetch = cookie
+    ? (req, init) => {
+        const headers = new Headers(init?.headers)
+        headers.set('Cookie', cookie)
+        return fetch(req, { ...init, headers })
+      }
+    : fetch
+
+  return createTRPCProxyClient<AppRouter>({
+    links: [
+      httpBatchLink({
+        url: 'http://localhost/api/trpc',
+        fetch: authedFetch,
+      }),
+    ],
   })
 }
