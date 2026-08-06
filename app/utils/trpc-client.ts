@@ -10,8 +10,8 @@ import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
  *
  * Usage:
  *   const result = await trpc.greet.greet.query({ name: 'World' })
- *   const snapshot = await trpc.count.snapshot.query()
- *   await trpc.count.record.mutate()
+ *   const page = await trpc.count.list.query({ limit: 20 })
+ *   await trpc.count.create.mutate()
  */
 export function createTRPCClient($fetch: $Fetch) {
   return createTRPCProxyClient<AppRouter>({

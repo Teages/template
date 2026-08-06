@@ -16,7 +16,7 @@ describe('trpc demo page SSR', () => {
     expect(res.status, html.slice(0, 500)).toBe(200)
     expect(html).toContain('tRPC Demo')
     expect(html).toContain('greet.greet')
-    expect(html).toContain('count.snapshot')
+    expect(html).toContain('count.list')
   })
 
   it('serializes the unauthenticated count error into the SSR payload', async () => {
@@ -31,7 +31,7 @@ describe('trpc demo page SSR', () => {
     const payload = parsePayloadScript(html)
     // The count snapshot runs during SSR; without a session it should fail
     // with an UNAUTHORIZED-style error, mirroring the smoke test on /.
-    expect(payload.errors['trpc-count-snapshot']).toEqual(
+    expect(payload.errors['trpc-count-events']).toEqual(
       expect.objectContaining({
         name: expect.any(String),
         message: expect.stringMatching(/sign in|unauthorized/i),

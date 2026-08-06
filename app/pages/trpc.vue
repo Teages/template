@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { inferRouterOutputs } from '@trpc/server'
+import type { AppRouter } from '~/server/trpc/root'
 import { TRPCClientError } from '@trpc/client'
 import { createTRPCClient } from '~/app/utils/trpc-client'
 
@@ -36,17 +38,8 @@ function formatWhen(iso: string): string {
 
 // --- tRPC.count — protected query + mutation demo ---------------------------
 
-interface CountEvent {
-  readonly id: string
-  readonly userName: string
-  readonly userEmail: string
-  readonly createdAt: string
-}
-
-interface CountSnapshot {
-  readonly count: number
-  readonly events: readonly CountEvent[]
-}
+type RouterOutputs = inferRouterOutputs<AppRouter>
+type CountPage = RouterOutputs['count']['list']
 
 function mapError(cause: unknown): string {
   if (cause instanceof TRPCClientError && cause.data?.code === 'UNAUTHORIZED') {
@@ -58,26 +51,52 @@ function mapError(cause: unknown): string {
   return 'Unexpected error'
 }
 
-const { data, pending, error, refresh } = await useAsyncData<CountSnapshot>(
-  'trpc-count-snapshot',
-  async () => trpc.count.snapshot.query(),
-  { default: (): CountSnapshot => ({ count: 0, events: [] }) },
+const { data, pending, error } = await useAsyncData<CountPage>(
+  'trpc-count-events',
+  async () => trpc.count.list.query(),
+  { default: (): CountPage => ({ total: 0, items: [], nextCursor: null }) },
 )
 
 const countError = computed(() => error.value ? mapError(error.value) : null)
 const mutating = ref(false)
+const loadingMore = ref(false)
 
 async function recordCount(): Promise<void> {
   mutating.value = true
   try {
-    await trpc.count.record.mutate()
-    await refresh()
+    const created = await trpc.count.create.mutate()
+    data.value = {
+      ...data.value,
+      total: created.total,
+      items: [created.item, ...data.value.items],
+    }
+    error.value = null
   }
   catch (cause: unknown) {
     error.value = cause instanceof Error ? cause : new Error(mapError(cause))
   }
   finally {
     mutating.value = false
+  }
+}
+
+async function loadMore(): Promise<void> {
+  if (!data.value.nextCursor)
+    return
+  loadingMore.value = true
+  try {
+    const next = await trpc.count.list.query({ cursor: data.value.nextCursor })
+    data.value = {
+      total: next.total,
+      items: [...data.value.items, ...next.items],
+      nextCursor: next.nextCursor,
+    }
+  }
+  catch (cause: unknown) {
+    error.value = cause instanceof Error ? cause : new Error(mapError(cause))
+  }
+  finally {
+    loadingMore.value = false
   }
 }
 </script>
@@ -142,15 +161,15 @@ async function recordCount(): Promise<void> {
         <div class="flex items-center gap-2">
           <UBadge color="warning" variant="subtle" label="protected" />
           <h2 class="font-semibold text-highlighted">
-            <code>count.snapshot</code>
+            <code>count.list</code>
             /
-            <code>count.record</code>
+            <code>count.create</code>
           </h2>
         </div>
       </template>
 
       <p class="mb-4 text-2xl font-bold tabular-nums">
-        Count: {{ data?.count ?? 0 }}
+        Count: {{ data.total }}
       </p>
 
       <p v-if="countError" class="mb-4 text-sm text-error">
@@ -172,9 +191,9 @@ async function recordCount(): Promise<void> {
         </h2>
       </template>
 
-      <ul v-if="data && data.events.length > 0" class="divide-y divide-default">
+      <ul v-if="data.items.length > 0" class="divide-y divide-default">
         <li
-          v-for="event in data.events"
+          v-for="event in data.items"
           :key="event.id"
           class="flex flex-col gap-1 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
         >
@@ -194,6 +213,16 @@ async function recordCount(): Promise<void> {
       <p v-else class="text-sm text-muted">
         No counts yet. Be the first to click.
       </p>
+
+      <template v-if="data.nextCursor" #footer>
+        <UButton
+          label="Load more"
+          color="neutral"
+          variant="soft"
+          :loading="loadingMore"
+          @click="loadMore"
+        />
+      </template>
     </UCard>
   </div>
 </template>

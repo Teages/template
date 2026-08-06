@@ -1,23 +1,25 @@
+import { z } from 'zod'
 import { protectedProcedure, router } from '~/server/trpc/init'
-import { getCountSnapshot, recordCountEvent } from '~/server/utils/count-events'
+import { createCountEvent, listCountEvents } from '~/server/trpc/services/count'
 import { useDrizzle } from '~/server/utils/drizzle'
 
 /**
- * Count router — mirrors the REST (`/api/count`) and GraphQL (`count` /
- * `recordCount`) surfaces so the same business logic is reachable three ways.
+ * Count router exposes the same count-event business capabilities as the REST
+ * and GraphQL examples using conventional tRPC procedures and inferred types.
  *
  * Both procedures require a session; unauthenticated callers get UNAUTHORIZED.
  */
 export const countRouter = router({
-  /** Current total and the full event feed (newest first). */
-  snapshot: protectedProcedure.query(() => {
-    const { db } = useDrizzle()
-    return getCountSnapshot(db)
-  }),
+  list: protectedProcedure
+    .input(z.object({
+      limit: z.number().int().min(1).max(100).default(20),
+      cursor: z.uuid().nullish(),
+    }).optional())
+    .query(({ input }) => listCountEvents(useDrizzle().db, {
+      limit: input?.limit ?? 20,
+      cursor: input?.cursor ?? undefined,
+    })),
 
-  /** Records a new count event for the signed-in user, returns the updated snapshot. */
-  record: protectedProcedure.mutation(({ ctx }) => {
-    const { db } = useDrizzle()
-    return recordCountEvent(db, ctx.session.user.id)
-  }),
+  create: protectedProcedure.mutation(({ ctx }) =>
+    createCountEvent(useDrizzle().db, ctx.session.user)),
 })
