@@ -47,9 +47,11 @@ Run `pnpm typecheck`, `pnpm lint`, and the relevant test project for every code 
 - Use Vue 3 Composition API with `<script setup lang="ts">`.
 - Use the auto-imports configured in `vite.config.ts` inside `app/`. Keep explicit imports in entry files when they clarify bootstrap dependencies.
 - Keep server-side imports explicit. Nitro route handlers must import `defineHandler` and other H3 functions from `nitro/h3`.
-- Access the request-scoped ofetch instance through `useAppContext().$fetch`.
+- Use `useAppContext().$fetch` for ordinary or external requests. During SSR it must never inherit credentials from the incoming browser request.
+- Use `useAppContext().$requestFetch` for application API clients that call relative internal paths such as `/api/graphql`. During SSR it may inherit the incoming cookie only for a single-slash relative path.
+- Never forward an incoming `cookie` or `authorization` header to an absolute URL, protocol-relative URL, or user-controlled target. Trusted external services require an explicit client and an allowlisted credential policy.
 - Never replace or mutate `globalThis.fetch`. SSR requests run concurrently, so global fetch state can leak origins or cookies across requests.
-- Create GraphQL, REST, and tRPC clients from the injected `$fetch`.
+- Create GraphQL, REST, and tRPC clients from the injected `$requestFetch`.
 - Keep SSR and client navigation authorization aligned through the shared helpers in `app/utils/auth-routes.ts`.
 
 ## API Design
