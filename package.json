@@ -37,6 +37,8 @@
     "@pothos/plugin-simple-objects": "4.1.4",
     "@pothos/plugin-with-input": "4.1.5",
     "@teages/oh-my-graphql": "^0.1.4",
+    "@trpc/client": "^11.18.0",
+    "@trpc/server": "^11.18.0",
     "better-auth": "1.7.0-rc.4",
     "consola": "^3.4.2",
     "devalue": "^5.9.0",
@@ -46,7 +48,8 @@
     "graphql-yoga": "5.21.2",
     "ofetch": "^1.5.1",
     "postgres": "^3.4.9",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^9.2.0",
