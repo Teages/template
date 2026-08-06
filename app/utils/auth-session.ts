@@ -1,6 +1,6 @@
-import type { AuthSession } from './auth-client.ts'
+import type { authClient } from './auth-client.ts'
 
-export type { AuthSession } from './auth-client.ts'
+export type AuthSession = typeof authClient.$Infer.Session
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
