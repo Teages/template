@@ -26,8 +26,7 @@
     "auth:generate": "better-auth generate --config ./server/utils/auth.ts --output ./server/database/auth.ts",
     "skills:install": "skills experimental_install --agent universal",
     "task:db:migrate": "curl -sf -X POST 'http://localhost:20398/_nitro/tasks/db:migrate'",
-    "task:db:reset": "curl -sf -X POST 'http://localhost:20398/_nitro/tasks/db:reset'",
-    "schema:update": "jiti ./scripts/prepare.ts"
+    "task:db:reset": "curl -sf -X POST 'http://localhost:20398/_nitro/tasks/db:reset'"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "1.7.0-rc.4",

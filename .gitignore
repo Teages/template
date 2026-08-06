@@ -28,12 +28,5 @@ coverage
 .env.*
 !.env.example
 
-# Nuxt UI auto-generated type declarations
-auto-imports.d.ts
-components.d.ts
-
-# vue-router file-based routing generated types
-typed-router.d.ts
-
 # Generated files
 /.generated

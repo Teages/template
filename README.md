@@ -35,17 +35,13 @@ pnpm typecheck
 
 pnpm test           # unit only (fast default)
 pnpm test:unit      # pure Node + in-source
-pnpm test:api       # Nitro + PGlite serverFetch
 pnpm test:e2e       # full Nitro + Vue stack
-pnpm test:full      # unit + api + e2e
 pnpm test:watch     # unit + api watch mode
-pnpm test:bundle    # build + SSR bundle regression
 
 pnpm db:generate    # generate Drizzle migrations
 pnpm db:migrate     # apply migrations (prod DB)
 pnpm db:studio      # Drizzle Studio GUI
 pnpm auth:generate  # regenerate Better Auth schema from server/utils/auth.ts
-pnpm schema:update  # regenerate schema.graphql + .generated/shared/gazania.d.ts
 
 pnpm task:db:migrate # apply migrations via Nitro task (prod DB)
 pnpm task:db:reset   # reset mock DB (dev only)
