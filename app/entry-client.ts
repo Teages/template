@@ -1,5 +1,6 @@
 import ui from '@nuxt/ui/vue-plugin'
 
+import { ofetch } from 'ofetch'
 import { createSSRApp, h, Suspense } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { handleHotUpdate, routes } from 'vue-router/auto-routes'
@@ -16,6 +17,7 @@ if (import.meta.env.DEV)
 
 async function main() {
   const appContext = createAppContext({
+    $fetch: ofetch,
     payload: readPayloadFromDocument(),
     isHydrating: true,
   })

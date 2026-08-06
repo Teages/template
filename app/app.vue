@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { authClient } from '~/app/utils/auth-client'
 
+const { $fetch } = useAppContext()
+
 interface AuthUser {
   readonly id: string
   readonly name: string
@@ -28,10 +30,7 @@ function isAuthSession(value: unknown): value is AuthSession {
 const { data: session } = await useAsyncData(
   'auth:session',
   async () => {
-    const res = await fetch('/api/auth/get-session')
-    if (!res.ok)
-      return null
-    const body: unknown = await res.json()
+    const body: unknown = await $fetch('/api/auth/get-session')
     return isAuthSession(body) ? body : null
   },
   {

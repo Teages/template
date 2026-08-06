@@ -1,4 +1,6 @@
+import type { $Fetch } from 'ofetch'
 import type { InjectionKey, Ref } from 'vue'
+import { ofetch } from 'ofetch'
 
 export const APP_PAYLOAD_ELEMENT_ID = '__APP_PAYLOAD__' as const
 
@@ -17,6 +19,8 @@ export interface AppPayload {
 }
 
 export interface AppContext {
+  /** Request-scoped ofetch instance (mirrors Nuxt's `$fetch`). */
+  $fetch: $Fetch
   payload: AppPayload
   isHydrating: boolean
   /** In-flight useAsyncData promises keyed by cache key (mutable cache). */
@@ -34,10 +38,12 @@ export function createEmptyPayload(): AppPayload {
 }
 
 export function createAppContext(init?: {
+  $fetch?: $Fetch
   payload?: AppPayload
   isHydrating?: boolean
 }): AppContext {
   return {
+    $fetch: init?.$fetch ?? ofetch,
     payload: init?.payload ?? createEmptyPayload(),
     isHydrating: init?.isHydrating ?? false,
     _asyncDataPromises: new Map(),

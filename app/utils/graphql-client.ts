@@ -1,5 +1,6 @@
 import type { ResultOf, TypedDocumentNode, VariablesOf } from 'gazania'
 import type { OperationDefinitionNode } from 'graphql'
+import type { $Fetch } from 'ofetch'
 import { print } from 'graphql'
 import { ofetch } from 'ofetch'
 
@@ -30,6 +31,25 @@ export interface RequestOptions {
   url?: string
   headers?: Record<string, string>
   fetch?: GraphQLFetch
+}
+
+export function createGraphQLClient(fetch: $Fetch) {
+  return {
+    request<TDocument extends TypedDocumentNode<any, any>>(
+      document: TDocument,
+      ...args: RequestArgs<TDocument>
+    ): Promise<ResultOf<TDocument>> {
+      const [variables, options] = args as [
+        VariablesOf<TDocument> | undefined,
+        RequestOptions | undefined,
+      ]
+      return request(
+        document,
+        variables as VariablesOf<TDocument>,
+        { ...options, fetch },
+      )
+    },
+  }
 }
 
 type IsEmptyRecord<T> = keyof T extends never ? true : T extends Record<string, never> ? true : false

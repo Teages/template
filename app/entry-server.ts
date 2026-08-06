@@ -1,6 +1,7 @@
 import ui from '@nuxt/ui/vue-plugin'
 
 import { fetchViteEnv } from 'nitro/vite/runtime'
+import { createFetch } from 'ofetch'
 
 import { createHead, transformHtmlTemplate } from 'unhead/server'
 import { createSSRApp, h, Suspense } from 'vue'
@@ -61,9 +62,8 @@ function createSsrFetch(request: Request): typeof globalThis.fetch {
 }
 
 async function handler(request: Request): Promise<Response> {
-  globalThis.fetch = createSsrFetch(request)
-
-  const appContext = createAppContext()
+  const $fetch = createFetch({ fetch: createSsrFetch(request) })
+  const appContext = createAppContext({ $fetch })
   const app = createSSRApp({
     setup() {
       return () => h(Suspense, null, { default: () => h(App) })

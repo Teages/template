@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { TRPCClientError } from '@trpc/client'
-import { trpc } from '~/app/utils/trpc-client'
+import { createTRPCClient } from '~/app/utils/trpc-client'
+
+const trpc = createTRPCClient(useAppContext().$fetch)
 
 // --- tRPC.greet — public query demo -----------------------------------------
 

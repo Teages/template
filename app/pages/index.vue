@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { gazania } from '~/app/utils/gazania'
-import { GraphQLRequestError, request } from '~/app/utils/graphql-client'
+import { createGraphQLClient, GraphQLRequestError } from '~/app/utils/graphql-client'
+
+const graphql = createGraphQLClient(useAppContext().$fetch)
 
 interface CountEvent {
   readonly id: string
@@ -67,7 +69,7 @@ function mapSnapshot(data: Awaited<ReturnType<typeof fetchSnapshot>>): CountSnap
 }
 
 async function fetchSnapshot() {
-  return request(CountSnapshotQuery)
+  return graphql.request(CountSnapshotQuery)
 }
 
 function toUserMessage(e: unknown): string {
@@ -109,7 +111,7 @@ const mutating = ref(false)
 async function increment(): Promise<void> {
   mutating.value = true
   try {
-    await request(
+    await graphql.request(
       gazania.mutation('RecordCount')
         .select($ => $.select([{
           recordCount: $ => $.select([
