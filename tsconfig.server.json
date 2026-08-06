@@ -1,0 +1,19 @@
+{
+  "extends": "nitro/tsconfig",
+  "compilerOptions": {
+    "rootDir": ".",
+    "paths": {
+      "~/*": ["./*"],
+      "#generated/*": ["./.generated/*"]
+    },
+    "types": ["node", "vite/client", "nitro/vite/types"]
+  },
+  "include": [
+    ".generated/server/**/*.ts",
+    ".generated/shared/**/*.ts",
+    "server/**/*.ts",
+    "test/e2e/api/**/*.ts",
+    "test/e2e/graphql/**/*.ts",
+    "test/utils.ts"
+  ]
+}

@@ -1,0 +1,41 @@
+type CountEvent {
+  createdAt: Date
+  id: ID
+  user: User
+}
+
+scalar Date
+
+type Mutation {
+  recordCount: CountEvent
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+type Query {
+  count: Int
+  countEvents(after: String, before: String, first: Int, last: Int): QueryCountEventsConnection
+}
+
+type QueryCountEventsConnection {
+  edges: [QueryCountEventsConnectionEdge]
+  pageInfo: PageInfo!
+}
+
+type QueryCountEventsConnectionEdge {
+  cursor: String!
+  node: CountEvent
+}
+
+scalar UUID
+
+type User {
+  email: String
+  id: ID
+  name: String
+}

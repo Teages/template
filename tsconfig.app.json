@@ -1,0 +1,28 @@
+{
+  "extends": [
+    "@tsconfig/node24/tsconfig.json",
+    "@vue/tsconfig/tsconfig.json"
+  ],
+  "compilerOptions": {
+    "paths": {
+      "~/*": ["./*"],
+      "#build/ui": ["./node_modules/.nuxt-ui/ui"],
+      "#build/ui/*": ["./node_modules/.nuxt-ui/ui/*"],
+      "#generated/*": ["./.generated/*"]
+    },
+    "types": ["node", "vite/client", "nitro/vite/types"]
+  },
+  "include": [
+    ".generated/app/**/*.ts",
+    ".generated/shared/**/*.ts",
+    "app/**/*.ts",
+    "app/**/*.vue",
+    "test/e2e/app/**/*.ts"
+  ],
+  "vueCompilerOptions": {
+    "plugins": [
+      "vue-router/volar/sfc-route-blocks",
+      "vue-router/volar/sfc-typed-router"
+    ]
+  }
+}

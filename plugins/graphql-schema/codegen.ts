@@ -1,0 +1,58 @@
+/* eslint-disable antfu/no-top-level-await --
+   runnerImport closes the module runner after evaluation finishes.
+   The schema dynamic import must complete during evaluation. */
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { dirname } from 'node:path'
+import { generate } from 'gazania/codegen'
+import { isSchema, printSchema } from 'graphql'
+
+export interface GraphqlCodegenConfig {
+  readonly schema: string
+  readonly schemaExport: string
+  readonly outputs: {
+    readonly graphql: string
+    readonly gazania: string
+  }
+}
+
+// Injected by plugins/graphql-schema via runnerImport `define`.
+declare const __GRAPHQL_CODEGEN_CONFIG__: GraphqlCodegenConfig
+
+async function updateFile(path: string, content: string): Promise<boolean> {
+  const existing = await readFile(path, 'utf-8').catch(() => null)
+  if (existing === content)
+    return false
+  await writeFile(path, content)
+  return true
+}
+
+/**
+ * Top-level await keeps the Vite module runner alive for the schema import.
+ * Call sites should read `artifactsUpdated` after `runnerImport`.
+ */
+const config = __GRAPHQL_CODEGEN_CONFIG__
+
+const schemaModule: Record<string, unknown> = await import(
+  /* @vite-ignore */ config.schema,
+)
+const schema = schemaModule[config.schemaExport]
+if (!isSchema(schema)) {
+  throw new Error(
+    `Expected GraphQL schema export "${config.schemaExport}" from ${config.schema}`,
+  )
+}
+
+await mkdir(dirname(config.outputs.graphql), { recursive: true })
+await mkdir(dirname(config.outputs.gazania), { recursive: true })
+
+const sdl = printSchema(schema)
+let updated = await updateFile(config.outputs.graphql, sdl)
+
+const types = (await generate({
+  source: sdl,
+  scalars: {},
+  url: 'http://localhost',
+})).replace('/* eslint-disable */\n', '')
+updated = await updateFile(config.outputs.gazania, types) || updated
+
+export const artifactsUpdated = updated

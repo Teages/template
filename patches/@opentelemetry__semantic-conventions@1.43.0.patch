@@ -1,0 +1,226 @@
+diff --git a/build/esm/index-incubating.js b/build/esm/index-incubating.js
+index e382d26f9933f50d008c8e562bc003849747548f..9dcb0bc94512aae9cd71d6bc330ab727c8a3b3ad 100644
+--- a/build/esm/index-incubating.js
++++ b/build/esm/index-incubating.js
+@@ -4,10 +4,10 @@
+  */
+ // Incubating export also contains stable constants in order to maintain
+ // backward compatibility between minor version releases
+-export * from './stable_attributes';
+-export * from './stable_metrics';
+-export * from './stable_events';
+-export * from './experimental_attributes';
+-export * from './experimental_metrics';
+-export * from './experimental_events';
++export * from './stable_attributes.js';
++export * from './stable_metrics.js';
++export * from './stable_events.js';
++export * from './experimental_attributes.js';
++export * from './experimental_metrics.js';
++export * from './experimental_events.js';
+ //# sourceMappingURL=index-incubating.js.map
+\ No newline at end of file
+diff --git a/build/esm/index.js b/build/esm/index.js
+index f2385b0717fb1c1d4a1afd981f780ef7c9ca92af..5e6a3915ee78e3ed7882c8c8347e7860b23761fa 100644
+--- a/build/esm/index.js
++++ b/build/esm/index.js
+@@ -7,10 +7,10 @@
+  * should not cause problems for tree-shakers.
+  */
+ // Deprecated. These are kept around for compatibility purposes
+-export * from './trace';
+-export * from './resource';
++export * from './trace/index.js';
++export * from './resource/index.js';
+ // Use these instead
+-export * from './stable_attributes';
+-export * from './stable_metrics';
+-export * from './stable_events';
++export * from './stable_attributes.js';
++export * from './stable_metrics.js';
++export * from './stable_events.js';
+ //# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/build/esm/resource/SemanticResourceAttributes.js b/build/esm/resource/SemanticResourceAttributes.js
+index 211a17c88bcc401b4807fc2b0f083950ca7b84a8..9c55986aa5dc6c0e0e72ea68a2ed33040af1de21 100644
+--- a/build/esm/resource/SemanticResourceAttributes.js
++++ b/build/esm/resource/SemanticResourceAttributes.js
+@@ -2,7 +2,7 @@
+  * Copyright The OpenTelemetry Authors
+  * SPDX-License-Identifier: Apache-2.0
+  */
+-import { createConstMap } from '../internal/utils';
++import { createConstMap } from '../internal/utils.js';
+ //----------------------------------------------------------------------------------------------------------
+ // DO NOT EDIT, this is an Auto-generated file from scripts/semconv/templates//templates/SemanticAttributes.ts.j2
+ //----------------------------------------------------------------------------------------------------------
+diff --git a/build/esm/resource/index.js b/build/esm/resource/index.js
+index 8fe3d5a36198870c2bc84f62edcd57f141e5793b..ba776183cda4d4bf017548db9b795a2e36441160 100644
+--- a/build/esm/resource/index.js
++++ b/build/esm/resource/index.js
+@@ -6,5 +6,5 @@
+  * These re-exports are only of constants, only one-level deep at this point,
+  * and should not cause problems for tree-shakers.
+  */
+-export * from './SemanticResourceAttributes';
++export * from './SemanticResourceAttributes.js';
+ //# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/build/esm/trace/SemanticAttributes.js b/build/esm/trace/SemanticAttributes.js
+index 16cda12d7a1c43ffa9a06e56fcea34fcfcfeefb4..ec498967403e4b82b6ca79e9344a25f97e8d4574 100644
+--- a/build/esm/trace/SemanticAttributes.js
++++ b/build/esm/trace/SemanticAttributes.js
+@@ -2,7 +2,7 @@
+  * Copyright The OpenTelemetry Authors
+  * SPDX-License-Identifier: Apache-2.0
+  */
+-import { createConstMap } from '../internal/utils';
++import { createConstMap } from '../internal/utils.js';
+ //----------------------------------------------------------------------------------------------------------
+ // DO NOT EDIT, this is an Auto-generated file from scripts/semconv/templates//templates/SemanticAttributes.ts.j2
+ //----------------------------------------------------------------------------------------------------------
+diff --git a/build/esm/trace/index.js b/build/esm/trace/index.js
+index f32b4ae044c7786f7748309270f190d810bbae08..c65b67b82d0be024d67fff2ba1a2a07bbf182f27 100644
+--- a/build/esm/trace/index.js
++++ b/build/esm/trace/index.js
+@@ -6,5 +6,5 @@
+  * These re-exports are only of constants, only one-level deep at this point,
+  * and should not cause problems for tree-shakers.
+  */
+-export * from './SemanticAttributes';
++export * from './SemanticAttributes.js';
+ //# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/build/esnext/index-incubating.js b/build/esnext/index-incubating.js
+index e382d26f9933f50d008c8e562bc003849747548f..9dcb0bc94512aae9cd71d6bc330ab727c8a3b3ad 100644
+--- a/build/esnext/index-incubating.js
++++ b/build/esnext/index-incubating.js
+@@ -4,10 +4,10 @@
+  */
+ // Incubating export also contains stable constants in order to maintain
+ // backward compatibility between minor version releases
+-export * from './stable_attributes';
+-export * from './stable_metrics';
+-export * from './stable_events';
+-export * from './experimental_attributes';
+-export * from './experimental_metrics';
+-export * from './experimental_events';
++export * from './stable_attributes.js';
++export * from './stable_metrics.js';
++export * from './stable_events.js';
++export * from './experimental_attributes.js';
++export * from './experimental_metrics.js';
++export * from './experimental_events.js';
+ //# sourceMappingURL=index-incubating.js.map
+\ No newline at end of file
+diff --git a/build/esnext/index.js b/build/esnext/index.js
+index f2385b0717fb1c1d4a1afd981f780ef7c9ca92af..5e6a3915ee78e3ed7882c8c8347e7860b23761fa 100644
+--- a/build/esnext/index.js
++++ b/build/esnext/index.js
+@@ -7,10 +7,10 @@
+  * should not cause problems for tree-shakers.
+  */
+ // Deprecated. These are kept around for compatibility purposes
+-export * from './trace';
+-export * from './resource';
++export * from './trace/index.js';
++export * from './resource/index.js';
+ // Use these instead
+-export * from './stable_attributes';
+-export * from './stable_metrics';
+-export * from './stable_events';
++export * from './stable_attributes.js';
++export * from './stable_metrics.js';
++export * from './stable_events.js';
+ //# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/build/esnext/resource/SemanticResourceAttributes.js b/build/esnext/resource/SemanticResourceAttributes.js
+index 211a17c88bcc401b4807fc2b0f083950ca7b84a8..9c55986aa5dc6c0e0e72ea68a2ed33040af1de21 100644
+--- a/build/esnext/resource/SemanticResourceAttributes.js
++++ b/build/esnext/resource/SemanticResourceAttributes.js
+@@ -2,7 +2,7 @@
+  * Copyright The OpenTelemetry Authors
+  * SPDX-License-Identifier: Apache-2.0
+  */
+-import { createConstMap } from '../internal/utils';
++import { createConstMap } from '../internal/utils.js';
+ //----------------------------------------------------------------------------------------------------------
+ // DO NOT EDIT, this is an Auto-generated file from scripts/semconv/templates//templates/SemanticAttributes.ts.j2
+ //----------------------------------------------------------------------------------------------------------
+diff --git a/build/esnext/resource/index.js b/build/esnext/resource/index.js
+index 8fe3d5a36198870c2bc84f62edcd57f141e5793b..ba776183cda4d4bf017548db9b795a2e36441160 100644
+--- a/build/esnext/resource/index.js
++++ b/build/esnext/resource/index.js
+@@ -6,5 +6,5 @@
+  * These re-exports are only of constants, only one-level deep at this point,
+  * and should not cause problems for tree-shakers.
+  */
+-export * from './SemanticResourceAttributes';
++export * from './SemanticResourceAttributes.js';
+ //# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/build/esnext/trace/SemanticAttributes.js b/build/esnext/trace/SemanticAttributes.js
+index 16cda12d7a1c43ffa9a06e56fcea34fcfcfeefb4..ec498967403e4b82b6ca79e9344a25f97e8d4574 100644
+--- a/build/esnext/trace/SemanticAttributes.js
++++ b/build/esnext/trace/SemanticAttributes.js
+@@ -2,7 +2,7 @@
+  * Copyright The OpenTelemetry Authors
+  * SPDX-License-Identifier: Apache-2.0
+  */
+-import { createConstMap } from '../internal/utils';
++import { createConstMap } from '../internal/utils.js';
+ //----------------------------------------------------------------------------------------------------------
+ // DO NOT EDIT, this is an Auto-generated file from scripts/semconv/templates//templates/SemanticAttributes.ts.j2
+ //----------------------------------------------------------------------------------------------------------
+diff --git a/build/esnext/trace/index.js b/build/esnext/trace/index.js
+index f32b4ae044c7786f7748309270f190d810bbae08..c65b67b82d0be024d67fff2ba1a2a07bbf182f27 100644
+--- a/build/esnext/trace/index.js
++++ b/build/esnext/trace/index.js
+@@ -6,5 +6,5 @@
+  * These re-exports are only of constants, only one-level deep at this point,
+  * and should not cause problems for tree-shakers.
+  */
+-export * from './SemanticAttributes';
++export * from './SemanticAttributes.js';
+ //# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/package.json b/package.json
+index 239db4a3d881ff4125d35cd4c702490d40ed375f..a7907de58fe8c702546c04b2b28e217269e243ba 100644
+--- a/package.json
++++ b/package.json
+@@ -2,22 +2,20 @@
+   "name": "@opentelemetry/semantic-conventions",
+   "version": "1.43.0",
+   "description": "OpenTelemetry semantic conventions",
+-  "main": "build/src/index.js",
++  "main": "build/esm/index.js",
+   "module": "build/esm/index.js",
+   "esnext": "build/esnext/index.js",
+   "types": "build/src/index.d.ts",
+   "exports": {
+     ".": {
+-      "esnext": "./build/esnext/index.js",
+-      "module": "./build/esm/index.js",
+       "types": "./build/src/index.d.ts",
+-      "default": "./build/src/index.js"
++      "import": "./build/esm/index.js",
++      "default": "./build/esm/index.js"
+     },
+     "./incubating": {
+-      "esnext": "./build/esnext/index-incubating.js",
+-      "module": "./build/esm/index-incubating.js",
+       "types": "./build/src/index-incubating.d.ts",
+-      "default": "./build/src/index-incubating.js"
++      "import": "./build/esm/index-incubating.js",
++      "default": "./build/esm/index-incubating.js"
+     }
+   },
+   "repository": "open-telemetry/opentelemetry-js",
+@@ -78,5 +76,6 @@
+   },
+   "homepage": "https://github.com/open-telemetry/opentelemetry-js/tree/main/semantic-conventions",
+   "sideEffects": false,
+-  "gitHead": "9b05f668ee7ab884a44b04b504e0baaff6c6d2b2"
++  "gitHead": "9b05f668ee7ab884a44b04b504e0baaff6c6d2b2",
++  "type": "module"
+ }
