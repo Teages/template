@@ -198,7 +198,7 @@ export default function DrizzleStudio(): Plugin {
         ctx.docks.register({
           id: 'drizzle-studio',
           title: 'Drizzle Studio',
-          icon: 'ph:puzzle-piece-duotone',
+          icon: 'simple-icons:drizzle',
           type: 'custom-render',
           renderer: {
             importFrom: `${VIRTUAL_ID}?${new URLSearchParams({ url }).toString()}`,
