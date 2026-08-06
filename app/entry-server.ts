@@ -1,7 +1,6 @@
 import ui from '@nuxt/ui/vue-plugin'
 
 import { fetchViteEnv } from 'nitro/vite/runtime'
-import { createFetch } from 'ofetch'
 
 import { createHead, transformHtmlTemplate } from 'unhead/server'
 import { createSSRApp, h, Suspense } from 'vue'
@@ -17,6 +16,7 @@ import { APP_CONTEXT_KEY, createAppContext } from './utils/app-context.ts'
 import { authRedirectFor } from './utils/auth-routes.ts'
 import { isAuthSession } from './utils/auth-session.ts'
 import { serializePayloadScript } from './utils/payload.ts'
+import { createSsrFetchContext } from './utils/ssr-fetch.ts'
 import './assets/css/main.css'
 
 // Per-route ?assets bundles, keyed by page path for SSR <link> emission.
@@ -33,40 +33,13 @@ function toGlobKey(filePath: string): string {
   return `.${filePath.slice(idx)}`
 }
 
-function createSsrFetch(request: Request): typeof globalThis.fetch {
-  const origin = new URL(request.url).origin
-  const cookie = request.headers.get('cookie')
-
-  return (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-    const headers = new Headers(
-      init?.headers
-      ?? (input instanceof Request ? input.headers : undefined),
-    )
-    if (cookie && !headers.has('cookie'))
-      headers.set('cookie', cookie)
-
-    let target: RequestInfo | URL = input
-    if (typeof input === 'string' && input.startsWith('/')) {
-      target = new URL(input, origin)
-    }
-    else if (input instanceof URL && input.origin === 'null') {
-      target = new URL(input.pathname + input.search, origin)
-    }
-    else if (input instanceof Request) {
-      const url = input.url
-      if (url.startsWith('/')) {
-        target = new Request(new URL(url, origin), input)
-      }
-    }
-
-    return fetchViteEnv('nitro', target, { ...init, headers })
-  }
-}
-
 async function handler(request: Request): Promise<Response> {
-  const $fetch = createFetch({ fetch: createSsrFetch(request) })
+  const fetchContext = createSsrFetchContext(
+    request,
+    (input, init) => fetchViteEnv('nitro', input, init),
+  )
   const url = new URL(request.url)
-  const sessionValue: unknown = await $fetch('/api/auth/get-session')
+  const sessionValue: unknown = await fetchContext.$requestFetch('/api/auth/get-session')
   const session = isAuthSession(sessionValue) ? sessionValue : null
   const redirect = authRedirectFor(
     url.pathname,
@@ -80,7 +53,7 @@ async function handler(request: Request): Promise<Response> {
     })
   }
 
-  const appContext = createAppContext({ $fetch })
+  const appContext = createAppContext(fetchContext)
   const app = createSSRApp({
     setup() {
       return () => h(Suspense, null, { default: () => h(App) })

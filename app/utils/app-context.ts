@@ -19,8 +19,10 @@ export interface AppPayload {
 }
 
 export interface AppContext {
-  /** Request-scoped ofetch instance (mirrors Nuxt's `$fetch`). */
+  /** Plain ofetch. During SSR it never inherits credentials from the request. */
   $fetch: $Fetch
+  /** Inherits SSR credentials only for internal relative requests. */
+  $requestFetch: $Fetch
   payload: AppPayload
   isHydrating: boolean
   /** In-flight useAsyncData promises keyed by cache key (mutable cache). */
@@ -39,11 +41,14 @@ export function createEmptyPayload(): AppPayload {
 
 export function createAppContext(init?: {
   $fetch?: $Fetch
+  $requestFetch?: $Fetch
   payload?: AppPayload
   isHydrating?: boolean
 }): AppContext {
+  const $fetch = init?.$fetch ?? ofetch
   return {
-    $fetch: init?.$fetch ?? ofetch,
+    $fetch,
+    $requestFetch: init?.$requestFetch ?? $fetch,
     payload: init?.payload ?? createEmptyPayload(),
     isHydrating: init?.isHydrating ?? false,
     _asyncDataPromises: new Map(),

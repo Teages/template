@@ -5,8 +5,8 @@ import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
 /**
  * Vanilla tRPC proxy client.
  *
- * The injected `$fetch` is browser-local on the client and request-scoped
- * during SSR, so relative URLs and cookies work without global mutation.
+ * Pass the app context's `$requestFetch`: it is browser-local on the client
+ * and forwards SSR credentials only to relative internal routes.
  *
  * Usage:
  *   const result = await trpc.greet.greet.query({ name: 'World' })

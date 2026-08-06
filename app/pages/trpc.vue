@@ -4,7 +4,7 @@ import type { AppRouter } from '~/server/trpc/root'
 import { TRPCClientError } from '@trpc/client'
 import { createTRPCClient } from '~/app/utils/trpc-client'
 
-const trpc = createTRPCClient(useAppContext().$fetch)
+const trpc = createTRPCClient(useAppContext().$requestFetch)
 
 // --- tRPC.greet — public query demo -----------------------------------------
 

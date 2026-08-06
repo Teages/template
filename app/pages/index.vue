@@ -2,7 +2,7 @@
 import { gazania } from '~/app/utils/gazania'
 import { createGraphQLClient, GraphQLRequestError } from '~/app/utils/graphql-client'
 
-const graphql = createGraphQLClient(useAppContext().$fetch)
+const graphql = createGraphQLClient(useAppContext().$requestFetch)
 
 interface CountEvent {
   readonly id: string

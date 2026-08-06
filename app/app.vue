@@ -3,12 +3,12 @@ import type { AuthSession } from '~/app/utils/auth-session'
 import { authClient } from '~/app/utils/auth-client'
 import { isAuthSession } from '~/app/utils/auth-session'
 
-const { $fetch } = useAppContext()
+const { $requestFetch } = useAppContext()
 
 const { data: session } = await useAsyncData(
   'auth:session',
   async () => {
-    const body: unknown = await $fetch('/api/auth/get-session')
+    const body: unknown = await $requestFetch('/api/auth/get-session')
     return isAuthSession(body) ? body : null
   },
   {

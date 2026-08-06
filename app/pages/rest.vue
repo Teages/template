@@ -3,7 +3,7 @@ import type { RestCountEventPage } from '~/app/utils/rest-client'
 import { FetchError } from 'ofetch'
 import { createRestClient } from '~/app/utils/rest-client'
 
-const rest = createRestClient(useAppContext().$fetch)
+const rest = createRestClient(useAppContext().$requestFetch)
 
 function formatWhen(iso: string): string {
   return new Intl.DateTimeFormat('en-US', {
