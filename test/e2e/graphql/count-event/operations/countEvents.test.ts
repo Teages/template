@@ -84,10 +84,10 @@ describe('query countEvents', () => {
     const first = await client.query(
       gazania.query('FirstCountEventsPage')
         .select($ => $.select([{
-          countEvents: $ => $.args({ first: 2 }).select([
-            { edges: $ => $.select(['cursor', { node: $ => $.select(['id']) }]) },
-            { pageInfo: $ => $.select(['endCursor', 'hasNextPage']) },
-          ]),
+          countEvents: $ => $.args({ first: 2 }).select([{
+            edges: $ => $.select(['cursor', { node: $ => $.select(['id']) }]),
+            pageInfo: $ => $.select(['endCursor', 'hasNextPage']),
+          }]),
         }])),
     )
     expect(first.countEvents.edges).toHaveLength(2)
@@ -100,10 +100,10 @@ describe('query countEvents', () => {
           countEvents: $ => $.args({
             first: 2,
             after: first.countEvents.pageInfo.endCursor,
-          }).select([
-            { edges: $ => $.select([{ node: $ => $.select(['id']) }]) },
-            { pageInfo: $ => $.select(['hasNextPage']) },
-          ]),
+          }).select([{
+            edges: $ => $.select([{ node: $ => $.select(['id']) }]),
+            pageInfo: $ => $.select(['hasNextPage']),
+          }]),
         }])),
     )
     expect(second.countEvents.edges).toHaveLength(1)

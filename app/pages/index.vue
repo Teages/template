@@ -78,7 +78,10 @@ function mapSnapshot(data: Awaited<ReturnType<typeof fetchSnapshot>>): CountSnap
   return {
     count: data.count,
     events: mapped,
-    pageInfo: data.countEvents.pageInfo,
+    pageInfo: {
+      endCursor: data.countEvents.pageInfo.endCursor ?? null,
+      hasNextPage: data.countEvents.pageInfo.hasNextPage,
+    },
   }
 }
 
