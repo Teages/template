@@ -1,6 +1,6 @@
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
-
-const publicPaths = new Set(['/sign-in', '/sign-up'])
+import { authRedirectFor } from './auth-routes'
+import { isAuthSession } from './auth-session'
 
 export async function authNavigationGuard(
   to: RouteLocationNormalized,
@@ -8,23 +8,10 @@ export async function authNavigationGuard(
   next: NavigationGuardNext,
 ): Promise<void> {
   const { data: session } = await authClient.getSession()
-
-  if (publicPaths.has(to.path)) {
-    if (session?.user) {
-      next('/')
-      return
-    }
-    next()
-    return
-  }
-
-  if (!session?.user) {
-    next({
-      path: '/sign-in',
-      query: { redirect: to.fullPath },
-    })
-    return
-  }
-
-  next()
+  const redirect = authRedirectFor(
+    to.path,
+    to.fullPath,
+    isAuthSession(session) ? session : null,
+  )
+  redirect ? next(redirect) : next()
 }

@@ -14,6 +14,8 @@ import clientAssets from './entry-client.ts?assets=client'
 import serverAssets from './entry-server.ts?assets=ssr'
 
 import { APP_CONTEXT_KEY, createAppContext } from './utils/app-context.ts'
+import { authRedirectFor } from './utils/auth-routes.ts'
+import { isAuthSession } from './utils/auth-session.ts'
 import { serializePayloadScript } from './utils/payload.ts'
 import './assets/css/main.css'
 
@@ -63,6 +65,21 @@ function createSsrFetch(request: Request): typeof globalThis.fetch {
 
 async function handler(request: Request): Promise<Response> {
   const $fetch = createFetch({ fetch: createSsrFetch(request) })
+  const url = new URL(request.url)
+  const sessionValue: unknown = await $fetch('/api/auth/get-session')
+  const session = isAuthSession(sessionValue) ? sessionValue : null
+  const redirect = authRedirectFor(
+    url.pathname,
+    `${url.pathname}${url.search}`,
+    session,
+  )
+  if (redirect) {
+    return new Response(null, {
+      status: 302,
+      headers: { Location: redirect },
+    })
+  }
+
   const appContext = createAppContext({ $fetch })
   const app = createSSRApp({
     setup() {
@@ -75,7 +92,6 @@ async function handler(request: Request): Promise<Response> {
   app.use(router)
   app.use(ui)
 
-  const url = new URL(request.url)
   const href = url.href.slice(url.origin.length)
 
   await router.push(href)

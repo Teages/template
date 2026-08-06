@@ -1,31 +1,9 @@
 <script setup lang="ts">
+import type { AuthSession } from '~/app/utils/auth-session'
 import { authClient } from '~/app/utils/auth-client'
+import { isAuthSession } from '~/app/utils/auth-session'
 
 const { $fetch } = useAppContext()
-
-interface AuthUser {
-  readonly id: string
-  readonly name: string
-  readonly email: string
-}
-
-interface AuthSession {
-  readonly user: AuthUser
-  readonly session?: Record<string, unknown>
-}
-
-function isAuthSession(value: unknown): value is AuthSession {
-  if (typeof value !== 'object' || value === null)
-    return false
-  if (!('user' in value))
-    return false
-  const user = value.user
-  if (typeof user !== 'object' || user === null)
-    return false
-  return typeof user.name === 'string'
-    && typeof user.email === 'string'
-    && typeof user.id === 'string'
-}
 
 const { data: session } = await useAsyncData(
   'auth:session',

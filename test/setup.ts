@@ -1,8 +1,12 @@
+import { serverFetch } from 'nitro/app'
 import { fetch } from '~/test/env-runner-bridge.ts'
 import { testOrigin } from '~/test/utils.ts'
 
 if (!globalThis.setupInitialized) {
   globalThis.setupInitialized = true
+  // Initialize the request-scoped PGlite plugin before tests access useDrizzle.
+  // eslint-disable-next-line antfu/no-top-level-await
+  await serverFetch('/api/auth/get-session')
   // Warm the env-runner document path (same route smoke asserts). Swallow only
   // so later tests still own the failure mode; do not use HEAD — it never hits SSR.
   // no-excuse-ok: catch
