@@ -49,6 +49,18 @@
       "skillPath": "skills/gazania/SKILL.md",
       "computedHash": "2f43fdc9c7cdbba56bbdf9e56a10ebfb34edd302b7ae08d89b9add725be17282"
     },
+    "graphql-operations": {
+      "source": "apollographql/skills",
+      "sourceType": "github",
+      "skillPath": "skills/graphql-operations/SKILL.md",
+      "computedHash": "d0532171706cbba72112a6f3ffdc49d5d15b22fdd092de7324099e767bf1cbf1"
+    },
+    "graphql-schema": {
+      "source": "apollographql/skills",
+      "sourceType": "github",
+      "skillPath": "skills/graphql-schema/SKILL.md",
+      "computedHash": "95f5384cc907635fc31121648dffffed0bb6f773ee594cbfe9be9e5e4a0e6aba"
+    },
     "nitro": {
       "source": "antfu/skills",
       "sourceType": "github",
