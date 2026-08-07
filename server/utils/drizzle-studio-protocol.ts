@@ -2,6 +2,7 @@ import type { PGlite } from '@electric-sql/pglite'
 import { Buffer } from 'node:buffer'
 import { createHash } from 'node:crypto'
 import { types } from '@electric-sql/pglite'
+import { isRecord } from './predicates'
 
 const STUDIO_VERSION = '6.3'
 const DB_URL = 'pglite://custom-client'
@@ -44,10 +45,6 @@ type StudioRequest
     | { type: 'tproxy', data: Array<{ sql: string, method?: StudioProxyData['method'] }> }
     | { type: 'bproxy', data: { query: StudioProxyData, repeats?: number } }
     | { type: 'defaults', data: Array<{ schema: string, table: string, column: string }> }
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value)
-}
 
 function isSerializedBuffer(
   value: unknown,

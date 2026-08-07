@@ -1,14 +1,11 @@
 import { defineHandler, getQuery, HTTPError } from 'nitro/h3'
 import { decodeCursor, listCountEvents } from '~/server/rest/count-events'
 import { useDrizzle } from '~/server/utils/drizzle'
+import { isUnknownArray } from '~/server/utils/predicates'
 import { useAuthSession } from '~/server/utils/session'
 
 const DEFAULT_LIMIT = 20
 const MAX_LIMIT = 100
-
-function isUnknownArray(value: unknown): value is unknown[] {
-  return Array.isArray(value)
-}
 
 export default defineHandler(async (event) => {
   useAuthSession(event, 'required')
