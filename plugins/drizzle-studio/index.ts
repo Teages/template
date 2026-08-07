@@ -194,18 +194,22 @@ export default function DrizzleStudio(): Plugin {
       const authKey = studioAuthKey
 
       // Post-hook: Nitro's configureServer has already attached dispatchFetch.
-      return async () => {
-        await closeHttpServer(globalThis.__DRIZZLE_STUDIO_PROXY__)
-        globalThis.__DRIZZLE_STUDIO_PROXY__ = undefined
+      return () => {
+        void (async () => {
+          await closeHttpServer(globalThis.__DRIZZLE_STUDIO_PROXY__)
+          globalThis.__DRIZZLE_STUDIO_PROXY__ = undefined
 
-        const port = await resolvePort()
-        const proxyServer = await startStudioProxy(server, port, authKey)
-        globalThis.__DRIZZLE_STUDIO_PROXY__ = proxyServer
-        server.httpServer?.once('close', () => {
-          void closeHttpServer(proxyServer).then(() => {
-            if (globalThis.__DRIZZLE_STUDIO_PROXY__ === proxyServer)
-              globalThis.__DRIZZLE_STUDIO_PROXY__ = undefined
+          const port = await resolvePort()
+          const proxyServer = await startStudioProxy(server, port, authKey)
+          globalThis.__DRIZZLE_STUDIO_PROXY__ = proxyServer
+          server.httpServer?.once('close', () => {
+            void closeHttpServer(proxyServer).then(() => {
+              if (globalThis.__DRIZZLE_STUDIO_PROXY__ === proxyServer)
+                globalThis.__DRIZZLE_STUDIO_PROXY__ = undefined
+            })
           })
+        })().catch((error) => {
+          logger.error('Failed to start Drizzle Studio proxy', error)
         })
       }
     },
