@@ -1,4 +1,3 @@
-import type { StateTree } from 'pinia'
 import type { App } from 'vue'
 import type { AppPayload } from './payload'
 import {
@@ -17,7 +16,7 @@ export function installDataLayer(
 ) {
   const pinia = createPinia()
   if (options.payload) {
-    pinia.state.value = options.payload.pinia as StateTree
+    pinia.state.value = options.payload.pinia
   }
 
   app.use(pinia)

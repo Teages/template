@@ -32,7 +32,7 @@ async function applySchema(db: DrizzleDatabase): Promise<void> {
   const { pushSchema } = require('drizzle-kit/api-postgres') as typeof import('drizzle-kit/api-postgres')
   const { apply } = await pushSchema(
     config.schema,
-    db as unknown as PgAsyncDatabase<never>,
+    db,
   )
   await apply()
 }

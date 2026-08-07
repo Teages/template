@@ -86,7 +86,7 @@ async function handler(request: Request): Promise<Response> {
           console.warn(`[entry-server] no assets importer for ${key} (have: ${Object.keys(pageAssetsMap).join(', ')})`)
           return null
         }
-        return importer() as Promise<unknown>
+        return importer()
       })
       .filter((p): p is Promise<unknown> => p !== null),
   )
