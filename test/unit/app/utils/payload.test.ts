@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { createEmptyPayload } from '~/app/utils/app-context.ts'
+import { createEmptyPayload } from '~/app/utils/app-context'
 import {
   parsePayloadScript,
   serializePayloadScript,
-} from '~/app/utils/payload.ts'
+} from '~/app/utils/payload'
 
 describe('payload serialize/parse', () => {
   it('round-trips nested objects and Dates', () => {

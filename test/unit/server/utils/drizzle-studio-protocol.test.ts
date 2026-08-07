@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { handleStudioProtocol } from '~/server/utils/drizzle-studio-protocol.ts'
+import { handleStudioProtocol } from '~/server/utils/drizzle-studio-protocol'
 
 describe('handleStudioProtocol', () => {
   it('rejects malformed protocol requests', async () => {

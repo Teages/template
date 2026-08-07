@@ -1,5 +1,5 @@
 import type { $Fetch } from 'ofetch'
-import type { authClient } from './auth-client.ts'
+import type { authClient } from './auth-client'
 import { parseJSON } from 'better-auth/client'
 
 export type AuthSession = typeof authClient.$Infer.Session

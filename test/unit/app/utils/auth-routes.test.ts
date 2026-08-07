@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { authRedirectFor } from '~/app/utils/auth-routes.ts'
+import { authRedirectFor } from '~/app/utils/auth-routes'
 
 const session = {
   user: {

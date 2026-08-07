@@ -1,10 +1,10 @@
-import type { AppPayload } from './app-context.ts'
+import type { AppPayload } from './app-context'
 import { parse, stringify } from 'devalue'
 import {
   APP_PAYLOAD_ELEMENT_ID,
 
   createEmptyPayload,
-} from './app-context.ts'
+} from './app-context'
 
 interface PayloadElement {
   readonly textContent: string | null

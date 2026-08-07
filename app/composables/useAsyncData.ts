@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
-import type { AppContext, SerializedAsyncDataError } from '~/app/utils/app-context.ts'
+import type { AppContext, SerializedAsyncDataError } from '~/app/utils/app-context'
 import { onMounted, ref, shallowRef } from 'vue'
-import { useAppContext } from './useAppContext.ts'
+import { useAppContext } from './useAppContext'
 
 export type AsyncDataStatus = 'idle' | 'pending' | 'success' | 'error'
 

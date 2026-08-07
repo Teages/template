@@ -1,7 +1,7 @@
 import { serverFetch } from 'nitro/app'
 import { describe, expect, it } from 'vitest'
-import { parsePayloadScript } from '~/app/utils/payload.ts'
-import { fetch } from '~/test/env-runner-bridge.ts'
+import { parsePayloadScript } from '~/app/utils/payload'
+import { fetch } from '~/test/env-runner-bridge'
 import { cookieHeader, testOrigin, uniqueAuthEmail } from '~/test/utils'
 
 describe('ssr app payload', () => {

@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 import { toRef } from 'vue'
-import { useAppContext } from './useAppContext.ts'
+import { useAppContext } from './useAppContext'
 
 export function useState<T>(key: string, init?: () => T): Ref<T> {
   const ctx = useAppContext()

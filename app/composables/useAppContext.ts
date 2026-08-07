@@ -1,6 +1,6 @@
-import type { AppContext } from '~/app/utils/app-context.ts'
+import type { AppContext } from '~/app/utils/app-context'
 import { inject } from 'vue'
-import { APP_CONTEXT_KEY } from '~/app/utils/app-context.ts'
+import { APP_CONTEXT_KEY } from '~/app/utils/app-context'
 
 export function useAppContext(): AppContext {
   const ctx = inject(APP_CONTEXT_KEY, null)

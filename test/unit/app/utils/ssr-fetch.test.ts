@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createSsrFetchContext } from '~/app/utils/ssr-fetch.ts'
+import { createSsrFetchContext } from '~/app/utils/ssr-fetch'
 
 type FetchInput = Parameters<typeof globalThis.fetch>[0]
 

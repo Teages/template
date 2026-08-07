@@ -5,10 +5,10 @@ import { createSSRApp, h, Suspense } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { handleHotUpdate, routes } from 'vue-router/auto-routes'
 import App from './app.vue'
-import { APP_CONTEXT_KEY, createAppContext } from './utils/app-context.ts'
-import { authNavigationGuard } from './utils/auth-guard.ts'
+import { APP_CONTEXT_KEY, createAppContext } from './utils/app-context'
+import { authNavigationGuard } from './utils/auth-guard'
 
-import { readPayloadFromDocument } from './utils/payload.ts'
+import { readPayloadFromDocument } from './utils/payload'
 import './assets/css/main.css'
 
 // Nitro serves HTML, so Vite's transformIndexHtml inject is skipped — load manually.

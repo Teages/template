@@ -1,11 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
 import { createApp } from 'vue'
-import { useAsyncData } from '~/app/composables/useAsyncData.ts'
+import { useAsyncData } from '~/app/composables/useAsyncData'
 import {
   APP_CONTEXT_KEY,
   createAppContext,
   createEmptyPayload,
-} from '~/app/utils/app-context.ts'
+} from '~/app/utils/app-context'
 
 function withAppContext<T>(
   run: () => T,

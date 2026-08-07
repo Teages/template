@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { createApp } from 'vue'
-import { useState } from '~/app/composables/useState.ts'
+import { useState } from '~/app/composables/useState'
 import {
   APP_CONTEXT_KEY,
   createAppContext,
   createEmptyPayload,
-} from '~/app/utils/app-context.ts'
+} from '~/app/utils/app-context'
 
 function withAppContext<T>(
   run: () => T,

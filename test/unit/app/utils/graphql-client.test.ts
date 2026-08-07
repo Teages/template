@@ -1,7 +1,7 @@
 import type { TypedDocumentNode } from 'gazania'
 import { parse } from 'graphql'
 import { describe, expect, it, vi } from 'vitest'
-import { GraphQLRequestError, request } from '~/app/utils/graphql-client.ts'
+import { GraphQLRequestError, request } from '~/app/utils/graphql-client'
 
 const HelloQuery = parse(`
   query Hello {
