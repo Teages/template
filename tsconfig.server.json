@@ -15,7 +15,6 @@
     "server/**/*.ts",
     "test/e2e/app/**/*.ts",
     "test/e2e/api/**/*.ts",
-    "test/e2e/graphql/**/*.ts",
     "test/setup.ts",
     "test/utils.ts"
   ]
