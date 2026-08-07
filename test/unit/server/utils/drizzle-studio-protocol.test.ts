@@ -1,5 +1,23 @@
 import { describe, expect, it } from 'vitest'
-import { handleStudioProtocol } from '~/server/utils/drizzle-studio-protocol'
+import {
+  handleStudioProtocol,
+  validateStudioAuthorization,
+} from '~/server/utils/drizzle-studio-protocol'
+
+describe('validateStudioAuthorization', () => {
+  it('reports an unavailable key as not configured', () => {
+    expect(validateStudioAuthorization(undefined, null)).toBe('not-configured')
+  })
+
+  it('rejects missing or incorrect authorization', () => {
+    expect(validateStudioAuthorization('studio-key', null)).toBe('unauthorized')
+    expect(validateStudioAuthorization('studio-key', 'Bearer wrong-key')).toBe('unauthorized')
+  })
+
+  it('accepts the proxy authorization', () => {
+    expect(validateStudioAuthorization('studio-key', 'Bearer studio-key')).toBeUndefined()
+  })
+})
 
 describe('handleStudioProtocol', () => {
   it('rejects malformed protocol requests', async () => {

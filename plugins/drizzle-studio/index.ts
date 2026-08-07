@@ -2,6 +2,7 @@ import type {} from '@vitejs/devtools-kit'
 import type { IncomingMessage, Server, ServerResponse } from 'node:http'
 import type { Plugin, ViteDevServer } from 'vite'
 import { Buffer } from 'node:buffer'
+import { randomUUID } from 'node:crypto'
 import { createServer } from 'node:http'
 import { env } from 'node:process'
 import { createConsola } from 'consola'
@@ -9,6 +10,8 @@ import { getPort } from 'get-port-please'
 
 const VIRTUAL_ID = 'virtual:drizzle-studio-dock'
 const NITRO_STUDIO_PATH = '/api/drizzle-studio'
+const STUDIO_AUTHORIZATION_HEADER = 'authorization'
+const STUDIO_AUTH_KEY_REPLACEMENT = 'import.meta.DRIZZLE_STUDIO_KEY'
 const logger = createConsola({}).withTag('drizzle-studio')
 
 function isEnabled(): boolean {
@@ -36,11 +39,18 @@ export default function setup(ctx) {
 async function nodeToWebRequest(
   nodeReq: IncomingMessage,
   targetUrl: string,
+  studioAuthKey: string,
 ): Promise<Request> {
   const headers = new Headers()
   for (const [key, value] of Object.entries(nodeReq.headers)) {
-    if (value == null || key === 'host' || key === 'connection')
+    if (
+      value == null
+      || key === 'host'
+      || key === 'connection'
+      || key.toLowerCase() === STUDIO_AUTHORIZATION_HEADER
+    ) {
       continue
+    }
     if (Array.isArray(value)) {
       for (const item of value)
         headers.append(key, item)
@@ -49,6 +59,7 @@ async function nodeToWebRequest(
       headers.set(key, value)
     }
   }
+  headers.set(STUDIO_AUTHORIZATION_HEADER, `Bearer ${studioAuthKey}`)
 
   const method = nodeReq.method || 'GET'
   if (method === 'GET' || method === 'HEAD') {
@@ -90,6 +101,7 @@ function closeHttpServer(server: Server | undefined): Promise<void> {
 async function startStudioProxy(
   server: ViteDevServer,
   port: number,
+  studioAuthKey: string,
 ): Promise<Server> {
   const nitroEnv = server.environments.nitro as {
     dispatchFetch?: (req: Request) => Promise<Response>
@@ -105,6 +117,7 @@ async function startStudioProxy(
         const req = await nodeToWebRequest(
           nodeReq,
           `http://drizzle-studio.local${NITRO_STUDIO_PATH}`,
+          studioAuthKey,
         )
         const res = await dispatchFetch(req)
         if (!nodeRes.headersSent && !nodeRes.writableEnded)
@@ -136,6 +149,7 @@ declare global {
 
 export default function DrizzleStudio(): Plugin {
   const enabled = isEnabled()
+  let studioAuthKey: string | undefined
   let portPromise: Promise<number> | undefined
 
   function resolvePort(): Promise<number> {
@@ -149,6 +163,14 @@ export default function DrizzleStudio(): Plugin {
   return {
     name: 'drizzle-studio',
     apply: 'serve',
+    nitro: {
+      setup(nitro) {
+        if (!enabled)
+          return
+        studioAuthKey = randomUUID()
+        nitro.options.replace[STUDIO_AUTH_KEY_REPLACEMENT] = JSON.stringify(studioAuthKey)
+      },
+    },
     resolveId(id) {
       if (!enabled) {
         return
@@ -166,9 +188,10 @@ export default function DrizzleStudio(): Plugin {
       return dockClientSource(studioUrl)
     },
     configureServer(server) {
-      if (!enabled) {
+      if (!enabled || !studioAuthKey) {
         return
       }
+      const authKey = studioAuthKey
 
       // Post-hook: Nitro's configureServer has already attached dispatchFetch.
       return async () => {
@@ -176,7 +199,7 @@ export default function DrizzleStudio(): Plugin {
         globalThis.__DRIZZLE_STUDIO_PROXY__ = undefined
 
         const port = await resolvePort()
-        const proxyServer = await startStudioProxy(server, port)
+        const proxyServer = await startStudioProxy(server, port, authKey)
         globalThis.__DRIZZLE_STUDIO_PROXY__ = proxyServer
         server.httpServer?.once('close', () => {
           void closeHttpServer(proxyServer).then(() => {

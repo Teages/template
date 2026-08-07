@@ -16,9 +16,20 @@ const parsers = {
 export const studioCorsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Request-Private-Network',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, Access-Control-Request-Private-Network',
   'Access-Control-Allow-Private-Network': 'true',
 } as const
+
+export function validateStudioAuthorization(
+  authKey: string | undefined,
+  authorization: string | null,
+): 'not-configured' | 'unauthorized' | undefined {
+  if (!authKey)
+    return 'not-configured'
+  if (authorization !== `Bearer ${authKey}`)
+    return 'unauthorized'
+  return undefined
+}
 
 interface StudioProxyData {
   sql: string
