@@ -13,7 +13,7 @@ import './assets/css/main.css'
 
 // Nitro serves HTML, so Vite's transformIndexHtml inject is skipped — load manually.
 if (import.meta.env.DEV)
-  import('@vitejs/devtools/client/inject')
+  void import('@vitejs/devtools/client/inject')
 
 async function main() {
   const appContext = createAppContext({ $fetch: ofetch })
@@ -40,4 +40,4 @@ async function main() {
   app.mount('#root')
 }
 
-main()
+void main()
