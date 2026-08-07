@@ -48,11 +48,8 @@ await mkdir(dirname(config.outputs.gazania), { recursive: true })
 const sdl = printSchema(schema)
 let updated = await updateFile(config.outputs.graphql, sdl)
 
-const types = (await generate({
-  source: sdl,
-  scalars: {},
-  url: 'http://localhost',
-})).replace('/* eslint-disable */\n', '')
+const types = generate({ source: sdl, scalars: {}, url: 'http://localhost' })
+  .replace('/* eslint-disable */\n', '')
 updated = await updateFile(config.outputs.gazania, types) || updated
 
 export const artifactsUpdated = updated

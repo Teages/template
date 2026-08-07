@@ -27,5 +27,5 @@ export async function fetch(
 ): Promise<Response> {
   const origin = readEnvRunnerOrigin()
   const url = path.startsWith('http') ? path : `${origin}${path.startsWith('/') ? path : `/${path}`}`
-  return globalThis.fetch(url, init)
+  return await globalThis.fetch(url, init)
 }

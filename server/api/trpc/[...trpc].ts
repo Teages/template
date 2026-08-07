@@ -13,7 +13,7 @@ import { appRouter } from '~/server/trpc/root'
 export default defineHandler(async (event) => {
   const isTest = import.meta.env.NODE_ENV === 'test' || !!import.meta.env.VITEST
 
-  return fetchRequestHandler({
+  return await fetchRequestHandler({
     endpoint: '/api/trpc',
     req: event.req,
     router: appRouter,

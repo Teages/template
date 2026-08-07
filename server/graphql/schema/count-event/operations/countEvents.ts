@@ -8,7 +8,7 @@ builder.queryFields(t => ({
     resolve: async (query, _root, _args, { event }) => {
       useAuthSession(event, 'required')
       const { db } = useDrizzle()
-      return db.query.countEvents.findMany(
+      return await db.query.countEvents.findMany(
         query({
           orderBy: { createdAt: 'desc', id: 'desc' },
         }),

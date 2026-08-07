@@ -14,6 +14,6 @@ export default defineLazyEventHandler(() => {
   })
 
   return defineEventHandler(async event =>
-    yoga.handleRequest(event.req, { event }),
+    await yoga.handleRequest(event.req, { event }),
   )
 })

@@ -23,5 +23,5 @@ export default defineHandler(async (event) => {
     throw HTTPError.status(400, 'cursor is invalid')
   }
 
-  return listCountEvents(useDrizzle().db, { limit, cursor })
+  return await listCountEvents(useDrizzle().db, { limit, cursor })
 })

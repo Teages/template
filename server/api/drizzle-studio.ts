@@ -34,5 +34,5 @@ export default defineHandler(async (event) => {
   }
 
   const body = await event.req.json()
-  return handleStudioProtocol(usePgliteClient(), body)
+  return await handleStudioProtocol(usePgliteClient(), body)
 })
