@@ -6,7 +6,8 @@
       "~/*": ["./*"],
       "#generated/*": ["./.generated/*"]
     },
-    "types": ["node", "vite/client", "nitro/vite/types"]
+    "types": ["node", "vite/client", "nitro/vite/types"],
+    "noUncheckedIndexedAccess": true
   },
   "include": [
     "env.d.ts",

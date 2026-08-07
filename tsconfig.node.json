@@ -8,6 +8,7 @@
     },
     "types": ["node"],
     "allowImportingTsExtensions": true,
+    "noUncheckedIndexedAccess": true,
     "noEmit": true
   },
   "include": [
@@ -22,6 +23,7 @@
     "nitro.config.ts",
     "vite.config.ts",
     "vitest.config.ts",
+    "eslint.config.ts",
     "drizzle.config.ts"
   ]
 }
