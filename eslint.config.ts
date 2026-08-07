@@ -1,6 +1,6 @@
 import antfu from '@antfu/eslint-config'
 
 export default antfu({
-  ignores: ['.generated', '.omo'],
+  ignores: ['.generated', '.omo', '.agents'],
   vue: true,
 })
