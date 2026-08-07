@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { setInfiniteQueryData, useInfiniteQuery, useMutation, useQueryCache } from '@pinia/colada'
 import { gazania } from '~/app/utils/gazania'
 import { createGraphQLClient, GraphQLRequestError } from '~/app/utils/graphql-client'
+import { COUNT_QUERY_KEYS } from '~/app/utils/query-keys'
 
 const graphql = createGraphQLClient(useAppContext().$requestFetch)
 
@@ -107,34 +109,42 @@ function toUserMessage(e: unknown): string {
   return 'Unexpected error'
 }
 
+const queryCache = useQueryCache()
 const {
-  data,
-  pending,
-  error,
-} = await useAsyncData(
-  'count-snapshot',
-  async () => mapSnapshot(await fetchSnapshot()),
-  {
-    default: (): CountSnapshot => ({
-      count: 0,
-      events: [],
-      pageInfo: { endCursor: null, hasNextPage: false },
-    }),
-  },
-)
-
-const errorMessage = computed(() => {
-  if (!error.value)
-    return null
-  return toUserMessage(error.value)
+  data: queryData,
+  error: queryError,
+  hasNextPage,
+  isLoading: queryLoading,
+  loadNextPage,
+} = useInfiniteQuery<CountSnapshot, Error, string | null>({
+  key: COUNT_QUERY_KEYS.graphql,
+  initialPageParam: null,
+  query: async ({ pageParam }) => mapSnapshot(
+    await fetchSnapshot(pageParam ?? undefined),
+  ),
+  getNextPageParam: lastPage => lastPage.pageInfo.endCursor,
 })
 
-const mutating = ref(false)
-const loadingMore = ref(false)
+const data = computed<CountSnapshot>(() => {
+  const pages = queryData.value?.pages ?? []
+  const firstPage = pages[0]
+  const lastPage = pages.at(-1)
+  return {
+    count: firstPage?.count ?? 0,
+    events: pages.flatMap(page => page.events),
+    pageInfo: lastPage?.pageInfo ?? {
+      endCursor: null,
+      hasNextPage: false,
+    },
+  }
+})
 
-async function increment(): Promise<void> {
-  mutating.value = true
-  try {
+const {
+  error: mutationError,
+  isLoading: mutating,
+  mutate: increment,
+} = useMutation({
+  mutation: async () => {
     const result = await graphql.request(
       gazania.mutation('RecordCount')
         .select($ => $.select([{
@@ -150,36 +160,56 @@ async function increment(): Promise<void> {
           ]),
         }])),
     )
-    data.value = {
-      ...data.value,
-      count: result.recordCount.totalCount,
-      events: [mapEvent(result.recordCount.countEvent), ...data.value.events],
+    return {
+      event: mapEvent(result.recordCount.countEvent),
+      total: result.recordCount.totalCount,
     }
-    error.value = null
-  }
-  catch (e) {
-    error.value = e instanceof Error ? e : new Error(toUserMessage(e))
-  }
-  finally {
-    mutating.value = false
-  }
-}
+  },
+  onSuccess(result) {
+    setInfiniteQueryData<CountSnapshot, Error, string | null>(
+      queryCache,
+      COUNT_QUERY_KEYS.graphql,
+      (current) => {
+        if (!current?.pages.length) {
+          return {
+            pages: [{
+              count: result.total,
+              events: [result.event],
+              pageInfo: { endCursor: null, hasNextPage: false },
+            }],
+            pageParams: [null],
+          }
+        }
+        return {
+          ...current,
+          pages: current.pages.map((page, index) => ({
+            ...page,
+            count: result.total,
+            events: index === 0
+              ? [result.event, ...page.events]
+              : page.events,
+          })),
+        }
+      },
+    )
+  },
+})
+
+const errorMessage = computed(() => {
+  const error = mutationError.value ?? queryError.value
+  if (!error)
+    return null
+  return toUserMessage(error)
+})
+
+const loadingMore = shallowRef(false)
 
 async function loadMore(): Promise<void> {
-  const { endCursor, hasNextPage } = data.value.pageInfo
-  if (!hasNextPage || !endCursor)
+  if (!hasNextPage.value)
     return
   loadingMore.value = true
   try {
-    const next = mapSnapshot(await fetchSnapshot(endCursor))
-    data.value = {
-      count: next.count,
-      events: [...data.value.events, ...next.events],
-      pageInfo: next.pageInfo,
-    }
-  }
-  catch (e) {
-    error.value = e instanceof Error ? e : new Error(toUserMessage(e))
+    await loadNextPage()
   }
   finally {
     loadingMore.value = false
@@ -216,8 +246,8 @@ async function loadMore(): Promise<void> {
       <UButton
         label="Count"
         icon="i-lucide-plus"
-        :loading="mutating || pending"
-        @click="increment"
+        :loading="mutating || queryLoading"
+        @click="increment()"
       />
     </UCard>
 
@@ -251,7 +281,7 @@ async function loadMore(): Promise<void> {
         No counts yet. Be the first to click.
       </p>
 
-      <template v-if="data.pageInfo.hasNextPage" #footer>
+      <template v-if="hasNextPage" #footer>
         <UButton
           label="Load more"
           color="neutral"

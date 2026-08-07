@@ -15,7 +15,9 @@ import serverAssets from './entry-server?assets=ssr'
 import { APP_CONTEXT_KEY, createAppContext } from './utils/app-context'
 import { authRedirectFor } from './utils/auth-routes'
 import { fetchAuthSession } from './utils/auth-session'
+import { createAppPayload, installDataLayer } from './utils/data-layer'
 import { serializePayloadScript } from './utils/payload'
+import { AUTH_SESSION_QUERY_KEY } from './utils/query-keys'
 import { createSsrFetchContext } from './utils/ssr-fetch'
 import './assets/css/main.css'
 
@@ -60,6 +62,9 @@ async function handler(request: Request): Promise<Response> {
   })
   app.provide(APP_CONTEXT_KEY, appContext)
 
+  const { pinia, queryCache } = installDataLayer(app, { ssr: true })
+  queryCache.setQueryData(AUTH_SESSION_QUERY_KEY, session)
+
   const router = createRouter({ history: createMemoryHistory(), routes })
   app.use(router)
   app.use(ui)
@@ -102,8 +107,15 @@ async function handler(request: Request): Promise<Response> {
     script: [{ type: 'module', src: clientAssets.entry }],
   })
 
-  const renderedApp = await renderToString(app)
-  const payloadScript = serializePayloadScript(appContext.payload)
+  let renderedApp: string
+  let payloadScript: string
+  try {
+    renderedApp = await renderToString(app)
+    payloadScript = serializePayloadScript(createAppPayload(pinia, queryCache))
+  }
+  finally {
+    queryCache.caches.clear()
+  }
 
   const html = await transformHtmlTemplate(
     head,

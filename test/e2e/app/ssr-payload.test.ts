@@ -1,6 +1,11 @@
+import type { EntryKey, UseInfiniteQueryData } from '@pinia/colada'
+import type { AppPayload } from '~/app/utils/payload'
 import { serverFetch } from 'nitro/app'
 import { describe, expect, it } from 'vitest'
+import { createApp } from 'vue'
+import { installDataLayer } from '~/app/utils/data-layer'
 import { parsePayloadScript } from '~/app/utils/payload'
+import { AUTH_SESSION_QUERY_KEY, COUNT_QUERY_KEYS } from '~/app/utils/query-keys'
 import { fetch } from '~/test/env-runner-bridge'
 import { cookieHeader, testOrigin, uniqueAuthEmail } from '~/test/utils'
 
@@ -54,7 +59,7 @@ describe('ssr app payload', () => {
     expect(html).not.toContain('No counts yet. Be the first to click.')
 
     const payload = parsePayloadScript(html)
-    expect(payload.data['auth:session']).toEqual(
+    expect(getQueryData(payload, AUTH_SESSION_QUERY_KEY)).toEqual(
       expect.objectContaining({
         user: expect.objectContaining({
           email,
@@ -62,7 +67,11 @@ describe('ssr app payload', () => {
         }),
       }),
     )
-    expect(payload.data['count-snapshot']).toEqual(
+    const countData = getQueryData<UseInfiniteQueryData<{
+      count: number
+      events: Array<{ userName: string }>
+    }, string | null>>(payload, COUNT_QUERY_KEYS.graphql)
+    expect(countData?.pages[0]).toEqual(
       expect.objectContaining({
         count: expect.any(Number),
         events: expect.arrayContaining([
@@ -73,7 +82,7 @@ describe('ssr app payload', () => {
       }),
     )
     expect(
-      (payload.data['count-snapshot'] as { count: number }).count,
+      countData?.pages[0]?.count,
     ).toBeGreaterThanOrEqual(1)
   })
 
@@ -89,3 +98,9 @@ describe('ssr app payload', () => {
     expect(html.includes('__APP_PAYLOAD__')).toBe(false)
   })
 })
+
+function getQueryData<T = unknown>(payload: AppPayload, key: EntryKey): T | undefined {
+  const app = createApp({ render: () => null })
+  const { queryCache } = installDataLayer(app, { payload })
+  return queryCache.getQueryData<T>(key)
+}

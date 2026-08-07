@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import type { AuthSession } from '~/app/utils/auth-session'
+import { useQuery, useQueryCache } from '@pinia/colada'
 import { authClient } from '~/app/utils/auth-client'
 import { fetchAuthSession } from '~/app/utils/auth-session'
+import { AUTH_SESSION_QUERY_KEY } from '~/app/utils/query-keys'
 
 const { $requestFetch } = useAppContext()
 
-const { data: session } = await useAsyncData(
-  'auth:session',
-  () => fetchAuthSession($requestFetch),
-  {
-    default: (): AuthSession | null => null,
-  },
-)
+const queryCache = useQueryCache()
+const { data: session } = useQuery<AuthSession | null>({
+  key: AUTH_SESSION_QUERY_KEY,
+  query: () => fetchAuthSession($requestFetch),
+})
 
 if (!import.meta.env.SSR) {
-  authClient.hydrateSession(session.value)
+  authClient.hydrateSession(session.value ?? null)
 }
 
 const router = useRouter()
@@ -39,7 +39,7 @@ const navItems = computed(() =>
 
 async function onSignOut(): Promise<void> {
   await authClient.signOut()
-  session.value = null
+  queryCache.setQueryData(AUTH_SESSION_QUERY_KEY, null)
   authClient.hydrateSession(null)
   await router.push('/sign-in')
 }

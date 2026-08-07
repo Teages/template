@@ -7,7 +7,7 @@ import { handleHotUpdate, routes } from 'vue-router/auto-routes'
 import App from './app.vue'
 import { APP_CONTEXT_KEY, createAppContext } from './utils/app-context'
 import { authNavigationGuard } from './utils/auth-guard'
-
+import { installDataLayer } from './utils/data-layer'
 import { readPayloadFromDocument } from './utils/payload'
 import './assets/css/main.css'
 
@@ -16,11 +16,8 @@ if (import.meta.env.DEV)
   import('@vitejs/devtools/client/inject')
 
 async function main() {
-  const appContext = createAppContext({
-    $fetch: ofetch,
-    payload: readPayloadFromDocument(),
-    isHydrating: true,
-  })
+  const appContext = createAppContext({ $fetch: ofetch })
+  const payload = readPayloadFromDocument()
 
   const app = createSSRApp({
     setup() {
@@ -28,6 +25,7 @@ async function main() {
     },
   })
   app.provide(APP_CONTEXT_KEY, appContext)
+  installDataLayer(app, { payload })
 
   const router = createRouter({ history: createWebHistory(), routes })
   router.beforeEach(authNavigationGuard)
@@ -40,7 +38,6 @@ async function main() {
 
   await router.isReady()
   app.mount('#root')
-  appContext.isHydrating = false
 }
 
 main()

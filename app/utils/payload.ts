@@ -1,10 +1,13 @@
-import type { AppPayload } from './app-context'
+import type { serializeQueryCache } from '@pinia/colada'
+import type { StateTree } from 'pinia'
 import { parse, stringify } from 'devalue'
-import {
-  APP_PAYLOAD_ELEMENT_ID,
 
-  createEmptyPayload,
-} from './app-context'
+export const APP_PAYLOAD_ELEMENT_ID = '__APP_PAYLOAD__' as const
+
+export interface AppPayload {
+  pinia: StateTree
+  queryCache: ReturnType<typeof serializeQueryCache>
+}
 
 interface PayloadElement {
   readonly textContent: string | null
@@ -24,13 +27,19 @@ function parseAppPayload(value: unknown): AppPayload {
     throw new TypeError('Invalid app payload: expected object')
   }
 
-  const data = isRecord(value.data) ? value.data : {}
-  const state = isRecord(value.state) ? value.state : {}
-  const errors = isRecord(value.errors)
-    ? value.errors as AppPayload['errors']
-    : {}
+  return {
+    pinia: isRecord(value.pinia) ? value.pinia : {},
+    queryCache: isRecord(value.queryCache)
+      ? value.queryCache as AppPayload['queryCache']
+      : {},
+  }
+}
 
-  return { data, state, errors }
+export function createEmptyPayload(): AppPayload {
+  return {
+    pinia: {},
+    queryCache: {},
+  }
 }
 
 /** Escape so serialized JSON cannot close the surrounding script tag. */
@@ -53,21 +62,23 @@ function unescapePayloadText(text: string): string {
 }
 
 export function serializePayloadScript(payload: AppPayload): string {
-  const body = escapePayloadText(stringify(payload))
+  const body = escapePayloadText(stringify(payload, {
+    Error: value => value instanceof Error && [value.name, value.message],
+  }))
   return `<script type="application/json" id="${APP_PAYLOAD_ELEMENT_ID}">${body}</script>`
 }
 
 export function parsePayloadScript(scriptHtml: string): AppPayload {
   const match = scriptHtml.match(
     new RegExp(
-      `<script[^>]*\\bid="${APP_PAYLOAD_ELEMENT_ID}"[^>]*>([\\s\\S]*?)</script>`,
+      `<script type="application/json" id="${APP_PAYLOAD_ELEMENT_ID}">([\\s\\S]*?)</script>`,
       'i',
     ),
   )
   if (!match?.[1]) {
     throw new TypeError('App payload script not found')
   }
-  return parseAppPayload(parse(unescapePayloadText(match[1])))
+  return parseAppPayload(parsePayloadText(match[1]))
 }
 
 export function readPayloadFromDocument(
@@ -78,9 +89,19 @@ export function readPayloadFromDocument(
   if (!el?.textContent) {
     return createEmptyPayload()
   }
-  const payload = parseAppPayload(parse(unescapePayloadText(el.textContent)))
+  const payload = parseAppPayload(parsePayloadText(el.textContent))
   el.remove()
   return payload
+}
+
+function parsePayloadText(text: string): unknown {
+  return parse(unescapePayloadText(text), {
+    Error: (value: [name: string, message: string]) => {
+      const error = new Error(value[1])
+      error.name = value[0]
+      return error
+    },
+  })
 }
 
 function getBrowserDocument(): PayloadDocument {

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { RestCountEventPage } from '~/app/utils/rest-client'
+import { setInfiniteQueryData, useInfiniteQuery, useMutation, useQueryCache } from '@pinia/colada'
 import { FetchError } from 'ofetch'
+import { COUNT_QUERY_KEYS } from '~/app/utils/query-keys'
 import { createRestClient } from '~/app/utils/rest-client'
 
 const rest = createRestClient(useAppContext().$requestFetch)
@@ -18,54 +20,82 @@ function mapError(cause: unknown): string {
   return cause instanceof Error ? cause.message : 'Unexpected error'
 }
 
-const { data, pending, error } = await useAsyncData(
-  'rest-count-events',
-  () => rest.listCountEvents(),
-  {
-    default: (): RestCountEventPage => ({
-      data: [],
-      meta: { total: 0, nextCursor: null },
-    }),
+const queryCache = useQueryCache()
+const {
+  data: queryData,
+  error: queryError,
+  hasNextPage,
+  isLoading: queryLoading,
+  loadNextPage,
+} = useInfiniteQuery<RestCountEventPage, Error, string | null>({
+  key: COUNT_QUERY_KEYS.rest,
+  initialPageParam: null,
+  query: ({ pageParam }) => rest.listCountEvents({
+    cursor: pageParam ?? undefined,
+  }),
+  getNextPageParam: lastPage => lastPage.meta.nextCursor,
+})
+
+const data = computed<RestCountEventPage>(() => {
+  const pages = queryData.value?.pages ?? []
+  const firstPage = pages[0]
+  const lastPage = pages.at(-1)
+  return {
+    data: pages.flatMap(page => page.data),
+    meta: {
+      total: firstPage?.meta.total ?? 0,
+      nextCursor: lastPage?.meta.nextCursor ?? null,
+    },
+  }
+})
+
+const {
+  error: mutationError,
+  isLoading: mutating,
+  mutate: recordCount,
+} = useMutation({
+  mutation: () => rest.createCountEvent(),
+  onSuccess(response) {
+    setInfiniteQueryData<RestCountEventPage, Error, string | null>(
+      queryCache,
+      COUNT_QUERY_KEYS.rest,
+      (current) => {
+        if (!current?.pages.length) {
+          return {
+            pages: [{
+              data: [response.data],
+              meta: { total: 1, nextCursor: null },
+            }],
+            pageParams: [null],
+          }
+        }
+        return {
+          ...current,
+          pages: current.pages.map((page, index) => ({
+            ...page,
+            data: index === 0
+              ? [response.data, ...page.data]
+              : page.data,
+            meta: { ...page.meta, total: page.meta.total + 1 },
+          })),
+        }
+      },
+    )
   },
-)
+})
 
-const errorMessage = computed(() => error.value ? mapError(error.value) : null)
-const mutating = ref(false)
-const loadingMore = ref(false)
-
-async function recordCount(): Promise<void> {
-  mutating.value = true
-  try {
-    const response = await rest.createCountEvent()
-    const current = data.value
-    data.value = {
-      data: [response.data, ...current.data],
-      meta: { ...current.meta, total: current.meta.total + 1 },
-    }
-    error.value = null
-  }
-  catch (cause: unknown) {
-    error.value = cause instanceof Error ? cause : new Error(mapError(cause))
-  }
-  finally {
-    mutating.value = false
-  }
-}
+const errorMessage = computed(() => {
+  const error = mutationError.value ?? queryError.value
+  return error ? mapError(error) : null
+})
+const loadingMore = shallowRef(false)
 
 async function loadMore(): Promise<void> {
-  const cursor = data.value.meta.nextCursor
-  if (!cursor)
+  if (!hasNextPage.value)
     return
   loadingMore.value = true
   try {
-    const next = await rest.listCountEvents({ cursor })
-    data.value = {
-      data: [...data.value.data, ...next.data],
-      meta: next.meta,
-    }
-  }
-  catch (cause: unknown) {
-    error.value = cause instanceof Error ? cause : new Error(mapError(cause))
+    await loadNextPage()
   }
   finally {
     loadingMore.value = false
@@ -105,8 +135,8 @@ async function loadMore(): Promise<void> {
       <UButton
         label="Count"
         icon="i-lucide-plus"
-        :loading="mutating || pending"
-        @click="recordCount"
+        :loading="mutating || queryLoading"
+        @click="recordCount()"
       />
     </UCard>
 
@@ -140,7 +170,7 @@ async function loadMore(): Promise<void> {
         No counts yet. Be the first to click.
       </p>
 
-      <template v-if="data.meta.nextCursor" #footer>
+      <template v-if="hasNextPage" #footer>
         <UButton
           label="Load more"
           color="neutral"

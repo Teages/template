@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { inferRouterOutputs } from '@trpc/server'
 import type { AppRouter } from '~/server/trpc/root'
+import { setInfiniteQueryData, useInfiniteQuery, useMutation, useQueryCache } from '@pinia/colada'
 import { TRPCClientError } from '@trpc/client'
+import { COUNT_QUERY_KEYS } from '~/app/utils/query-keys'
 import { createTRPCClient } from '~/app/utils/trpc-client'
 
 const trpc = createTRPCClient(useAppContext().$requestFetch)
@@ -51,49 +53,79 @@ function mapError(cause: unknown): string {
   return 'Unexpected error'
 }
 
-const { data, pending, error } = await useAsyncData<CountPage>(
-  'trpc-count-events',
-  async () => trpc.count.list.query(),
-  { default: (): CountPage => ({ total: 0, items: [], nextCursor: null }) },
-)
+const queryCache = useQueryCache()
+const {
+  data: queryData,
+  error: queryError,
+  hasNextPage,
+  isLoading: queryLoading,
+  loadNextPage,
+} = useInfiniteQuery<CountPage, Error, string | null>({
+  key: COUNT_QUERY_KEYS.trpc,
+  initialPageParam: null,
+  query: ({ pageParam }) => pageParam
+    ? trpc.count.list.query({ cursor: pageParam })
+    : trpc.count.list.query(),
+  getNextPageParam: lastPage => lastPage.nextCursor,
+})
 
-const countError = computed(() => error.value ? mapError(error.value) : null)
-const mutating = ref(false)
-const loadingMore = ref(false)
+const data = computed<CountPage>(() => {
+  const pages = queryData.value?.pages ?? []
+  return {
+    total: pages[0]?.total ?? 0,
+    items: pages.flatMap(page => page.items),
+    nextCursor: pages.at(-1)?.nextCursor ?? null,
+  }
+})
 
-async function recordCount(): Promise<void> {
-  mutating.value = true
-  try {
-    const created = await trpc.count.create.mutate()
-    data.value = {
-      ...data.value,
-      total: created.total,
-      items: [created.item, ...data.value.items],
-    }
-    error.value = null
-  }
-  catch (cause: unknown) {
-    error.value = cause instanceof Error ? cause : new Error(mapError(cause))
-  }
-  finally {
-    mutating.value = false
-  }
-}
+const {
+  error: mutationError,
+  isLoading: mutating,
+  mutate: recordCount,
+} = useMutation({
+  mutation: () => trpc.count.create.mutate(),
+  onSuccess(created) {
+    setInfiniteQueryData<CountPage, Error, string | null>(
+      queryCache,
+      COUNT_QUERY_KEYS.trpc,
+      (current) => {
+        if (!current?.pages.length) {
+          return {
+            pages: [{
+              total: created.total,
+              items: [created.item],
+              nextCursor: null,
+            }],
+            pageParams: [null],
+          }
+        }
+        return {
+          ...current,
+          pages: current.pages.map((page, index) => ({
+            ...page,
+            total: created.total,
+            items: index === 0
+              ? [created.item, ...page.items]
+              : page.items,
+          })),
+        }
+      },
+    )
+  },
+})
+
+const countError = computed(() => {
+  const error = mutationError.value ?? queryError.value
+  return error ? mapError(error) : null
+})
+const loadingMore = shallowRef(false)
 
 async function loadMore(): Promise<void> {
-  if (!data.value.nextCursor)
+  if (!hasNextPage.value)
     return
   loadingMore.value = true
   try {
-    const next = await trpc.count.list.query({ cursor: data.value.nextCursor })
-    data.value = {
-      total: next.total,
-      items: [...data.value.items, ...next.items],
-      nextCursor: next.nextCursor,
-    }
-  }
-  catch (cause: unknown) {
-    error.value = cause instanceof Error ? cause : new Error(mapError(cause))
+    await loadNextPage()
   }
   finally {
     loadingMore.value = false
@@ -179,8 +211,8 @@ async function loadMore(): Promise<void> {
       <UButton
         label="Count"
         icon="i-lucide-plus"
-        :loading="mutating || pending"
-        @click="recordCount"
+        :loading="mutating || queryLoading"
+        @click="recordCount()"
       />
     </UCard>
 
@@ -214,7 +246,7 @@ async function loadMore(): Promise<void> {
         No counts yet. Be the first to click.
       </p>
 
-      <template v-if="data.nextCursor" #footer>
+      <template v-if="hasNextPage" #footer>
         <UButton
           label="Load more"
           color="neutral"
