@@ -1,8 +1,8 @@
 import type { $Fetch } from 'ofetch'
-import type { authClient } from './auth-client'
+import type { AuthSession as ServerAuthSession } from '~/server/utils/session'
 import { parseJSON } from 'better-auth/client'
 
-export type AuthSession = typeof authClient.$Infer.Session
+export type AuthSession = ServerAuthSession
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
@@ -31,7 +31,10 @@ export function isAuthSession(value: unknown): value is AuthSession {
 
 export async function fetchAuthSession($fetch: $Fetch): Promise<AuthSession | null> {
   const value: unknown = await $fetch('/api/auth/get-session', {
-    parseResponse: text => parseJSON(text, { strict: false }),
+    parseResponse: text => parseJSON<unknown>(text, { strict: false }),
   })
-  return isAuthSession(value) ? value : null
+  if (!isAuthSession(value))
+    return null
+
+  return value
 }

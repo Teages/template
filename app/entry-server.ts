@@ -22,7 +22,7 @@ import { createSsrFetchContext } from './utils/ssr-fetch'
 import './assets/css/main.css'
 
 // Per-route ?assets bundles, keyed by page path for SSR <link> emission.
-const pageAssetsMap = import.meta.glob('./pages/**/*.vue', {
+const pageAssetsMap = import.meta.glob<typeof clientAssets>('./pages/**/*.vue', {
   query: '?assets',
   import: 'default',
 })
@@ -88,21 +88,21 @@ async function handler(request: Request): Promise<Response> {
         }
         return importer()
       })
-      .filter((p): p is Promise<unknown> => p !== null),
+      .filter((p): p is Promise<typeof clientAssets> => p !== null),
   )
 
   // import:'default' already unwraps; resolved value IS the asset collection.
   const assets = clientAssets.merge(
     serverAssets,
-    ...(matchedAssets.filter((a): a is NonNullable<typeof a> => a != null) as any[]),
+    ...matchedAssets,
   )
 
   const head = createHead()
 
   head.push({
     link: [
-      ...assets.css.map((attrs: any) => ({ rel: 'stylesheet', ...attrs })),
-      ...assets.js.map((attrs: any) => ({ rel: 'modulepreload', ...attrs })),
+      ...assets.css.map(attrs => ({ rel: 'stylesheet', ...attrs })),
+      ...assets.js.map(attrs => ({ rel: 'modulepreload', ...attrs })),
     ],
     script: [{ type: 'module', src: clientAssets.entry }],
   })

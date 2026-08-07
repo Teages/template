@@ -49,6 +49,15 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
+function isSerializedBuffer(
+  value: unknown,
+): value is { type: 'Buffer', data: number[] } {
+  return isRecord(value)
+    && value.type === 'Buffer'
+    && Array.isArray(value.data)
+    && value.data.every(item => typeof item === 'number')
+}
+
 function isStudioProxyData(value: unknown): value is StudioProxyData {
   if (!isRecord(value) || typeof value.sql !== 'string')
     return false
@@ -104,21 +113,15 @@ function prepareParams(params: unknown[]): unknown[] {
 }
 
 function studioJson(data: unknown): string {
-  return JSON.stringify(data, (_key, value) => {
+  return JSON.stringify(data, (_key, value: unknown) => {
     if (value instanceof Error)
       return { error: value.message }
-    if (
-      value
-      && typeof value === 'object'
-      && 'type' in value
-      && 'data' in value
-      && (value as { type: unknown }).type === 'Buffer'
-    ) {
-      return Buffer.from((value as { data: number[] }).data).toString('base64')
-    }
-    if (value instanceof ArrayBuffer || value instanceof Buffer)
-      // @ts-expect-error Buffer type error
-      return Buffer.from(value).toString('base64')
+    if (isSerializedBuffer(value))
+      return Buffer.from(value.data).toString('base64')
+    if (value instanceof ArrayBuffer)
+      return Buffer.from(new Uint8Array(value)).toString('base64')
+    if (Buffer.isBuffer(value))
+      return value.toString('base64')
     return value
   })
 }

@@ -1,4 +1,5 @@
 import type { EntryKey, UseInfiniteQueryData } from '@pinia/colada'
+import type { DeeplyAllowMatchers } from 'vitest'
 import type { AppPayload } from '~/app/utils/payload'
 import { serverFetch } from 'nitro/app'
 import { describe, expect, it } from 'vitest'
@@ -41,7 +42,7 @@ describe('ssr app payload', () => {
     })
     expect(recordRes.status).toBe(200)
     expect(await recordRes.json()).toEqual({
-      data: { recordCount: { countEvent: { id: expect.any(String) } } },
+      data: { recordCount: { countEvent: { id: anyString() } } },
     })
 
     const res = await fetch('/', {
@@ -60,8 +61,8 @@ describe('ssr app payload', () => {
 
     const payload = parsePayloadScript(html)
     expect(getQueryData(payload, AUTH_SESSION_QUERY_KEY)).toEqual(
-      expect.objectContaining({
-        user: expect.objectContaining({
+      objectContaining({
+        user: objectContaining({
           email,
           name: 'Vitest User',
         }),
@@ -72,10 +73,10 @@ describe('ssr app payload', () => {
       events: Array<{ userName: string }>
     }, string | null>>(payload, COUNT_QUERY_KEYS.graphql)
     expect(countData?.pages[0]).toEqual(
-      expect.objectContaining({
-        count: expect.any(Number),
-        events: expect.arrayContaining([
-          expect.objectContaining({
+      objectContaining({
+        count: anyNumber(),
+        events: arrayContaining([
+          objectContaining({
             userName: 'Vitest User',
           }),
         ]),
@@ -98,6 +99,22 @@ describe('ssr app payload', () => {
     expect(html.includes('__APP_PAYLOAD__')).toBe(false)
   })
 })
+
+function anyString(): string {
+  return expect.any(String) as string
+}
+
+function anyNumber(): number {
+  return expect.any(Number) as number
+}
+
+function objectContaining<T extends object>(value: DeeplyAllowMatchers<T>): T {
+  return expect.objectContaining(value) as T
+}
+
+function arrayContaining<T>(value: Array<DeeplyAllowMatchers<T>>): T[] {
+  return expect.arrayContaining(value) as T[]
+}
 
 function getQueryData<T = unknown>(payload: AppPayload, key: EntryKey): T | undefined {
   const app = createApp({ render: () => null })

@@ -1,7 +1,28 @@
 import type { TypedDocumentNode } from 'gazania'
+import type { DeeplyAllowMatchers } from 'vitest'
+import type { GraphQLFetch } from '~/app/utils/graphql-client'
 import { parse } from 'graphql'
 import { describe, expect, it, vi } from 'vitest'
 import { GraphQLRequestError, request } from '~/app/utils/graphql-client'
+
+function stringContaining(value: string): string {
+  return expect.stringContaining(value) as string
+}
+
+function objectContaining<T extends object>(value: DeeplyAllowMatchers<T>): T {
+  return expect.objectContaining(value) as T
+}
+
+function mockFetch<T>(response: {
+  data?: T
+  errors?: Array<{ message: string }>
+}) {
+  const spy = vi.fn<GraphQLFetch>().mockResolvedValue(response)
+  return {
+    fetch: spy as unknown as GraphQLFetch,
+    spy,
+  }
+}
 
 const HelloQuery = parse(`
   query Hello {
@@ -19,41 +40,41 @@ const CreateMutation = parse(`
 
 describe('graphql-client request', () => {
   it('returns data for a successful query via GET', async () => {
-    const fetch = vi.fn().mockResolvedValue({
+    const { fetch, spy } = mockFetch({
       data: { __typename: 'Query' },
-    }) as any
+    })
 
     const result = await request(HelloQuery, undefined, { fetch, url: '/api/graphql' })
 
     expect(result).toEqual({ __typename: 'Query' })
-    expect(fetch).toHaveBeenCalledWith('/api/graphql', expect.objectContaining({
+    expect(spy).toHaveBeenCalledWith('/api/graphql', objectContaining({
       method: 'GET',
-      params: expect.objectContaining({
-        query: expect.stringContaining('query Hello'),
+      params: objectContaining({
+        query: stringContaining('query Hello'),
       }),
     }))
   })
 
   it('posts mutations with JSON body', async () => {
-    const fetch = vi.fn().mockResolvedValue({
+    const { fetch, spy } = mockFetch({
       data: { recordCount: { id: '1' } },
-    }) as any
+    })
 
     await request(CreateMutation, undefined, { fetch, url: '/api/graphql' })
 
-    expect(fetch).toHaveBeenCalledWith('/api/graphql', expect.objectContaining({
+    expect(spy).toHaveBeenCalledWith('/api/graphql', objectContaining({
       method: 'POST',
-      body: expect.objectContaining({
-        query: expect.stringContaining('mutation Record'),
+      body: objectContaining({
+        query: stringContaining('mutation Record'),
       }),
     }))
   })
 
   it('throws GraphQLRequestError when the API returns errors', async () => {
-    const fetch = vi.fn().mockResolvedValue({
+    const { fetch } = mockFetch({
       errors: [{ message: 'nope' }],
       data: null,
-    }) as any
+    })
 
     await expect(
       request(HelloQuery, undefined, { fetch, url: '/api/graphql' }),

@@ -1,4 +1,4 @@
-import type { Plugin } from 'vite'
+import type { HookHandler, Plugin } from 'vite'
 import { env } from 'node:process'
 import ui from '@nuxt/ui/vite'
 import { DevTools } from '@vitejs/devtools'
@@ -92,12 +92,24 @@ export default defineConfig({
   },
 })
 
-function patchVueExclude(plugin: any, exclude: RegExp) {
-  const original = plugin.transform.handler
-  plugin.transform.handler = function (...args: any[]) {
-    if (exclude.test(args[1]))
-      return
-    return original.call(this, ...args)
-  }
+type TransformHook = HookHandler<NonNullable<Plugin['transform']>>
+
+function patchVueExclude(plugin: Plugin, exclude: RegExp): Plugin {
+  const transform = plugin.transform
+  if (!transform)
+    return plugin
+
+  const wrap = (original: TransformHook): TransformHook =>
+    function (this: ThisParameterType<TransformHook>, ...args: Parameters<TransformHook>) {
+      if (exclude.test(args[1]))
+        return
+      return original.call(this, ...args)
+    }
+
+  if (typeof transform === 'function')
+    plugin.transform = wrap(transform)
+  else
+    transform.handler = wrap(transform.handler)
+
   return plugin
 }

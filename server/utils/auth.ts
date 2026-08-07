@@ -5,28 +5,26 @@ import { testUtils } from 'better-auth/plugins'
 import { schema } from '../database/index'
 import { useDrizzle } from './drizzle'
 
-function trustedOrigins(): readonly string[] {
-  const trusted = import.meta.env.BETTER_AUTH_TRUSTED_ORIGINS
-  const configured = trusted
-    ?.split(',')
-    .map((origin: string) => origin.trim())
-    .filter(Boolean) ?? []
-
-  return [
-    'http://localhost:20398',
-    ...configured,
-  ]
+function parseEnvList(value: string | undefined): string[] {
+  return value?.split(',').map(item => item.trim()).filter(Boolean) ?? []
 }
 
 function initAuth(db: DrizzleDatabase) {
+  const allowedHosts = parseEnvList(import.meta.env.BETTER_AUTH_ALLOWED_HOSTS)
+
   return betterAuth({
     appName: 'Count App',
     emailAndPassword: {
       enabled: true,
     },
-    trustedOrigins: [...trustedOrigins()],
+    trustedOrigins: [
+      'http://localhost:20398',
+      ...parseEnvList(import.meta.env.BETTER_AUTH_TRUSTED_ORIGINS),
+    ],
     baseURL: {
-      allowedHosts: import.meta.env.BETTER_AUTH_ALLOWED_HOSTS?.split(',').map((host: string) => host.trim()).filter(Boolean) ?? ['localhost', 'localhost:*'],
+      allowedHosts: allowedHosts.length > 0
+        ? allowedHosts
+        : ['localhost', 'localhost:*'],
       fallback: import.meta.env.BETTER_AUTH_URL ?? 'http://localhost:20398',
     },
     database: drizzleAdapter(db, {
@@ -34,9 +32,7 @@ function initAuth(db: DrizzleDatabase) {
       schema,
       usePlural: true,
     }),
-    plugins: [
-      ...(import.meta.MOCK_DATABASE ? [testUtils()] : []) as [ReturnType<typeof testUtils>],
-    ],
+    plugins: import.meta.MOCK_DATABASE ? [testUtils()] : [],
   })
 }
 

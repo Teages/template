@@ -26,15 +26,21 @@ async function updateFile(path: string, content: string): Promise<boolean> {
   return true
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
 /**
  * Top-level await keeps the Vite module runner alive for the schema import.
  * Call sites should read `artifactsUpdated` after `runnerImport`.
  */
 const config = __GRAPHQL_CODEGEN_CONFIG__
 
-const schemaModule: Record<string, unknown> = await import(
+const schemaModule: unknown = await import(
   /* @vite-ignore */ config.schema,
-)
+) as unknown
+if (!isRecord(schemaModule))
+  throw new Error(`Expected a module object from ${config.schema}`)
 const schema = schemaModule[config.schemaExport]
 if (!isSchema(schema)) {
   throw new Error(

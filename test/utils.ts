@@ -24,11 +24,28 @@ export interface TestAuthSession {
   cookie: string
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+function isTestHelpers(value: unknown): value is TestHelpers {
+  return isRecord(value)
+    && typeof value.createUser === 'function'
+    && typeof value.saveUser === 'function'
+    && typeof value.deleteUser === 'function'
+    && typeof value.login === 'function'
+    && typeof value.getAuthHeaders === 'function'
+    && typeof value.getCookies === 'function'
+}
+
 let authTestHelpers: TestHelpers | null = null
 
 export async function getAuthTestHelpers(): Promise<TestHelpers> {
   if (!authTestHelpers) {
-    authTestHelpers = (await useAuth().$context).test
+    const context = await useAuth().$context as unknown
+    if (!isRecord(context) || !isTestHelpers(context.test))
+      throw new Error('Better Auth test utilities are not configured')
+    authTestHelpers = context.test
   }
   return authTestHelpers
 }

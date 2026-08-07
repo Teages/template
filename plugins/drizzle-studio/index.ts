@@ -36,6 +36,16 @@ export default function setup(ctx) {
 `
 }
 
+function toBuffer(chunk: unknown): Buffer {
+  if (typeof chunk === 'string')
+    return Buffer.from(chunk)
+  if (Buffer.isBuffer(chunk))
+    return chunk
+  if (chunk instanceof Uint8Array)
+    return Buffer.from(chunk)
+  throw new TypeError('Expected an HTTP request chunk')
+}
+
 async function nodeToWebRequest(
   nodeReq: IncomingMessage,
   targetUrl: string,
@@ -67,8 +77,8 @@ async function nodeToWebRequest(
   }
 
   const chunks: Buffer[] = []
-  for await (const chunk of nodeReq)
-    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk)
+  for await (const chunk of nodeReq as unknown as AsyncIterable<unknown>)
+    chunks.push(toBuffer(chunk))
 
   return new Request(targetUrl, {
     method,
