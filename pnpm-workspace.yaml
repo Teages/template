@@ -8,3 +8,82 @@ allowBuilds:
   vue-demi: true
 patchedDependencies:
   '@opentelemetry/semantic-conventions@1.43.0': patches/@opentelemetry__semantic-conventions@1.43.0.patch
+
+catalogs:
+  better-auth:
+    '@better-auth/drizzle-adapter': 1.7.0-rc.4
+    '@better-auth/test-utils': 1.7.0-rc.4
+    auth: 1.7.0-rc.4
+    better-auth: 1.7.0-rc.4
+
+  database:
+    '@electric-sql/pglite': ^0.5.4
+    '@types/pg': ^8.20.0
+    drizzle-kit: 1.0.0-rc.4
+    drizzle-orm: 1.0.0-rc.4
+    postgres: ^3.4.9
+
+  eslint:
+    '@antfu/eslint-config': ^9.2.0
+    eslint: ^10.7.0
+
+  graphql:
+    '@graphql-typed-document-node/core': ^3.2.0
+    '@pothos/core': 4.13.1
+    '@pothos/plugin-drizzle': 0.17.5
+    '@pothos/plugin-relay': 4.7.1
+    '@pothos/plugin-simple-objects': 4.1.4
+    '@pothos/plugin-with-input': 4.1.5
+    '@teages/oh-my-graphql': ^0.1.4
+    gazania: ^0.15.4
+    graphql: ^16.14.2
+    graphql-yoga: 5.21.2
+
+  nitro:
+    nitro: 3.0.260603-beta
+
+  tooling:
+    get-port-please: ^3.2.0
+    jiti: ^2.7.0
+    skills: ^1.5.17
+
+  trpc:
+    '@trpc/client': ^11.18.0
+    '@trpc/server': ^11.18.0
+
+  typescript:
+    '@tsconfig/node24': ^24.0.4
+    '@types/node': ^24.13.3
+    typescript: ^5.9.2
+
+  ui:
+    '@nuxt/ui': ^4.10.0
+    tailwindcss: ^4.3.3
+
+  utilities:
+    consola: ^3.4.2
+    devalue: ^5.9.0
+    ofetch: ^1.5.1
+    zod: ^4.4.3
+
+  vite:
+    '@vitejs/devtools': ^0.4.12
+    '@vitejs/devtools-kit': ^0.4.12
+    '@vitejs/devtools-vite': ^0.4.12
+    '@vitejs/devtools-vitest': ^0.4.12
+    '@vitejs/plugin-vue': ^6.0.5
+    vite: ^8.2.0
+    vite-plugin-devtools-json: ^1.0.0
+
+  vitest:
+    '@vitest/ui': ^4.1.10
+    vitest: ^4.1.10
+
+  vue:
+    '@pinia/colada': ^1.4.2
+    '@vue/tsconfig': ^0.9.1
+    pinia: ^4.0.2
+    unhead: ^2.1.12
+    vue: ^3.5.31
+    vue-router: ^5.0.4
+    vue-tsc: ^3.3.9
