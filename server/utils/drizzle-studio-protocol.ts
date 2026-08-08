@@ -126,7 +126,7 @@ function studioJson(data: unknown): string {
 async function runProxy(client: PGlite, data: StudioProxyData): Promise<unknown> {
   const result = await client.query(
     data.sql,
-    prepareParams(data.params || []) as any[],
+    prepareParams(data.params || []),
     {
       rowMode: data.mode ?? 'object',
       parsers,
