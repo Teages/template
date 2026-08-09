@@ -10,11 +10,9 @@ import VueRouter from 'vue-router/vite'
 import DrizzleStudio from './plugins/drizzle-studio/index.ts'
 import { graphqlSchemaPlugin } from './plugins/graphql-schema/index.ts'
 import { moduleRunnerEsmPlugin } from './plugins/module-runner-esm/index.ts'
-import { vueEsmSsrPlugin } from './plugins/vue-esm-ssr/index.ts'
 
 export default defineConfig({
   plugins: [
-    vueEsmSsrPlugin(),
     moduleRunnerEsmPlugin(),
     // VueRouter must be added BEFORE vue() per the official docs.
     VueRouter({
@@ -66,6 +64,7 @@ export default defineConfig({
     alias: {
       '~': import.meta.dirname,
     },
+    dedupe: ['vue'],
   },
   define: {
     'import.meta.vitest': 'undefined',
@@ -74,10 +73,7 @@ export default defineConfig({
   environments: {
     client: { build: { rollupOptions: { input: './app/entry-client.ts' } } },
     ssr: {
-      // Avoid the `node` export condition so `vue` resolves to the ESM bundler
-      // build instead of `index.mjs` → CJS (`module is not defined` in the runner).
-      // Prefer `module`/`jsnext` over `main` so CJS-only entrypoints (e.g.
-      // aria-hidden's dist/es5) are not inlined into the ModuleRunner.
+      // Prefer ESM entrypoints for packages that Nitro's ModuleRunner inlines.
       resolve: {
         conditions: ['import', 'module', 'default'],
         mainFields: ['module', 'jsnext:main', 'jsnext', 'main'],
