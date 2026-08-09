@@ -108,6 +108,13 @@ function closeHttpServer(server: Server | undefined): Promise<void> {
   })
 }
 
+interface DrizzleStudioGlobal {
+  __DRIZZLE_STUDIO_PROXY__?: Server
+}
+
+// Survives Vite plugin-module reloads so a new instance can close the old proxy.
+const drizzleStudioGlobal = globalThis as unknown as DrizzleStudioGlobal
+
 async function startStudioProxy(
   server: ViteDevServer,
   port: number,
@@ -149,12 +156,6 @@ async function startStudioProxy(
 
   logger.info(`Proxy listening on http://127.0.0.1:${port} → ${NITRO_STUDIO_PATH}`)
   return httpServer
-}
-
-declare global {
-  // Survives Vite plugin-module reloads so we can close the previous proxy.
-  // eslint-disable-next-line vars-on-top
-  var __DRIZZLE_STUDIO_PROXY__: Server | undefined
 }
 
 export default function DrizzleStudio(): Plugin {
@@ -206,16 +207,16 @@ export default function DrizzleStudio(): Plugin {
       // Post-hook: Nitro's configureServer has already attached dispatchFetch.
       return () => {
         void (async () => {
-          await closeHttpServer(globalThis.__DRIZZLE_STUDIO_PROXY__)
-          globalThis.__DRIZZLE_STUDIO_PROXY__ = undefined
+          await closeHttpServer(drizzleStudioGlobal.__DRIZZLE_STUDIO_PROXY__)
+          drizzleStudioGlobal.__DRIZZLE_STUDIO_PROXY__ = undefined
 
           const port = await resolvePort()
           const proxyServer = await startStudioProxy(server, port, authKey)
-          globalThis.__DRIZZLE_STUDIO_PROXY__ = proxyServer
+          drizzleStudioGlobal.__DRIZZLE_STUDIO_PROXY__ = proxyServer
           server.httpServer?.once('close', () => {
             void closeHttpServer(proxyServer).then(() => {
-              if (globalThis.__DRIZZLE_STUDIO_PROXY__ === proxyServer)
-                globalThis.__DRIZZLE_STUDIO_PROXY__ = undefined
+              if (drizzleStudioGlobal.__DRIZZLE_STUDIO_PROXY__ === proxyServer)
+                drizzleStudioGlobal.__DRIZZLE_STUDIO_PROXY__ = undefined
             })
           })
         })().catch((error) => {

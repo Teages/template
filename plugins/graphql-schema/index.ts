@@ -95,13 +95,14 @@ export function graphqlSchemaPlugin(options: GraphqlSchemaPluginOptions): Plugin
   let printedOnStart = false
 
   const enqueuePrint = (printOptions?: { readonly quietIfUnchanged?: boolean }) => {
-    printChain = printChain
-      .then(() => printGraphqlSchema(root, options, printOptions))
+    const result = printChain.then(
+      () => printGraphqlSchema(root, options, printOptions),
+    )
+    printChain = result
       .catch((error: unknown) => {
-        // no-excuse-ok: catch — Vite plugin boundary; log and keep server alive
         logger.error('Failed to print schema:', error)
       })
-    return printChain
+    return result
   }
 
   return {
