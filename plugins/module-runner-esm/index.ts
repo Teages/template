@@ -1,8 +1,6 @@
 import type { Plugin } from 'vite'
 import { createRequire } from 'node:module'
 
-const require = createRequire(import.meta.url)
-
 /**
  * Remap CJS-only package entrypoints to ESM builds for Vite ModuleRunners.
  *
@@ -21,7 +19,7 @@ export function moduleRunnerEsmPlugin(): Plugin {
     '@vue/server-renderer': fromVue.resolve('@vue/server-renderer/dist/server-renderer.esm-bundler.js'),
     'vue/server-renderer': fromVue.resolve('@vue/server-renderer/dist/server-renderer.esm-bundler.js'),
   }
-  const fromYoga = createRequire(require.resolve('graphql-yoga/package.json'))
+  const fromYoga = createRequire(import.meta.resolve('graphql-yoga/package.json'))
   const whatwgFetchEsm = fromYoga.resolve(
     '@whatwg-node/fetch/dist/esm-ponyfill.js',
   )
