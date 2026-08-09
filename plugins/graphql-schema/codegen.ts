@@ -16,4 +16,4 @@ export const gazania = generate({
   source: graphql,
   scalars: {},
   url: 'http://localhost',
-}).replace('/* eslint-disable */\n', '')
+})
