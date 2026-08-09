@@ -1,4 +1,3 @@
-import type { HookHandler, Plugin } from 'vite'
 import { env } from 'node:process'
 import ui from '@nuxt/ui/vite'
 import { DevTools } from '@vitejs/devtools'
@@ -26,7 +25,7 @@ export default defineConfig({
         }
       },
     }),
-    patchVueExclude(vue(), /\?assets/),
+    vue({ exclude: /\?assets/ }),
     ui({
       autoImport: {
         imports: ['vue', 'vue-router'],
@@ -47,10 +46,11 @@ export default defineConfig({
       },
     }),
     // Embedded mode: HTML is rendered by Nitro/SSR, so client inject lives in entry-client.
-    // DevTools / devtoolsJson open a 127.0.0.1:7812 server with no close hook —
-    // skip under Vitest so the process can exit within the 10s close timeout.
+    // DevTools opens a standalone WebSocket without a close hook in Vitest's
+    // middleware mode, so skip it to avoid the 10s close timeout.
     // Upstream fix tracked in https://github.com/vitejs/devtools/pull/519
-    ...(env.VITEST ? [] : [DevTools(), devtoolsJson()] as Plugin[]),
+    env.VITEST ? false : DevTools(),
+    devtoolsJson(),
     DrizzleStudio(),
     nitro(),
   ],
@@ -87,25 +87,3 @@ export default defineConfig({
     },
   },
 })
-
-type TransformHook = HookHandler<NonNullable<Plugin['transform']>>
-
-function patchVueExclude(plugin: Plugin, exclude: RegExp): Plugin {
-  const transform = plugin.transform
-  if (!transform)
-    return plugin
-
-  const wrap = (original: TransformHook): TransformHook =>
-    function (this: ThisParameterType<TransformHook>, ...args: Parameters<TransformHook>) {
-      if (exclude.test(args[1]))
-        return
-      return original.call(this, ...args)
-    }
-
-  if (typeof transform === 'function')
-    plugin.transform = wrap(transform)
-  else
-    transform.handler = wrap(transform.handler)
-
-  return plugin
-}
