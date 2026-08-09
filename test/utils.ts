@@ -2,6 +2,7 @@ import type { TestHelpers } from 'better-auth/plugins'
 import type { AppRouter } from '~/server/trpc/root'
 import { createClient } from '@teages/oh-my-graphql'
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
+import { serverFetch } from 'nitro/app'
 import { createFetch } from 'ofetch'
 import { useAuth } from '~/server/utils/auth'
 import { useDrizzle } from '~/server/utils/drizzle'
@@ -11,6 +12,8 @@ export async function resetTestDatabase(): Promise<void> {
   if (!import.meta.MOCK_DATABASE) {
     throw new Error('resetTestDatabase() is only available in the mock-database test environment.')
   }
+  // The request hook waits for the asynchronous PGlite plugin initialization.
+  await serverFetch('/api/auth/get-session')
   const { db } = useDrizzle()
   await clearDatabase(db)
 }

@@ -1,25 +1,24 @@
-import { serverFetch } from 'nitro/app'
+import { beforeAll } from 'vitest'
 import { fetch } from '~/test/env-runner-bridge.ts'
 import { testOrigin } from '~/test/utils.ts'
 
-if (!globalThis.setupInitialized) {
-  globalThis.setupInitialized = true
-  // Initialize the request-scoped PGlite plugin before tests access useDrizzle.
-  // eslint-disable-next-line antfu/no-top-level-await
-  await serverFetch('/api/auth/get-session')
-  // Warm the env-runner document path (same route smoke asserts). Swallow only
-  // so later tests still own the failure mode; do not use HEAD — it never hits SSR.
-  // no-excuse-ok: catch
-  // eslint-disable-next-line antfu/no-top-level-await
+interface TestSetupGlobal {
+  ssrWarmup?: Promise<void>
+}
+
+const testSetupGlobal = globalThis as unknown as TestSetupGlobal
+
+async function warmSsr(): Promise<void> {
+  // Compile the SSR graph before the first document test starts its timeout.
   await fetch('/', {
     headers: {
       Origin: testOrigin,
       Accept: 'text/html',
     },
-  }).catch(() => null)
+  })
 }
 
-declare global {
-  // eslint-disable-next-line vars-on-top
-  var setupInitialized: boolean | undefined
-}
+beforeAll(async () => {
+  testSetupGlobal.ssrWarmup ??= warmSsr()
+  await testSetupGlobal.ssrWarmup
+})
