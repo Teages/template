@@ -1,12 +1,13 @@
 import type { Plugin } from 'vite'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, relative, resolve } from 'node:path'
 import { env } from 'node:process'
 import { createConsola } from 'consola'
 import { runnerImport } from 'vite'
 
 const logger = createConsola({}).withTag('graphql')
-const PLUGIN_DIR = 'plugins/graphql-schema'
-const CODEGEN_ENTRY = `${PLUGIN_DIR}/codegen.ts`
+const CODEGEN_ENTRY = 'plugins/graphql-schema/codegen.ts'
+const SCHEMA_ENTRY_ID = 'virtual:graphql-schema-entry'
 
 export interface GraphqlSchemaPluginOptions {
   /** Module path to the GraphQL schema entry (relative to Vite root). */
@@ -29,6 +30,14 @@ function toPosix(path: string): string {
   return path.split(/[/\\]/).join('/')
 }
 
+async function updateFile(path: string, content: string): Promise<boolean> {
+  const existing = await readFile(path, 'utf-8').catch(() => null)
+  if (existing === content)
+    return false
+  await writeFile(path, content)
+  return true
+}
+
 function isWatchedSource(root: string, schema: string, file: string): boolean {
   const rel = toPosix(relative(root, file))
   const schemaRel = toPosix(schema)
@@ -36,7 +45,6 @@ function isWatchedSource(root: string, schema: string, file: string): boolean {
   return rel === schemaRel
     || rel.startsWith(`${schemaDir}/`)
     || rel === CODEGEN_ENTRY
-    || rel.startsWith(`${PLUGIN_DIR}/`)
 }
 
 async function printGraphqlSchema(
@@ -44,17 +52,10 @@ async function printGraphqlSchema(
   options: GraphqlSchemaPluginOptions,
   printOptions?: { readonly quietIfUnchanged?: boolean },
 ): Promise<void> {
-  const config = {
-    schema: resolve(root, options.schema),
-    schemaExport: options.schemaExport,
-    outputs: {
-      graphql: resolve(root, options.outputs.graphql),
-      gazania: resolve(root, options.outputs.gazania),
-    },
-  }
-
-  const { module } = await runnerImport<{
-    artifactsUpdated: boolean
+  const schemaPath = resolve(root, options.schema)
+  const { module: artifacts } = await runnerImport<{
+    graphql: string
+    gazania: string
   }>(resolve(root, CODEGEN_ENTRY), {
     configFile: false,
     logLevel: 'error',
@@ -62,16 +63,25 @@ async function printGraphqlSchema(
     resolve: {
       alias: {
         '~': root,
+        [SCHEMA_ENTRY_ID]: schemaPath,
       },
     },
     define: {
       'import.meta.vitest': 'undefined',
       'import.meta.MOCK_DATABASE': env.MOCK_DATABASE || 'undefined',
-      '__GRAPHQL_CODEGEN_CONFIG__': JSON.stringify(config),
+      '__GRAPHQL_SCHEMA_EXPORT__': JSON.stringify(options.schemaExport),
     },
   })
 
-  if (module.artifactsUpdated) {
+  const graphqlOutput = resolve(root, options.outputs.graphql)
+  const gazaniaOutput = resolve(root, options.outputs.gazania)
+  await mkdir(dirname(graphqlOutput), { recursive: true })
+  await mkdir(dirname(gazaniaOutput), { recursive: true })
+
+  let updated = await updateFile(graphqlOutput, artifacts.graphql)
+  updated = await updateFile(gazaniaOutput, artifacts.gazania) || updated
+
+  if (updated) {
     logger.info('Schema updated.')
   }
   else if (!printOptions?.quietIfUnchanged) {
