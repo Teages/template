@@ -76,6 +76,9 @@ catalogs:
     nitro:
       specifier: 3.0.260603-beta
       version: 3.0.260603-beta
+    srvx:
+      specifier: ^0.11.16
+      version: 0.11.22
   tooling:
     get-port-please:
       specifier: ^3.2.0
@@ -315,6 +318,9 @@ importers:
       skills:
         specifier: catalog:tooling
         version: 1.5.21
+      srvx:
+        specifier: catalog:nitro
+        version: 0.11.22
       typescript:
         specifier: catalog:typescript
         version: 5.9.3

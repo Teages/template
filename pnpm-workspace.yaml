@@ -41,6 +41,7 @@ catalogs:
 
   nitro:
     nitro: 3.0.260603-beta
+    srvx: ^0.11.16
 
   tooling:
     get-port-please: ^3.2.0

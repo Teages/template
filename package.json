@@ -75,6 +75,7 @@
     "jiti": "catalog:tooling",
     "nitro": "catalog:nitro",
     "skills": "catalog:tooling",
+    "srvx": "catalog:nitro",
     "typescript": "catalog:typescript",
     "unhead": "catalog:vue",
     "vite": "catalog:vite",
