@@ -64,6 +64,8 @@ catalogs:
     consola: ^3.4.2
     devalue: ^5.9.0
     ofetch: ^1.5.1
+    pathe: ^2.0.3
+    pkg-types: ^2.3.1
     zod: ^4.4.3
 
   vite:

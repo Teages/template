@@ -9,10 +9,12 @@ import VueRouter from 'vue-router/vite'
 import DrizzleStudio from './plugins/drizzle-studio/index.ts'
 import { graphqlSchemaPlugin } from './plugins/graphql-schema/index.ts'
 import { moduleRunnerEsmPlugin } from './plugins/module-runner-esm/index.ts'
+import tsconfigPlugin from './plugins/tsconfig/index.ts'
 
 export default defineConfig({
   plugins: [
     moduleRunnerEsmPlugin(),
+    tsconfigPlugin(),
     // VueRouter must be added BEFORE vue() per the official docs.
     VueRouter({
       routesFolder: 'app/pages',

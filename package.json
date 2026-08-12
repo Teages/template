@@ -73,6 +73,8 @@
     "get-port-please": "catalog:tooling",
     "jiti": "catalog:tooling",
     "nitro": "catalog:nitro",
+    "pathe": "catalog:utilities",
+    "pkg-types": "catalog:utilities",
     "skills": "catalog:tooling",
     "srvx": "catalog:nitro",
     "typescript": "catalog:typescript",
