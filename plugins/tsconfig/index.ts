@@ -36,6 +36,7 @@ export default function tsconfigPlugin(): Plugin {
               pathToRoot('.generated/shared/**/*.ts'),
               pathToRoot('app/**/*.ts'),
               pathToRoot('app/**/*.vue'),
+              pathToRoot('plugins/*/runtime/app/**/*.ts'),
             ],
             vueCompilerOptions: {
               plugins: [
@@ -69,6 +70,9 @@ export default function tsconfigPlugin(): Plugin {
               pathToRoot('plugins/**/*.ts'),
               pathToRoot('*.ts'),
             ],
+            exclude: [
+              pathToRoot('plugins/*/runtime/**/*.ts'),
+            ],
           }
 
           const serverConfig: TSConfig = {
@@ -87,6 +91,7 @@ export default function tsconfigPlugin(): Plugin {
               pathToRoot('.generated/server/**/*.ts'),
               pathToRoot('.generated/shared/**/*.ts'),
               pathToRoot('server/**/*.ts'),
+              pathToRoot('plugins/*/runtime/server/**/*.ts'),
               pathToRoot('test/e2e/app/**/*.ts'),
               pathToRoot('test/e2e/api/**/*.ts'),
               pathToRoot('test/setup.ts'),
