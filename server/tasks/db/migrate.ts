@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
-import { drizzle } from 'drizzle-orm/node-postgres'
-import { migrate } from 'drizzle-orm/node-postgres/migrator'
+import { drizzle } from 'drizzle-orm/postgres-js'
+import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import { useRuntimeConfig } from 'nitro/runtime-config'
 import { defineTask } from 'nitro/task'
 import { config } from '../../utils/drizzle'

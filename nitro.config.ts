@@ -10,5 +10,5 @@ export default defineConfig({
   runtimeConfig: {
     databaseUrl: '',
   },
-  traceDeps: ['drizzle-orm*', 'tslib*'],
+  traceDeps: ['tslib*'],
 })
