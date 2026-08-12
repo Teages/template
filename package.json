@@ -60,7 +60,6 @@
     "@graphql-typed-document-node/core": "catalog:graphql",
     "@tsconfig/node24": "catalog:typescript",
     "@types/node": "catalog:typescript",
-    "@types/pg": "catalog:database",
     "@vitejs/devtools": "catalog:vite",
     "@vitejs/devtools-kit": "catalog:vite",
     "@vitejs/devtools-vite": "catalog:vite",
