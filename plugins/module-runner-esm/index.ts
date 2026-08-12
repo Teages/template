@@ -5,8 +5,10 @@ import { createRequire } from 'node:module'
  * Remap CJS-only package entrypoints to ESM builds for Vite ModuleRunners.
  *
  * The env-runner evaluates inlined modules without Node `require`/`exports`,
- * so packages that resolve to CJS (`main`) throw under `dispatchFetch` even
- * when the same import works in other Node contexts.
+ * so packages whose default `node` condition / `main` field resolves to a
+ * CJS wrapper throw when imported inside the runner. Currently remaps the
+ * Vue runtime graph to its ESM bundler entries (see the matching entry in
+ * `WORKAROUND.md`).
  */
 export function moduleRunnerEsmPlugin(): Plugin {
   const fromVue = createRequire(import.meta.resolve('vue/package.json'))
@@ -19,10 +21,6 @@ export function moduleRunnerEsmPlugin(): Plugin {
     '@vue/server-renderer': fromVue.resolve('@vue/server-renderer/dist/server-renderer.esm-bundler.js'),
     'vue/server-renderer': fromVue.resolve('@vue/server-renderer/dist/server-renderer.esm-bundler.js'),
   }
-  const fromYoga = createRequire(import.meta.resolve('graphql-yoga/package.json'))
-  const whatwgFetchEsm = fromYoga.resolve(
-    '@whatwg-node/fetch/dist/esm-ponyfill.js',
-  )
 
   return {
     name: 'module-runner-esm',
@@ -33,8 +31,6 @@ export function moduleRunnerEsmPlugin(): Plugin {
     resolveId(id) {
       if (vueEntries[id])
         return vueEntries[id]
-      if (id === '@whatwg-node/fetch')
-        return whatwgFetchEsm
     },
   }
 }

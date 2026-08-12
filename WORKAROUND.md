@@ -4,7 +4,9 @@ Inventory of patches, workarounds, and accepted deviations from upstream or
 type-safe conventions. Each entry lists why it exists, which lifecycle stages
 it affects, where it is patched, and what would let us remove it.
 
-Stages: `dev` = `pnpm dev`, `test` = `pnpm test`, `build` = `pnpm build`.
+Stages: `dev` = `pnpm dev` (HMR dev server), `test` = `pnpm test` (automated test
+runner), `build` = `pnpm build` + `pnpm preview` (production: build output and
+its runtime, not just the build step).
 
 ---
 
@@ -37,17 +39,29 @@ Stages: `dev` = `pnpm dev`, `test` = `pnpm test`, `build` = `pnpm build`.
 - follow up: Revisit as upstream packages ship native ESM; remove when the
   default `node`/`main` resolution is safe for the SSR ModuleRunner.
 
-### @whatwg-node/fetch resolves to CJS under dispatchFetch
-- reason: `@whatwg-node/fetch` (via `graphql-yoga`) exposes a CJS `main`. The
-  Vite ModuleRunner evaluates inlined modules without Node `require`/`exports`,
-  so the CJS entry throws under `dispatchFetch` even though it works in other
-  Node contexts.
-- affected: dev, build
-- patched: `plugins/module-runner-esm/index.ts` (`moduleRunnerEsmPlugin`) —
-  remaps `@whatwg-node/fetch` to its
-  `dist/esm-ponyfill.js` build for the `ssr` and `nitro` environments.
-- follow up: Remove when `@whatwg-node/fetch` ships a proper ESM entry or the
-  ModuleRunner tolerates CJS.
+### Nitro trace omits tslib, crashing graphql-yoga in production
+- reason: `graphql-yoga` and its `@whatwg-node/*` chain (`node-fetch`,
+  `disposablestack`, …) ship as TypeScript-compiled CJS that
+  `require("tslib")` for tsc's `__importStar`/`__exportStar` helpers. Nitro's
+  nft trace copies those packages into `.output/server/node_modules/` but does
+  not follow the transitive `tslib` dependency, so at runtime the first
+  request to `/api/graphql` throws
+  `Cannot find module '.../node_modules/tslib/tslib.js'` and returns 500.
+  Only the bundled production server is affected: `dev` pre-bundles deps via
+  Vite, and `test` runs Nitro in-process, so neither hits the trace output.
+- affected: build
+- patched: `nitro.config.ts` `traceDeps` includes `'tslib*'`, expanding the
+  nft allowlist so `tslib` is bundled alongside `graphql-yoga*` and the rest.
+- follow up: Remove once Nitro's nft tracer follows transitive runtime deps
+  like `tslib` automatically. Track the Nitro release that fixes it.
+
+  Note: a previous entry here blamed `@whatwg-node/fetch`'s CJS `main` under
+  Yoga's `dispatchFetch` and remapped it to `dist/esm-ponyfill.js` in
+  `plugins/module-runner-esm/index.ts`. That diagnosis was wrong — the CJS
+  entry works fine in Node's native ESM/CJS interop, and the ModuleRunner
+  remap had no effect on the bundled production server (which never goes
+  through Vite's ModuleRunner). The remap has been removed; `traceDeps` is
+  the actual fix.
 
 ### @vitejs/plugin-vue transforms ?assets queries
 - reason: `entry-server.ts` imports page modules with a `?assets` query to

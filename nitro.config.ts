@@ -21,5 +21,10 @@ export default defineConfig({
     'gazania*',
     '@trpc/*',
     'zod*',
+    // tslib is a transitive dep of graphql-yoga / @whatwg-node/* (emitted by
+    // tsc's CJS helpers). Nitro's nft trace copies those packages into
+    // .output/server/node_modules but misses tslib, causing
+    // "Cannot find module '.../node_modules/tslib/tslib.js'" at runtime.
+    'tslib*',
   ],
 })
