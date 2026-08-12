@@ -6,7 +6,7 @@ it affects, where it is patched, and what would let us remove it.
 
 Stages: `dev` = `pnpm dev` (HMR dev server), `test` = `pnpm test` (automated test
 runner), `build` = `pnpm build` + `pnpm preview` (production: build output and
-its runtime, not just the build step).
+its runtime, with real database).
 
 ---
 
