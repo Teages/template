@@ -29,13 +29,20 @@ its runtime, with real database).
 - reason: Packages without an ESM entry (e.g. `aria-hidden`'s `dist/es5`) get
   inlined into the ModuleRunner when the `node` condition or `main` field wins,
   breaking SSR evaluation. Vue has the same shape: its `node` import resolves
-  through `index.mjs` to the CJS `index.js` wrapper.
+  through `index.mjs` to the CJS `index.js` wrapper. `@whatwg-node/fetch`
+  (a `graphql-yoga` dependency) also has this shape: its CJS `node-ponyfill.js`
+  entry is a single top-level `require('./create-node-ponyfill')` that throws
+  `ReferenceError: require is not defined` inside the ModuleRunner.
 - affected: dev, build
 - patched: `plugins/module-runner-esm/index.ts` resolves the Vue runtime graph
-  to its ESM bundler entries. Unlike Nuxt's bundled SSR pipeline, standalone
-  Nitro's env-runner inlines these dependencies and cannot delegate Vue's CJS
-  wrappers to Node. `vite.config.ts` keeps the general ESM-first SSR policy and
-  follows Nuxt's `resolve.dedupe: ['vue']` configuration.
+  and `@whatwg-node/fetch` to their ESM bundler entries. Unlike Nuxt's bundled
+  SSR pipeline, standalone Nitro's env-runner inlines these dependencies and
+  cannot delegate their CJS wrappers to Node. `vite.config.ts` keeps the
+  general ESM-first SSR policy and follows Nuxt's `resolve.dedupe: ['vue']`
+  configuration. The `@whatwg-node/fetch` remap targets `dist/esm-ponyfill.js`,
+  which is exactly what Yoga imports under ESM resolution; it is a dev/test
+  fix only and does not affect the bundled production server (see the tslib
+  entry below).
 - follow up: Revisit as upstream packages ship native ESM; remove when the
   default `node`/`main` resolution is safe for the SSR ModuleRunner.
 
@@ -55,13 +62,16 @@ its runtime, with real database).
 - follow up: Remove once Nitro's nft tracer follows transitive runtime deps
   like `tslib` automatically. Track the Nitro release that fixes it.
 
-  Note: a previous entry here blamed `@whatwg-node/fetch`'s CJS `main` under
-  Yoga's `dispatchFetch` and remapped it to `dist/esm-ponyfill.js` in
-  `plugins/module-runner-esm/index.ts`. That diagnosis was wrong — the CJS
-  entry works fine in Node's native ESM/CJS interop, and the ModuleRunner
-  remap had no effect on the bundled production server (which never goes
-  through Vite's ModuleRunner). The remap has been removed; `traceDeps` is
-  the actual fix.
+  Note: an earlier commit (the one introducing this `traceDeps` fix) blamed
+  `@whatwg-node/fetch`'s CJS `main` as a *prod* problem, dropped the
+  `dist/esm-ponyfill.js` remap from `plugins/module-runner-esm/index.ts`, and
+  rewrote the WORKAROUND to call it a misdiagnosis. That was itself the
+  misdiagnosis: the prod path is fine and was fixed by `traceDeps`, but the
+  remap also fixes the *dev/test* ModuleRunner path where
+  `ReferenceError: require is not defined` reappeared after the remap was
+  dropped (once nitro 3.0.260606-beta stopped masking it via SSR-warmup
+  timeouts). Both fixes are needed — the remap for dev/test, `traceDeps` for
+  prod. Do not remove the remap again based on "prod is fine".
 
 ### @vitejs/plugin-vue transforms ?assets queries
 - reason: `entry-server.ts` imports page modules with a `?assets` query to
