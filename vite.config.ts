@@ -1,10 +1,9 @@
 import { env } from 'node:process'
 import ui from '@nuxt/ui/vite'
-import { DevTools } from '@vitejs/devtools'
 import vue from '@vitejs/plugin-vue'
 import { nitro } from 'nitro/vite'
 import { defineConfig } from 'vite'
-import devtoolsJson from 'vite-plugin-devtools-json'
+import devToolsPlugin from './plugins/dev-tools/index.ts'
 import DrizzleStudio from './plugins/drizzle-studio/index.ts'
 import { graphqlSchemaPlugin } from './plugins/graphql-schema/index.ts'
 import { moduleRunnerEsmPlugin } from './plugins/module-runner-esm/index.ts'
@@ -38,21 +37,10 @@ export default defineConfig({
         gazania: '.generated/shared/gazania.d.ts',
       },
     }),
-    // Embedded mode: HTML is rendered by Nitro/SSR, so client inject lives in entry-client.
-    // DevTools opens a standalone WebSocket without a close hook in Vitest's
-    // middleware mode, so skip it to avoid the 10s close timeout.
-    // Upstream fix tracked in https://github.com/vitejs/devtools/pull/519
-    env.VITEST ? false : DevTools(),
-    devtoolsJson(),
+    devToolsPlugin(),
     DrizzleStudio(),
     nitro(),
   ],
-  build: {
-    rolldownOptions: {
-      // Enable Rolldown analysis panels for `vite build` / standalone DevTools.
-      devtools: {},
-    },
-  },
   resolve: {
     alias: {
       '~': import.meta.dirname,
