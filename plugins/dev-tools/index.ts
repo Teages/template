@@ -18,7 +18,7 @@ export default function devToolsPlugin(): PluginOption {
     },
   }]
 
-  // Embedded mode: HTML is rendered by Nitro/SSR, so client inject lives in entry-client.
+  // Embedded mode: HTML is rendered by Nitro/SSR, so app/plugins owns client inject.
   // DevTools opens a standalone WebSocket without a close hook in Vitest's
   // middleware mode, so skip it to avoid the 10s close timeout.
   // Upstream fix tracked in https://github.com/vitejs/devtools/pull/519

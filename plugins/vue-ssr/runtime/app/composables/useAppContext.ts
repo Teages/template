@@ -6,7 +6,7 @@ export function useAppContext(): AppContext {
   const context = inject(APP_CONTEXT_KEY, null)
   if (!context) {
     throw new Error(
-      'App context is not available. Ensure entry-server / entry-client provide APP_CONTEXT_KEY.',
+      'App context is not available. Ensure the Vue SSR bootstrap provides APP_CONTEXT_KEY.',
     )
   }
   return context

@@ -77,7 +77,8 @@ its runtime, with real database).
   prod. Do not remove the remap again based on "prod is fine".
 
 ### @vitejs/plugin-vue transforms ?assets queries
-- reason: `entry-server.ts` imports page modules with a `?assets` query to
+- reason: `plugins/vue-ssr/runtime/app/entry-server.ts` imports page modules
+  with a `?assets` query to
   preload SSR assets. Without an exclusion, `@vitejs/plugin-vue` strips the
   query and tries to parse Nitro's generated asset module as a Vue SFC.
 - affected: dev, build
