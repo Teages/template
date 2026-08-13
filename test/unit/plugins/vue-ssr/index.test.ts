@@ -12,14 +12,14 @@ describe('vue SSR plugin wiring', () => {
         client: {
           build: {
             rollupOptions: {
-              input: './app/entry-client.ts',
+              input: './plugins/vue-ssr/runtime/app/entry-client.ts',
             },
           },
         },
         ssr: {
           build: {
             rollupOptions: {
-              input: './app/entry-server.ts',
+              input: './plugins/vue-ssr/runtime/app/entry-server.ts',
             },
           },
         },
