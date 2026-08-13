@@ -51,6 +51,8 @@ describe('createSsrFetchContext', () => {
     'https://external.example/data',
     'https://app.example/api/session',
     '//external.example/data',
+    '/\\external.example/data',
+    '/\n/external.example/data',
   ])('does not inherit cookies for non-internal target %s', async (target) => {
     const { $requestFetch, calls } = createHarness()
 
