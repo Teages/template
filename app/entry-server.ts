@@ -1,6 +1,6 @@
 import ui from '@nuxt/ui/vue-plugin'
 
-import { fetchViteEnv } from 'nitro/vite/runtime'
+import { serverFetch } from 'nitro/app'
 
 import { createHead, transformHtmlTemplate } from 'unhead/server'
 import { createSSRApp, h, Suspense } from 'vue'
@@ -36,9 +36,15 @@ function toGlobKey(filePath: string): string {
 }
 
 async function handler(request: Request): Promise<Response> {
+  // Use `serverFetch` (in-process `useNitroApp().fetch`) instead of
+  // `fetchViteEnv('nitro', ...)`: under the dev env-runner the `nitro`
+  // vite-service lookup intermittently resolves to `undefined` and throws
+  // `HTTPError 404 <no response>`. `serverFetch` calls the H3 app handler
+  // directly, which is all the SSR data fetches need, and stays consistent
+  // with production where API and SSR share one Nitro instance.
   const fetchContext = createSsrFetchContext(
     request,
-    (input, init) => fetchViteEnv('nitro', input, init),
+    (input, init) => serverFetch(input, init),
   )
   const url = new URL(request.url)
   const session = await fetchAuthSession(fetchContext.$requestFetch)
