@@ -5,27 +5,18 @@ import vue from '@vitejs/plugin-vue'
 import { nitro } from 'nitro/vite'
 import { defineConfig } from 'vite'
 import devtoolsJson from 'vite-plugin-devtools-json'
-import VueRouter from 'vue-router/vite'
 import DrizzleStudio from './plugins/drizzle-studio/index.ts'
 import { graphqlSchemaPlugin } from './plugins/graphql-schema/index.ts'
 import { moduleRunnerEsmPlugin } from './plugins/module-runner-esm/index.ts'
 import tsconfigPlugin from './plugins/tsconfig/index.ts'
+import { vueRouterPlugin } from './plugins/vue-router/index.ts'
 
 export default defineConfig({
   plugins: [
     moduleRunnerEsmPlugin(),
     tsconfigPlugin(),
-    // VueRouter must be added BEFORE vue() per the official docs.
-    VueRouter({
+    vueRouterPlugin({
       routesFolder: 'app/pages',
-      dts: '.generated/app/typed-router.d.ts',
-      // Stash page file path on meta so entry-server can find its ?assets importer.
-      extendRoute(route) {
-        const file = route.component
-        if (file) {
-          route.addToMeta({ __filePath: file })
-        }
-      },
     }),
     vue({ exclude: /\?assets/ }),
     ui({
