@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fetch } from '~/test/env-runner-bridge'
+import { fetch } from '~/plugins/nitro-test/runtime/node/env-runner-bridge.ts'
 import { cookieHeader, testOrigin, uniqueAuthEmail } from '~/test/utils'
 
 describe('trpc demo page SSR', () => {

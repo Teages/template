@@ -1,4 +1,4 @@
-import { teardownNitroInstances } from './plugin.ts'
+import { teardownNitroInstances } from '../plugins/nitro-test/index.ts'
 
 /**
  * Global setup for the whole Vitest workspace.

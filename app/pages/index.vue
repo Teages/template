@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { setInfiniteQueryData, useInfiniteQuery, useMutation, useQueryCache } from '@pinia/colada'
-import { gazania } from '~/app/utils/gazania'
-import { createGraphQLClient, GraphQLRequestError } from '~/app/utils/graphql-client'
 import { COUNT_QUERY_KEYS } from '~/app/utils/query-keys'
+import { createGraphQLClient, GraphQLRequestError } from '~/plugins/graphql-schema/runtime/app/client'
+import { gazania } from '~/plugins/graphql-schema/runtime/shared/gazania'
+import { useAppContext } from '~/plugins/vue-ssr/runtime/app/composables/useAppContext'
 
 const graphql = createGraphQLClient(useAppContext().$requestFetch)
 

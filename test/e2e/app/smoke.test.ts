@@ -1,6 +1,6 @@
 import { serverFetch } from 'nitro/app'
 import { describe, expect, it } from 'vitest'
-import { fetch } from '~/test/env-runner-bridge'
+import { fetch } from '~/plugins/nitro-test/runtime/node/env-runner-bridge.ts'
 import { testOrigin } from '~/test/utils'
 
 describe('full stack smoke', () => {

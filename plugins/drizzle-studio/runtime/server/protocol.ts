@@ -2,7 +2,7 @@ import type { PGlite } from '@electric-sql/pglite'
 import { Buffer } from 'node:buffer'
 import { createHash } from 'node:crypto'
 import { types } from '@electric-sql/pglite'
-import { isRecord } from './predicates'
+import { isRecord } from '~/server/utils/predicates.ts'
 
 const STUDIO_VERSION = '6.3'
 const DB_URL = 'pglite://custom-client'

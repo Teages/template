@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { createApp } from 'vue'
-import { createAppPayload, installDataLayer } from '~/app/utils/data-layer'
-import { parsePayloadScript, serializePayloadScript } from '~/app/utils/payload'
+import {
+  createAppPayload,
+  installDataLayer,
+} from '~/plugins/vue-ssr/runtime/app/data-layer'
+import {
+  parsePayloadScript,
+  serializePayloadScript,
+} from '~/plugins/vue-ssr/runtime/app/payload'
 
 describe('data layer', () => {
   it('hydrates query data without sharing caches between apps', () => {

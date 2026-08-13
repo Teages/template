@@ -1,6 +1,6 @@
 import { serverFetch } from 'nitro/app'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { gazania } from '~/server/utils/gazania'
+import { gazania } from '~/plugins/graphql-schema/runtime/shared/gazania.ts'
 import { createGraphQLTestClient, resetTestDatabase, signInTestUser } from '~/test/utils'
 
 describe('mutation recordCount', () => {

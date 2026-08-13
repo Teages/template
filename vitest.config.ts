@@ -1,5 +1,5 @@
 import { defineConfig, mergeConfig } from 'vitest/config'
-import { nitroTestPlugin } from './test/plugin.ts'
+import { nitroTestPlugin } from './plugins/nitro-test/index.ts'
 import viteConfig from './vite.config.ts'
 
 const rootDir = import.meta.dirname
@@ -26,7 +26,11 @@ export default defineConfig({
           name: 'unit',
           environment: 'node',
           include: ['test/unit/**/*.test.ts'],
-          includeSource: ['server/**/*.ts', 'app/**/*.ts'],
+          includeSource: [
+            'server/**/*.ts',
+            'app/**/*.ts',
+            'plugins/*/runtime/**/*.ts',
+          ],
         },
       }),
       // Full Nitro + Vue + Nuxt UI stack.

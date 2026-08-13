@@ -1,9 +1,12 @@
 import type { TypedDocumentNode } from 'gazania'
 import type { DeeplyAllowMatchers } from 'vitest'
-import type { GraphQLFetch } from '~/app/utils/graphql-client'
+import type { GraphQLFetch } from '~/plugins/graphql-schema/runtime/app/client'
 import { parse } from 'graphql'
 import { describe, expect, it, vi } from 'vitest'
-import { GraphQLRequestError, request } from '~/app/utils/graphql-client'
+import {
+  GraphQLRequestError,
+  request,
+} from '~/plugins/graphql-schema/runtime/app/client'
 
 function stringContaining(value: string): string {
   return expect.stringContaining(value) as string

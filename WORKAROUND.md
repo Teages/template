@@ -81,8 +81,9 @@ its runtime, with real database).
   preload SSR assets. Without an exclusion, `@vitejs/plugin-vue` strips the
   query and tries to parse Nitro's generated asset module as a Vue SFC.
 - affected: dev, build
-- patched: `vite.config.ts` passes `exclude: /\?assets/` to the Vue plugin. Its
-  native transform hook filter sees the full request ID and skips asset queries.
+- patched: `plugins/vue-ssr/index.ts` passes `exclude: /\?assets/` to the Vue
+  plugin. Its native transform hook filter sees the full request ID and skips
+  asset queries.
 - follow up: Remove once `@vitejs/plugin-vue` handles `?assets` queries
   natively; track the upstream issue.
 

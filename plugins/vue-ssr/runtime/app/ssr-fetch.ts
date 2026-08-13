@@ -42,10 +42,9 @@ function createSsrNativeFetch(
 /**
  * Create the two SSR fetch capabilities used by the Vue app.
  *
- * This mirrors Nuxt's security boundary: ordinary `$fetch` never inherits
- * browser credentials, while request-aware fetch only forwards them to a
- * relative internal route. Absolute and protocol-relative targets are always
- * treated as external, even when they happen to share the document origin.
+ * Ordinary `$fetch` never inherits browser credentials. Request-aware fetch
+ * forwards them only to a relative internal route. Absolute and
+ * protocol-relative targets remain external even at the document origin.
  */
 export function createSsrFetchContext(
   request: Request,

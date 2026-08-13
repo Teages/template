@@ -4,6 +4,7 @@ import { useQuery, useQueryCache } from '@pinia/colada'
 import { authClient } from '~/app/utils/auth-client'
 import { fetchAuthSession } from '~/app/utils/auth-session'
 import { AUTH_SESSION_QUERY_KEY } from '~/app/utils/query-keys'
+import { useAppContext } from '~/plugins/vue-ssr/runtime/app/composables/useAppContext'
 
 const { $requestFetch } = useAppContext()
 

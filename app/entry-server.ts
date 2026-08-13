@@ -7,18 +7,18 @@ import { createSSRApp, h, Suspense } from 'vue'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
 import { renderToString } from 'vue/server-renderer'
+import { APP_CONTEXT_KEY, createAppContext } from '~/plugins/vue-ssr/runtime/app/app-context'
+import { createAppPayload, installDataLayer } from '~/plugins/vue-ssr/runtime/app/data-layer'
+import { serializePayloadScript } from '~/plugins/vue-ssr/runtime/app/payload'
+import { createSsrFetchContext } from '~/plugins/vue-ssr/runtime/app/ssr-fetch'
 import App from './app.vue'
 import clientAssets from './entry-client?assets=client'
 // ?assets=client omits css in Vite dev; collect main.css from the SSR graph.
 import serverAssets from './entry-server?assets=ssr'
 
-import { APP_CONTEXT_KEY, createAppContext } from './utils/app-context'
 import { authRedirectFor } from './utils/auth-routes'
 import { fetchAuthSession } from './utils/auth-session'
-import { createAppPayload, installDataLayer } from './utils/data-layer'
-import { serializePayloadScript } from './utils/payload'
 import { AUTH_SESSION_QUERY_KEY } from './utils/query-keys'
-import { createSsrFetchContext } from './utils/ssr-fetch'
 import './assets/css/main.css'
 
 // Per-route ?assets bundles, keyed by page path for SSR <link> emission.

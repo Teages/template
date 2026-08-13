@@ -1,5 +1,5 @@
 import { beforeAll } from 'vitest'
-import { fetch } from '~/test/env-runner-bridge.ts'
+import { fetch } from '~/plugins/nitro-test/runtime/node/env-runner-bridge.ts'
 import { testOrigin } from '~/test/utils.ts'
 
 interface TestSetupGlobal {

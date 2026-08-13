@@ -26,7 +26,7 @@ function initDrizzle(): DrizzleDatabase {
   const runtimeConfig = useRuntimeConfig()
   const db = drizzle({
     ...config,
-    connection: runtimeConfig.databaseUrl as string,
+    connection: runtimeConfig.databaseUrl,
   }) as unknown as DrizzleDatabase
   return db
 }

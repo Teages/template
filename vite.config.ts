@@ -1,6 +1,5 @@
 import { env } from 'node:process'
 import ui from '@nuxt/ui/vite'
-import vue from '@vitejs/plugin-vue'
 import { nitro } from 'nitro/vite'
 import { defineConfig } from 'vite'
 import devToolsPlugin from './plugins/dev-tools/index.ts'
@@ -9,6 +8,7 @@ import { graphqlSchemaPlugin } from './plugins/graphql-schema/index.ts'
 import { moduleRunnerEsmPlugin } from './plugins/module-runner-esm/index.ts'
 import tsconfigPlugin from './plugins/tsconfig/index.ts'
 import { vueRouterPlugin } from './plugins/vue-router/index.ts'
+import { vueSsrPlugin } from './plugins/vue-ssr/index.ts'
 
 export default defineConfig({
   plugins: [
@@ -17,7 +17,7 @@ export default defineConfig({
     vueRouterPlugin({
       routesFolder: 'app/pages',
     }),
-    vue({ exclude: /\?assets/ }),
+    vueSsrPlugin(),
     ui({
       autoImport: {
         imports: ['vue', 'vue-router'],
@@ -52,10 +52,7 @@ export default defineConfig({
     'import.meta.MOCK_DATABASE': env.MOCK_DATABASE || 'undefined',
   },
   environments: {
-    client: { build: { rollupOptions: { input: './app/entry-client.ts' } } },
     ssr: {
-      build: { rollupOptions: { input: './app/entry-server.ts' } },
-
       // Prefer ESM package fields before Vite's CJS `main` fallback.
       resolve: {
         mainFields: ['module', 'jsnext:main', 'jsnext'],

@@ -66,6 +66,7 @@ export function getAppTSConfig(rootDir: string, buildDir: string): TSConfig {
       pathToRoot('app/**/*.ts'),
       pathToRoot('app/**/*.vue'),
       pathToRoot('plugins/*/runtime/app/**/*.ts'),
+      pathToRoot('plugins/*/runtime/shared/**/*.ts'),
     ],
   }
 }
@@ -93,6 +94,7 @@ export function getServerTSConfig(rootDir: string, buildDir: string): TSConfig {
       pathToRoot('.generated/shared/**/*.ts'),
       pathToRoot('server/**/*.ts'),
       pathToRoot('plugins/*/runtime/server/**/*.ts'),
+      pathToRoot('plugins/*/runtime/shared/**/*.ts'),
       pathToRoot('test/e2e/app/**/*.ts'),
       pathToRoot('test/e2e/api/**/*.ts'),
       pathToRoot('test/setup.ts'),
@@ -120,17 +122,17 @@ export function getNodeTSConfig(rootDir: string, buildDir: string): TSConfig {
     include: [
       './types/nitro-config.d.ts',
       pathToRoot('env.d.ts'),
-      pathToRoot('test/env-runner-bridge.ts'),
       pathToRoot('test/env.ts'),
       pathToRoot('test/global-setup.ts'),
-      pathToRoot('test/plugin.ts'),
       pathToRoot('test/unit/**/*.ts'),
       pathToRoot('scripts/**/*.ts'),
       pathToRoot('plugins/**/*.ts'),
       pathToRoot('*.ts'),
     ],
     exclude: [
-      pathToRoot('plugins/*/runtime/**/*.ts'),
+      pathToRoot('plugins/*/runtime/app/**/*.ts'),
+      pathToRoot('plugins/*/runtime/server/**/*.ts'),
+      pathToRoot('plugins/*/runtime/shared/**/*.ts'),
     ],
   }
 }

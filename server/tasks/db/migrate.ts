@@ -12,7 +12,7 @@ export default defineTask({
   },
   async run() {
     const { databaseUrl } = useRuntimeConfig()
-    const db = drizzle({ ...config, connection: databaseUrl as string })
+    const db = drizzle({ ...config, connection: databaseUrl })
     const migrationsFolder = resolve(import.meta.dirname, '../../database/migrations')
     await migrate(db, { migrationsFolder })
     await db.$client.end()

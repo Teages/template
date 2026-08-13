@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import {
   handleStudioProtocol,
   validateStudioAuthorization,
-} from '~/server/utils/drizzle-studio-protocol'
+} from '~/plugins/drizzle-studio/runtime/server/protocol'
 
 describe('validateStudioAuthorization', () => {
   it('reports an unavailable key as not configured', () => {

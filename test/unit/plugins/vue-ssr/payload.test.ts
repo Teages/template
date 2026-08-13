@@ -3,7 +3,7 @@ import {
   createEmptyPayload,
   parsePayloadScript,
   serializePayloadScript,
-} from '~/app/utils/payload'
+} from '~/plugins/vue-ssr/runtime/app/payload'
 
 describe('payload serialize/parse', () => {
   it('round-trips nested objects and Dates', () => {

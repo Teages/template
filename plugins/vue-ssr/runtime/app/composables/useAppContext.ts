@@ -1,13 +1,13 @@
-import type { AppContext } from '~/app/utils/app-context'
+import type { AppContext } from '../app-context.ts'
 import { inject } from 'vue'
-import { APP_CONTEXT_KEY } from '~/app/utils/app-context'
+import { APP_CONTEXT_KEY } from '../app-context.ts'
 
 export function useAppContext(): AppContext {
-  const ctx = inject(APP_CONTEXT_KEY, null)
-  if (!ctx) {
+  const context = inject(APP_CONTEXT_KEY, null)
+  if (!context) {
     throw new Error(
       'App context is not available. Ensure entry-server / entry-client provide APP_CONTEXT_KEY.',
     )
   }
-  return ctx
+  return context
 }

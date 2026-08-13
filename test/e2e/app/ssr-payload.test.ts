@@ -1,13 +1,13 @@
 import type { EntryKey, UseInfiniteQueryData } from '@pinia/colada'
 import type { DeeplyAllowMatchers } from 'vitest'
-import type { AppPayload } from '~/app/utils/payload'
+import type { AppPayload } from '~/plugins/vue-ssr/runtime/app/payload.ts'
 import { serverFetch } from 'nitro/app'
 import { describe, expect, it } from 'vitest'
 import { createApp } from 'vue'
-import { installDataLayer } from '~/app/utils/data-layer'
-import { parsePayloadScript } from '~/app/utils/payload'
 import { AUTH_SESSION_QUERY_KEY, COUNT_QUERY_KEYS } from '~/app/utils/query-keys'
-import { fetch } from '~/test/env-runner-bridge'
+import { fetch } from '~/plugins/nitro-test/runtime/node/env-runner-bridge.ts'
+import { installDataLayer } from '~/plugins/vue-ssr/runtime/app/data-layer.ts'
+import { parsePayloadScript } from '~/plugins/vue-ssr/runtime/app/payload.ts'
 import { cookieHeader, testOrigin, uniqueAuthEmail } from '~/test/utils'
 
 describe('ssr app payload', () => {
@@ -97,7 +97,7 @@ describe('ssr app payload', () => {
     const html = await res.text()
     // serverFetch is the in-process `useNitroApp().fetch` path; it cannot
     // reach the SSR renderer because the env-runner split keeps renderer
-    // state out of hand (see test/env-runner-bridge.ts for the loopback-HTTP
+    // state out of hand (see plugins/nitro-test/runtime/node/env-runner-bridge.ts for the loopback-HTTP
     // path used to test actual document rendering). Whatever non-200 it
     // resolves to — 404 on unmatched routes, a renderer-stack failure page
     // when the Nitro version tries the ssr renderer as a fallback — it must

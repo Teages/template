@@ -1,5 +1,5 @@
 import type { App } from 'vue'
-import type { AppPayload } from './payload'
+import type { AppPayload } from './payload.ts'
 import {
   hydrateQueryCache,
   PiniaColada,

@@ -3,7 +3,7 @@ import type { Plugin } from 'vite'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
 import { serve } from 'srvx/node'
-import { ENV_RUNNER_PORT_FILE } from './env-runner-bridge.ts'
+import { ENV_RUNNER_PORT_FILE } from './runtime/node/env-runner-bridge.ts'
 
 interface NitroTestGlobal {
   __nitroInstances__?: Set<{ close: () => Promise<void> }>
