@@ -37,6 +37,26 @@ are not shipped to an app or server environment stay beside `index.ts`.
   module abstractions. If removing a plugin breaks a required import, typecheck
   and tests should expose that dependency clearly.
 
+## Vue Runtime Plugins
+
+`app/plugins/` is the one deliberate auto-loading boundary. It is owned by
+`plugins/vue-ssr` and does not change the explicit registration rule for this
+root directory.
+
+- Only top-level `app/plugins/*.ts` files are loaded. Use `.client.ts` and
+  `.server.ts` suffixes for environment-specific setup.
+- Default-export `defineVuePlugin(...)`, imported explicitly from the Vue SSR
+  runtime. Plugins receive the app, router, app context, query cache, and
+  environment-specific request/head context; do not call component-level
+  `inject()` during plugin setup.
+- Files execute sequentially in path order and fail fast. A server plugin may
+  return a `Response` to stop rendering; a client plugin must return nothing.
+- Keep module evaluation free of startup work. Put effects inside the setup
+  function; a static CSS import owned by that plugin is the only current
+  exception.
+- Do not add object syntax, dependency graphs, parallel execution, hooks, or
+  automatic global provides without a concrete requirement and new tests.
+
 ## Boundaries
 
 - Move code here only when one plugin clearly owns its lifecycle or public
@@ -48,7 +68,8 @@ are not shipped to an app or server environment stay beside `index.ts`.
   sites, not inside plugin TypeScript modules.
 - Do not create catch-all `utils`, `common`, or `shared` logic collections.
 - Do not build a universal runtime loader until at least two concrete plugins
-  require the same mechanism and the duplication has a demonstrated cost.
+  require the same mechanism and the duplication has a demonstrated cost. The
+  scoped `app/plugins/` loader above is not a root template-plugin scanner.
 
 ## Tests
 
