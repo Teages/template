@@ -7,7 +7,7 @@
     "node": ">=24"
   },
   "scripts": {
-    "prepare": "jiti ./scripts/prepare.ts",
+    "prepare": "jiti ./scripts/prepare.ts && nitro prepare",
     "dev": "pnpm dev:mock",
     "dev:mock": "MOCK_DATABASE=true vite dev",
     "dev:prod": "vite dev",
