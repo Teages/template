@@ -26,25 +26,28 @@ its runtime, with real database).
   open-telemetry/opentelemetry-js and bump the cataloged version when fixed.
 
 ### CJS-only entrypoints inlined into the SSR ModuleRunner
-- reason: Packages without an ESM entry (e.g. `aria-hidden`'s `dist/es5`) get
-  inlined into the ModuleRunner when the `node` condition or `main` field wins,
-  breaking SSR evaluation. Vue has the same shape: its `node` import resolves
-  through `index.mjs` to the CJS `index.js` wrapper. `@whatwg-node/fetch`
-  (a `graphql-yoga` dependency) also has this shape: its CJS `node-ponyfill.js`
-  entry is a single top-level `require('./create-node-ponyfill')` that throws
-  `ReferenceError: require is not defined` inside the ModuleRunner.
-- affected: dev, build
-- patched: `plugins/module-runner-esm/index.ts` resolves the Vue runtime graph
-  and `@whatwg-node/fetch` to their ESM bundler entries. Unlike Nuxt's bundled
-  SSR pipeline, standalone Nitro's env-runner inlines these dependencies and
-  cannot delegate their CJS wrappers to Node. `vite.config.ts` keeps the
-  general ESM-first SSR policy and follows Nuxt's `resolve.dedupe: ['vue']`
-  configuration. The `@whatwg-node/fetch` remap targets `dist/esm-ponyfill.js`,
-  which is exactly what Yoga imports under ESM resolution; it is a dev/test
-  fix only and does not affect the bundled production server (see the tslib
-  entry below).
-- follow up: Revisit as upstream packages ship native ESM; remove when the
-  default `node`/`main` resolution is safe for the SSR ModuleRunner.
+- reason: Some packages expose ESM through `module`/`jsnext:*` fields but CJS
+  through `main`. Without an explicit SSR main-field order, Nitro's test
+  environment leaves `mainFields` empty and Vite falls back to `main`; for
+  example, `aria-hidden` then resolves to `dist/es5` and throws
+  `ReferenceError: exports is not defined`. Nitro's env-runner evaluates these
+  inlined dependencies without Node's `require`/`exports` globals. Vue's
+  `node` import also resolves through `index.mjs` to the CJS `index.js` wrapper.
+  `@whatwg-node/fetch` (a `graphql-yoga` dependency) similarly exposes a CJS
+  `node-ponyfill.js` entry whose top-level `require('./create-node-ponyfill')`
+  fails inside the ModuleRunner.
+- affected: dev, test
+- patched: `vite.config.ts` sets the SSR `mainFields` to the ESM package fields
+  and follows Nuxt's `resolve.dedupe: ['vue']` configuration.
+  `plugins/module-runner-esm/index.ts` resolves the Vue runtime graph and
+  `@whatwg-node/fetch` to their ESM bundler entries. Unlike Nuxt's bundled SSR
+  pipeline, standalone Nitro's env-runner cannot delegate their CJS wrappers
+  to Node. The `@whatwg-node/fetch` remap targets `dist/esm-ponyfill.js`; it is
+  a dev/test fix only and does not affect the bundled production server (see
+  the tslib entry below).
+- follow up: Remove the explicit `mainFields` once Nitro preserves Vite's
+  ESM-first server defaults, and revisit the remaps as upstream packages ship
+  env-runner-compatible ESM entrypoints.
 
 ### Nitro trace omits tslib, crashing graphql-yoga in production
 - reason: `graphql-yoga` and its `@whatwg-node/*` chain (`node-fetch`,

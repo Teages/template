@@ -54,16 +54,11 @@ export default defineConfig({
   environments: {
     client: { build: { rollupOptions: { input: './app/entry-client.ts' } } },
     ssr: {
-      // Prefer ESM entrypoints for packages that Nitro's ModuleRunner inlines.
+      build: { rollupOptions: { input: './app/entry-server.ts' } },
+
+      // Prefer ESM package fields before Vite's CJS `main` fallback.
       resolve: {
-        conditions: ['import', 'module', 'default'],
-        mainFields: ['module', 'jsnext:main', 'jsnext', 'main'],
-      },
-      build: {
-        rollupOptions: {
-          input: './app/entry-server.ts',
-          output: { codeSplitting: false },
-        },
+        mainFields: ['module', 'jsnext:main', 'jsnext'],
       },
     },
   },
