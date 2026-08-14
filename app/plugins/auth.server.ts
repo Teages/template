@@ -1,13 +1,15 @@
 import { defineVuePlugin } from '~/plugins/vue-ssr/runtime/app/vue-plugin'
 import { authRedirectFor } from '../utils/auth-routes'
 import { fetchAuthSession } from '../utils/auth-session'
-import { AUTH_SESSION_QUERY_KEY } from '../utils/query-keys'
 
 export default defineVuePlugin(async (context) => {
   if (context.environment !== 'server') {
     throw new TypeError('The server auth plugin requires a server context')
   }
 
+  // The session only gates the redirect decision here; the client refetches
+  // it once at hydration (see app/utils/auth-session.ts) instead of trusting
+  // an SSR-payload value, so it is never written into the query cache.
   const session = await fetchAuthSession(context.appContext.$requestFetch)
   const url = new URL(context.request.url)
   const redirect = authRedirectFor(
@@ -21,6 +23,4 @@ export default defineVuePlugin(async (context) => {
       headers: { Location: redirect },
     })
   }
-
-  context.queryCache.setQueryData(AUTH_SESSION_QUERY_KEY, session)
 })
