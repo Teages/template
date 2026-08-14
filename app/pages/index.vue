@@ -17,34 +17,42 @@ interface CountEvent {
   readonly createdAt: string
 }
 
-interface CountSnapshot {
-  readonly count: number
-  readonly events: readonly CountEvent[]
-  readonly pageInfo: {
-    readonly endCursor: string | null
-    readonly hasNextPage: boolean
-  }
-}
+/** One fetched page of the count snapshot; auth failures map to `unauthorized`. */
+type SnapshotPage
+  = | { readonly kind: 'unauthorized' }
+    | {
+      readonly kind: 'ready'
+      readonly count: number
+      readonly events: readonly CountEvent[]
+      readonly endCursor: string | null
+      readonly hasNextPage: boolean
+    }
 
 const PAGE_SIZE = 20
 
 const CountSnapshotQuery = gazania.query('CountSnapshot')
   .vars({ first: 'Int!', after: 'String' })
-  .select(($, vars) => $.select([
-    'count',
-    {
-      countEvents: $ => $.args({ first: vars.first, after: vars.after }).select([{
-        edges: $ => $.select([{
-          node: $ => $.select([
-            'id',
-            'createdAt',
-            { user: $ => $.select(['name', 'email']) },
-          ]),
+  .select(($, vars) => $.select([{
+    count: $ => $.select([
+      '__typename',
+      { '... on QueryCountSuccess': $ => $.select(['data']) },
+    ]),
+    countEvents: $ => $.args({ first: vars.first, after: vars.after }).select([
+      '__typename',
+      {
+        '... on QueryCountEventsConnection': $ => $.select([{
+          edges: $ => $.select([{
+            node: $ => $.select([
+              'id',
+              'createdAt',
+              { user: $ => $.select(['name', 'email']) },
+            ]),
+          }]),
+          pageInfo: $ => $.select(['endCursor', 'hasNextPage']),
         }]),
-        pageInfo: $ => $.select(['endCursor', 'hasNextPage']),
-      }]),
-    },
-  ]))
+      },
+    ]),
+  }]))
 
 function formatCreatedAt(value: unknown): string {
   if (typeof value === 'string')
@@ -69,18 +77,19 @@ function mapEvent(node: {
   }
 }
 
-function mapSnapshot(data: Awaited<ReturnType<typeof fetchSnapshot>>): CountSnapshot {
-  const mapped: CountEvent[] = []
-  for (const edge of data.countEvents.edges) {
-    mapped.push(mapEvent(edge.node))
+function mapSnapshotPage(data: Awaited<ReturnType<typeof fetchSnapshot>>): SnapshotPage {
+  if (
+    data.count.__typename === 'UnauthorizedError'
+    || data.countEvents.__typename === 'UnauthorizedError'
+  ) {
+    return { kind: 'unauthorized' }
   }
   return {
-    count: data.count,
-    events: mapped,
-    pageInfo: {
-      endCursor: data.countEvents.pageInfo.endCursor ?? null,
-      hasNextPage: data.countEvents.pageInfo.hasNextPage,
-    },
+    kind: 'ready',
+    count: data.count.data,
+    events: data.countEvents.edges.map(edge => mapEvent(edge.node)),
+    endCursor: data.countEvents.pageInfo.endCursor ?? null,
+    hasNextPage: data.countEvents.pageInfo.hasNextPage,
   }
 }
 
@@ -92,17 +101,10 @@ async function fetchSnapshot(after?: string) {
 }
 
 function toUserMessage(e: unknown): string {
-  if (e instanceof GraphQLRequestError) {
-    const message = e.errors.map(err => err.message).join('\n')
-    if (/unauthorized/i.test(message))
-      return 'You must sign in to view the counter'
-    return message
-  }
-  if (e instanceof Error) {
-    if (/unauthorized/i.test(e.message))
-      return 'You must sign in to view the counter'
+  if (e instanceof GraphQLRequestError)
+    return e.errors.map(err => err.message).join('\n')
+  if (e instanceof Error)
     return e.message
-  }
   return 'Unexpected error'
 }
 
@@ -113,26 +115,27 @@ const {
   hasNextPage,
   isLoading: queryLoading,
   loadNextPage,
-} = useInfiniteQuery<CountSnapshot, Error, string | null>({
+} = useInfiniteQuery<SnapshotPage, Error, string | null>({
   key: COUNT_QUERY_KEYS.graphql,
   initialPageParam: null,
-  query: async ({ pageParam }) => mapSnapshot(
+  query: async ({ pageParam }) => mapSnapshotPage(
     await fetchSnapshot(pageParam ?? undefined),
   ),
-  getNextPageParam: lastPage => lastPage.pageInfo.endCursor,
+  getNextPageParam: lastPage =>
+    lastPage.kind === 'ready' && lastPage.hasNextPage
+      ? lastPage.endCursor
+      : null,
 })
 
-const data = computed<CountSnapshot>(() => {
+type ReadySnapshotPage = Extract<SnapshotPage, { kind: 'ready' }>
+
+const snapshot = computed(() => {
   const pages = queryData.value?.pages ?? []
-  const firstPage = pages[0]
-  const lastPage = pages.at(-1)
+  const readyPages = pages.filter((page): page is ReadySnapshotPage => page.kind === 'ready')
   return {
-    count: firstPage?.count ?? 0,
-    events: pages.flatMap(page => page.events),
-    pageInfo: lastPage?.pageInfo ?? {
-      endCursor: null,
-      hasNextPage: false,
-    },
+    unauthorized: pages[0]?.kind === 'unauthorized',
+    count: readyPages[0]?.count ?? 0,
+    events: readyPages.flatMap(page => page.events),
   }
 })
 
@@ -146,46 +149,63 @@ const {
       gazania.mutation('RecordCount')
         .select($ => $.select([{
           recordCount: $ => $.select([
-            'totalCount',
+            '__typename',
             {
-              countEvent: $ => $.select([
-                'id',
-                'createdAt',
-                { user: $ => $.select(['name', 'email']) },
+              '... on RecordCountPayload': $ => $.select([
+                'totalCount',
+                {
+                  countEvent: $ => $.select([
+                    'id',
+                    'createdAt',
+                    { user: $ => $.select(['name', 'email']) },
+                  ]),
+                },
               ]),
             },
           ]),
         }])),
     )
+    if (result.recordCount.__typename === 'UnauthorizedError') {
+      // Domain errors resolve as data; surface them through the mutation
+      // error path so the existing error banner renders them.
+      throw new Error('You must sign in to view the counter')
+    }
     return {
       event: mapEvent(result.recordCount.countEvent),
       total: result.recordCount.totalCount,
     }
   },
   onSuccess(result) {
-    setInfiniteQueryData<CountSnapshot, Error, string | null>(
+    setInfiniteQueryData<SnapshotPage, Error, string | null>(
       queryCache,
       COUNT_QUERY_KEYS.graphql,
       (current) => {
         if (!current?.pages.length) {
           return {
             pages: [{
+              kind: 'ready',
               count: result.total,
               events: [result.event],
-              pageInfo: { endCursor: null, hasNextPage: false },
+              endCursor: null,
+              hasNextPage: false,
             }],
             pageParams: [null],
           }
         }
         return {
           ...current,
-          pages: current.pages.map((page, index) => ({
-            ...page,
-            count: result.total,
-            events: index === 0
-              ? [result.event, ...page.events]
-              : page.events,
-          })),
+          pages: current.pages.map((page, index) => {
+            if (index !== 0)
+              return page
+            const previous = page.kind === 'ready' ? page : null
+            return {
+              kind: 'ready',
+              count: result.total,
+              events: [result.event, ...(previous?.events ?? [])],
+              endCursor: previous?.endCursor ?? null,
+              hasNextPage: previous?.hasNextPage ?? false,
+            } satisfies ReadySnapshotPage
+          }),
         }
       },
     )
@@ -193,10 +213,10 @@ const {
 })
 
 const errorMessage = computed(() => {
+  if (snapshot.value.unauthorized)
+    return 'You must sign in to view the counter'
   const error = mutationError.value ?? queryError.value
-  if (!error)
-    return null
-  return toUserMessage(error)
+  return error ? toUserMessage(error) : null
 })
 
 const loadingMore = shallowRef(false)
@@ -233,7 +253,7 @@ async function loadMore(): Promise<void> {
       </template>
 
       <p class="mb-4 text-2xl font-bold tabular-nums">
-        Count: {{ data?.count ?? 0 }}
+        Count: {{ snapshot.count }}
       </p>
 
       <p v-if="errorMessage" class="mb-4 text-sm text-error">
@@ -255,9 +275,9 @@ async function loadMore(): Promise<void> {
         </h2>
       </template>
 
-      <ul v-if="data && data.events.length > 0" class="divide-y divide-default">
+      <ul v-if="snapshot.events.length > 0" class="divide-y divide-default">
         <li
-          v-for="event in data.events"
+          v-for="event in snapshot.events"
           :key="event.id"
           class="flex flex-col gap-1 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
         >
