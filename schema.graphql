@@ -6,9 +6,15 @@ type CountEvent {
 
 scalar Date
 
-type Mutation {
-  recordCount: RecordCountPayload!
+interface Error {
+  message: String!
 }
+
+type Mutation {
+  recordCount: MutationRecordCountResult!
+}
+
+union MutationRecordCountResult = RecordCountPayload | UnauthorizedError
 
 type PageInfo {
   endCursor: String
@@ -18,8 +24,8 @@ type PageInfo {
 }
 
 type Query {
-  count: Int!
-  countEvents(after: String, before: String, first: Int, last: Int): QueryCountEventsConnection!
+  count: QueryCountResult!
+  countEvents(after: String, before: String, first: Int, last: Int): QueryCountEventsResult!
 }
 
 type QueryCountEventsConnection {
@@ -32,12 +38,24 @@ type QueryCountEventsConnectionEdge {
   node: CountEvent!
 }
 
+union QueryCountEventsResult = QueryCountEventsConnection | UnauthorizedError
+
+union QueryCountResult = QueryCountSuccess | UnauthorizedError
+
+type QueryCountSuccess {
+  data: Int!
+}
+
 type RecordCountPayload {
   countEvent: CountEvent!
   totalCount: Int!
 }
 
 scalar UUID
+
+type UnauthorizedError implements Error {
+  message: String!
+}
 
 type User {
   email: String!

@@ -1,8 +1,8 @@
 import { count } from 'drizzle-orm'
 import { schema } from '~/server/database/index'
 import { builder } from '~/server/graphql/builder'
+import { requireAuthSession, UnauthorizedError } from '~/server/graphql/errors'
 import { useDrizzle } from '~/server/utils/drizzle'
-import { useAuthSession } from '~/server/utils/session'
 import { CountEvent } from '../CountEvent'
 
 const RecordCountPayload = builder.simpleObject('RecordCountPayload', {
@@ -15,8 +15,9 @@ const RecordCountPayload = builder.simpleObject('RecordCountPayload', {
 builder.mutationFields(t => ({
   recordCount: t.field({
     type: RecordCountPayload,
+    errors: { types: [UnauthorizedError], directResult: true },
     resolve: async (_root, _args, { event }) => {
-      const authSession = useAuthSession(event, 'required')
+      const authSession = requireAuthSession(event)
       const { db } = useDrizzle()
       const [created] = await db.insert(schema.countEvents).values({
         userId: authSession.user.id,
