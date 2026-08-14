@@ -1,4 +1,5 @@
 import { createHead, transformHtmlTemplate } from '@unhead/vue/server'
+import { createConsola } from 'consola'
 import { serverFetch } from 'nitro/app'
 import { createMemoryHistory } from 'vue-router'
 import { renderToString } from 'vue/server-renderer'
@@ -12,6 +13,10 @@ import { serverVuePlugins } from './load-plugins.server.ts'
 import { serializePayloadScript } from './payload.ts'
 import { createSsrFetchContext } from './ssr-fetch.ts'
 import { initializeVueApp } from './vue-plugin.ts'
+
+// Template plugins own their tagged logger instead of importing server utils
+// (see plugins/AGENTS.md boundaries).
+const logger = createConsola({}).withTag('vue-ssr')
 
 // Per-route ?assets bundles, keyed by page path for SSR <link> emission.
 const pageAssetsMap = import.meta.glob<typeof clientAssets>('/app/pages/**/*.vue', {
@@ -77,7 +82,7 @@ async function handler(request: Request): Promise<Response> {
           const key = toPageAssetKey(filePath)
           const importer = pageAssetsMap[key]
           if (!importer) {
-            console.warn(`[entry-server] no assets importer for ${key} (have: ${Object.keys(pageAssetsMap).join(', ')})`)
+            logger.warn(`no assets importer for ${key} (have: ${Object.keys(pageAssetsMap).join(', ')})`)
             return null
           }
           return importer()

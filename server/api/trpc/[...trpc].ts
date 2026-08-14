@@ -2,6 +2,7 @@ import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
 import { defineHandler } from 'nitro/h3'
 import { createTRPCContext } from '~/server/trpc/init'
 import { appRouter } from '~/server/trpc/root'
+import { logger } from '~/server/utils/logger'
 
 /**
  * tRPC HTTP endpoint mounted at /api/trpc/* via the fetch adapter.
@@ -26,7 +27,7 @@ export default defineHandler(async (event) => {
       }
     },
     onError: import.meta.dev || isTest
-      ? ({ path, error }) => console.error(`[tRPC] ${path ?? '<unknown>'}:`, error)
+      ? ({ path, error }) => logger.error(`[tRPC] ${path ?? '<unknown>'}:`, error)
       : undefined,
   })
 })
