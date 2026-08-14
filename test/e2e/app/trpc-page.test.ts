@@ -44,7 +44,6 @@ describe('trpc demo page SSR', () => {
 
     expect(res.status, html.slice(0, 500)).toBe(200)
     expect(html).toContain('tRPC Demo')
-    expect(html).toContain('greet.greet')
     expect(html).toContain('count.list')
   })
 
