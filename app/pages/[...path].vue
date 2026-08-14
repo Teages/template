@@ -5,6 +5,8 @@ definePage({
     statusCode: 404,
   },
 })
+
+useHead({ title: 'Page not found' })
 </script>
 
 <template>

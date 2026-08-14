@@ -7,6 +7,8 @@ const route = useRoute()
 const router = useRouter()
 const queryCache = useQueryCache()
 const { $requestFetch } = useAppContext()
+
+useHead({ title: 'Sign in' })
 const pending = ref(false)
 const error = ref<string | null>(null)
 

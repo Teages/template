@@ -6,6 +6,8 @@ import { useAppContext } from '~/plugins/vue-ssr/runtime/app/composables/useAppC
 const router = useRouter()
 const queryCache = useQueryCache()
 const { $requestFetch } = useAppContext()
+
+useHead({ title: 'Sign up' })
 const pending = ref(false)
 const error = ref<string | null>(null)
 
