@@ -1,6 +1,7 @@
 import type { Nitro } from 'nitro/types'
 import type { TSConfig } from 'pkg-types'
 import type { Plugin } from 'vite'
+import type { VueCompilerOptions } from './vue'
 import { relative } from 'node:path'
 import { resolve } from 'pathe'
 import { writeTSConfig } from 'pkg-types'
@@ -145,87 +146,4 @@ declare module 'nitro/types' {
       node: TSConfig
     }) => void
   }
-}
-
-interface VueCompilerOptions {
-  // Core
-  target?: 'auto' | number
-  lib?: string
-  typesRoot?: string
-
-  // File handling
-  extensions?: string[]
-  vitePressExtensions?: string[]
-  petiteVueExtensions?: string[]
-
-  // Strictness
-  strictTemplates?: boolean
-  strictVModel?: boolean
-  strictCssModules?: boolean
-  checkUnknownProps?: boolean
-  checkUnknownEvents?: boolean
-  checkUnknownDirectives?: boolean
-  checkUnknownComponents?: boolean
-
-  // Type inference
-  inferComponentDollarEl?: boolean
-  inferComponentDollarRefs?: boolean
-  inferTemplateDollarAttrs?: boolean
-  inferTemplateDollarEl?: boolean
-  inferTemplateDollarRefs?: boolean
-  inferTemplateDollarSlots?: boolean
-
-  // Template codegen
-  skipTemplateCodegen?: boolean
-  vapor?: boolean
-  fallthroughAttributes?: boolean
-  checkRequiredFallthroughAttributes?: boolean
-  fallthroughComponentNames?: string[]
-  dataAttributes?: string[]
-  htmlAttributes?: string[]
-  optionsWrapper?: [string, string] | []
-
-  // Style
-  resolveStyleImports?: boolean
-  resolveStyleClassNames?: boolean | 'scoped'
-
-  // Language features
-  jsxSlots?: boolean
-
-  macros?: Partial<{
-    defineProps: string[]
-    defineSlots: string[]
-    defineEmits: string[]
-    defineExpose: string[]
-    defineModel: string[]
-    defineOptions: string[]
-    withDefaults: string[]
-  }>
-
-  composables?: Partial<{
-    useAttrs: string[]
-    useCssModule: string[]
-    useSlots: string[]
-    useTemplateRef: string[]
-  }>
-
-  // Plugins
-  plugins?: Array<
-    | string
-    | {
-      name: string
-      [key: string]: unknown
-    }
-  >
-
-  // Experimental
-  experimentalModelPropName?: Record<
-    string,
-    Record<
-      string,
-      | boolean
-      | Record<string, string>
-      | Record<string, string>[]
-    >
-  >
 }
