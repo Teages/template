@@ -11,7 +11,7 @@
     "dev": "pnpm dev:mock",
     "dev:mock": "MOCK_DATABASE=true vite dev",
     "dev:prod": "vite dev",
-    "build": "vite build",
+    "build": "vite build && vite build --config vite.config.migrate.ts",
     "preview": "vite preview",
     "typecheck": "pnpm prepare && vue-tsc --build --noEmit",
     "lint": "eslint",
