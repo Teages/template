@@ -63,9 +63,10 @@ async function handler(request: Request): Promise<Response> {
     const href = url.href.slice(url.origin.length)
     await router.push(href)
     await router.isReady()
+    const route = router.currentRoute.value
 
     const matchedAssets = await Promise.all(
-      router.currentRoute.value.matched
+      route.matched
         .map((to) => {
           const filePath = to.meta.__filePath as string | undefined
           if (!filePath)
@@ -103,7 +104,10 @@ async function handler(request: Request): Promise<Response> {
       htmlTemplate(renderedApp, payloadScript),
     )
 
+    // A route can declare its response status via definePage() (the
+    // catch-all 404 page does), so unknown paths answer 404 instead of 200.
     return new Response(html, {
+      status: route.meta.statusCode ?? 200,
       headers: { 'Content-Type': 'text/html;charset=utf-8' },
     })
   }
