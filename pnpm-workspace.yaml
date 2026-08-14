@@ -30,6 +30,7 @@ catalogs:
     '@graphql-typed-document-node/core': ^3.2.0
     '@pothos/core': 4.13.1
     '@pothos/plugin-drizzle': 0.17.5
+    '@pothos/plugin-errors': 4.9.1
     '@pothos/plugin-relay': 4.7.1
     '@pothos/plugin-simple-objects': 4.1.4
     '@pothos/plugin-with-input': 4.1.5

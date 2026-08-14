@@ -48,6 +48,9 @@ catalogs:
     '@pothos/plugin-drizzle':
       specifier: 0.17.5
       version: 0.17.5
+    '@pothos/plugin-errors':
+      specifier: 4.9.1
+      version: 4.9.1
     '@pothos/plugin-relay':
       specifier: 4.7.1
       version: 4.7.1
@@ -203,6 +206,9 @@ importers:
       '@pothos/plugin-drizzle':
         specifier: catalog:graphql
         version: 0.17.5(@pothos/core@4.13.1(graphql@16.14.2))(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(graphql@16.14.2)
+      '@pothos/plugin-errors':
+        specifier: catalog:graphql
+        version: 4.9.1(@pothos/core@4.13.1(graphql@16.14.2))(graphql@16.14.2)
       '@pothos/plugin-relay':
         specifier: catalog:graphql
         version: 4.7.1(@pothos/core@4.13.1(graphql@16.14.2))(graphql@16.14.2)
@@ -1442,6 +1448,12 @@ packages:
     peerDependencies:
       '@pothos/core': '*'
       drizzle-orm: '>=1.0.0-beta.2'
+      graphql: ^16.10.0 || ^17.0.0
+
+  '@pothos/plugin-errors@4.9.1':
+    resolution: {integrity: sha512-nD8ZUKWlu2yzma28zQIrcs0ihfPmx/unXwmAKt+irWWzl6+/s2tkD+qO6wn4aH8swcxKIDibNa3HSTecCguWHw==}
+    peerDependencies:
+      '@pothos/core': '*'
       graphql: ^16.10.0 || ^17.0.0
 
   '@pothos/plugin-relay@4.7.1':
@@ -6174,6 +6186,11 @@ snapshots:
     dependencies:
       '@pothos/core': 4.13.1(graphql@16.14.2)
       drizzle-orm: 1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)
+      graphql: 16.14.2
+
+  '@pothos/plugin-errors@4.9.1(@pothos/core@4.13.1(graphql@16.14.2))(graphql@16.14.2)':
+    dependencies:
+      '@pothos/core': 4.13.1(graphql@16.14.2)
       graphql: 16.14.2
 
   '@pothos/plugin-relay@4.7.1(@pothos/core@4.13.1(graphql@16.14.2))(graphql@16.14.2)':

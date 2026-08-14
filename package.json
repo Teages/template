@@ -34,6 +34,7 @@
     "@pinia/colada": "catalog:vue",
     "@pothos/core": "catalog:graphql",
     "@pothos/plugin-drizzle": "catalog:graphql",
+    "@pothos/plugin-errors": "catalog:graphql",
     "@pothos/plugin-relay": "catalog:graphql",
     "@pothos/plugin-simple-objects": "catalog:graphql",
     "@pothos/plugin-with-input": "catalog:graphql",
