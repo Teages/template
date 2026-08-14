@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { setInfiniteQueryData, useInfiniteQuery, useMutation, useQueryCache } from '@pinia/colada'
+import { formatWhen } from '~/app/utils/format-when'
 import { COUNT_QUERY_KEYS } from '~/app/utils/query-keys'
 import { createGraphQLClient, GraphQLRequestError } from '~/plugins/graphql-schema/runtime/app/client'
 import { gazania } from '~/plugins/graphql-schema/runtime/shared/gazania'
@@ -42,13 +43,6 @@ const CountSnapshotQuery = gazania.query('CountSnapshot')
       }]),
     },
   ]))
-
-function formatWhen(iso: string): string {
-  return new Intl.DateTimeFormat('en-US', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(iso))
-}
 
 function formatCreatedAt(value: unknown): string {
   if (typeof value === 'string')

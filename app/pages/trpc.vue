@@ -3,6 +3,7 @@ import type { inferRouterOutputs } from '@trpc/server'
 import type { AppRouter } from '~/server/trpc/root'
 import { setInfiniteQueryData, useInfiniteQuery, useMutation, useQueryCache } from '@pinia/colada'
 import { TRPCClientError } from '@trpc/client'
+import { formatWhen } from '~/app/utils/format-when'
 import { COUNT_QUERY_KEYS } from '~/app/utils/query-keys'
 import { createTRPCClient } from '~/app/utils/trpc-client'
 import { useAppContext } from '~/plugins/vue-ssr/runtime/app/composables/useAppContext'
@@ -33,10 +34,6 @@ async function runGreet(): Promise<void> {
   finally {
     greetLoading.value = false
   }
-}
-
-function formatWhen(iso: string): string {
-  return new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'medium' }).format(new Date(iso))
 }
 
 // --- tRPC.count — protected query + mutation demo ---------------------------
@@ -183,7 +180,7 @@ async function loadMore(): Promise<void> {
           {{ greetResult.greeting }}
         </p>
         <p class="mt-1 text-xs text-muted">
-          Server time: {{ formatWhen(greetResult.at) }}
+          Server time: {{ formatWhen(greetResult.at, 'medium') }}
         </p>
       </div>
     </UCard>
@@ -239,7 +236,7 @@ async function loadMore(): Promise<void> {
             </p>
           </div>
           <time class="text-sm text-muted" :datetime="event.createdAt">
-            {{ formatWhen(event.createdAt) }}
+            {{ formatWhen(event.createdAt, 'medium') }}
           </time>
         </li>
       </ul>

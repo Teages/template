@@ -2,18 +2,12 @@
 import type { RestCountEventPage } from '~/app/utils/rest-client'
 import { setInfiniteQueryData, useInfiniteQuery, useMutation, useQueryCache } from '@pinia/colada'
 import { FetchError } from 'ofetch'
+import { formatWhen } from '~/app/utils/format-when'
 import { COUNT_QUERY_KEYS } from '~/app/utils/query-keys'
 import { createRestClient } from '~/app/utils/rest-client'
 import { useAppContext } from '~/plugins/vue-ssr/runtime/app/composables/useAppContext'
 
 const rest = createRestClient(useAppContext().$requestFetch)
-
-function formatWhen(iso: string): string {
-  return new Intl.DateTimeFormat('en-US', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(iso))
-}
 
 function mapError(cause: unknown): string {
   if (cause instanceof FetchError && cause.statusCode === 401)
