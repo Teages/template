@@ -1,8 +1,8 @@
 {
   "references": [
-    { "path": "./node_modules/.nitro/tsconfig.app.json" },
-    { "path": "./node_modules/.nitro/tsconfig.server.json" },
-    { "path": "./node_modules/.nitro/tsconfig.node.json" }
+    { "path": "./.generated/tsconfig.app.json" },
+    { "path": "./.generated/tsconfig.server.json" },
+    { "path": "./.generated/tsconfig.node.json" }
   ],
   "files": []
 }

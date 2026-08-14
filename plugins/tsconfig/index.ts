@@ -2,9 +2,37 @@ import type { Nitro } from 'nitro/types'
 import type { TSConfig } from 'pkg-types'
 import type { Plugin } from 'vite'
 import type { VueCompilerOptions } from './vue'
-import { relative } from 'node:path'
-import { resolve } from 'pathe'
+import { mkdir } from 'node:fs/promises'
+import { relative, resolve } from 'pathe'
 import { writeTSConfig } from 'pkg-types'
+
+export interface TSConfigPaths {
+  readonly rootDir: string
+  readonly tsconfigDir: string
+  readonly buildDir: string
+}
+
+export function resolveGeneratedTSConfigDir(rootDir: string): string {
+  return resolve(rootDir, '.generated')
+}
+
+function toRelative(from: string, to: string): string {
+  const result = relative(from, to)
+  if (result === '' || result === '.') {
+    return '.'
+  }
+  if (result.startsWith('.')) {
+    return result
+  }
+  return `./${result}`
+}
+
+function pathResolvers({ rootDir, tsconfigDir, buildDir }: TSConfigPaths) {
+  return {
+    toRoot: (path: string) => toRelative(tsconfigDir, resolve(rootDir, path)),
+    toBuild: (path: string) => toRelative(tsconfigDir, resolve(buildDir, path)),
+  } as const
+}
 
 export default function tsconfigPlugin(): Plugin {
   let nitro: Nitro
@@ -23,25 +51,31 @@ export default function tsconfigPlugin(): Plugin {
       }
 
       const rootDir = nitro.options.rootDir
-      const buildDir = nitro.options.buildDir
+      const tsconfigDir = resolveGeneratedTSConfigDir(rootDir)
+      const paths = {
+        rootDir,
+        tsconfigDir,
+        buildDir: nitro.options.buildDir,
+      } satisfies TSConfigPaths
 
-      const app = getAppTSConfig(rootDir, buildDir)
-      const server = getServerTSConfig(rootDir, buildDir)
-      const node = getNodeTSConfig(rootDir, buildDir)
+      const app = getAppTSConfig(paths)
+      const server = getServerTSConfig(paths)
+      const node = getNodeTSConfig(paths)
 
       await nitro.hooks.callHook('prepare:types', { app, server, node })
 
+      await mkdir(tsconfigDir, { recursive: true })
       await Promise.all([
-        writeTSConfig(resolve(buildDir, 'tsconfig.app.json'), app),
-        writeTSConfig(resolve(buildDir, 'tsconfig.server.json'), server),
-        writeTSConfig(resolve(buildDir, 'tsconfig.node.json'), node),
+        writeTSConfig(resolve(tsconfigDir, 'tsconfig.app.json'), app),
+        writeTSConfig(resolve(tsconfigDir, 'tsconfig.server.json'), server),
+        writeTSConfig(resolve(tsconfigDir, 'tsconfig.node.json'), node),
       ])
     },
   }
 }
 
-export function getAppTSConfig(rootDir: string, buildDir: string): TSConfig {
-  const pathToRoot = (path: string) => relative(buildDir, resolve(rootDir, path))
+export function getAppTSConfig(paths: TSConfigPaths): TSConfig {
+  const { toRoot: pathToRoot, toBuild: pathToBuild } = pathResolvers(paths)
 
   return {
     extends: [
@@ -60,7 +94,7 @@ export function getAppTSConfig(rootDir: string, buildDir: string): TSConfig {
       noUncheckedIndexedAccess: true,
     },
     include: [
-      './types/nitro-routes.d.ts',
+      pathToBuild('types/nitro-routes.d.ts'),
       pathToRoot('env.d.ts'),
       pathToRoot('.generated/app/**/*.ts'),
       pathToRoot('.generated/shared/**/*.ts'),
@@ -72,8 +106,8 @@ export function getAppTSConfig(rootDir: string, buildDir: string): TSConfig {
   }
 }
 
-export function getServerTSConfig(rootDir: string, buildDir: string): TSConfig {
-  const pathToRoot = (path: string) => relative(buildDir, resolve(rootDir, path))
+export function getServerTSConfig(paths: TSConfigPaths): TSConfig {
+  const { toRoot: pathToRoot, toBuild: pathToBuild } = pathResolvers(paths)
 
   return {
     extends: 'nitro/tsconfig',
@@ -87,9 +121,9 @@ export function getServerTSConfig(rootDir: string, buildDir: string): TSConfig {
       noUncheckedIndexedAccess: true,
     },
     include: [
-      './types/nitro-config.d.ts',
-      './types/nitro-imports.d.ts',
-      './types/nitro-routes.d.ts',
+      pathToBuild('types/nitro-config.d.ts'),
+      pathToBuild('types/nitro-imports.d.ts'),
+      pathToBuild('types/nitro-routes.d.ts'),
       pathToRoot('env.d.ts'),
       pathToRoot('.generated/server/**/*.ts'),
       pathToRoot('.generated/shared/**/*.ts'),
@@ -104,8 +138,8 @@ export function getServerTSConfig(rootDir: string, buildDir: string): TSConfig {
   }
 }
 
-export function getNodeTSConfig(rootDir: string, buildDir: string): TSConfig {
-  const pathToRoot = (path: string) => relative(buildDir, resolve(rootDir, path))
+export function getNodeTSConfig(paths: TSConfigPaths): TSConfig {
+  const { toRoot: pathToRoot, toBuild: pathToBuild } = pathResolvers(paths)
 
   return {
     extends: '@tsconfig/node24/tsconfig.json',
@@ -121,7 +155,7 @@ export function getNodeTSConfig(rootDir: string, buildDir: string): TSConfig {
       noEmit: true,
     },
     include: [
-      './types/nitro-config.d.ts',
+      pathToBuild('types/nitro-config.d.ts'),
       pathToRoot('env.d.ts'),
       pathToRoot('test/env.ts'),
       pathToRoot('test/global-setup.ts'),
