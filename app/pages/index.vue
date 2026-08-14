@@ -8,6 +8,8 @@ import { useAppContext } from '~/plugins/vue-ssr/runtime/app/composables/useAppC
 
 const graphql = createGraphQLClient(useAppContext().$requestFetch)
 
+useHead({ title: 'GraphQL Demo' })
+
 interface CountEvent {
   readonly id: string
   readonly userName: string

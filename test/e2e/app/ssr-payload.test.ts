@@ -55,7 +55,7 @@ describe('ssr app payload', () => {
     const html = await res.text()
     expect(res.status).toBe(200)
     expect(html).toContain('<html lang="en">')
-    expect(html).toContain('<title>Full-stack API Template</title>')
+    expect(html).toContain('<title>GraphQL Demo · Full-stack API Template</title>')
     expect(html).toMatch(/<link[^>]+rel="stylesheet"/)
     expect(html).toContain('id="__APP_PAYLOAD__"')
     expect(html).toContain('Count:')

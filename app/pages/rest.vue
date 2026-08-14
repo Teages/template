@@ -9,6 +9,8 @@ import { useAppContext } from '~/plugins/vue-ssr/runtime/app/composables/useAppC
 
 const rest = createRestClient(useAppContext().$requestFetch)
 
+useHead({ title: 'REST Demo' })
+
 function mapError(cause: unknown): string {
   if (cause instanceof FetchError && cause.statusCode === 401)
     return 'You must sign in to view the counter.'

@@ -10,6 +10,8 @@ import { useAppContext } from '~/plugins/vue-ssr/runtime/app/composables/useAppC
 
 const trpc = createTRPCClient(useAppContext().$requestFetch)
 
+useHead({ title: 'tRPC Demo' })
+
 // --- tRPC.greet — public query demo -----------------------------------------
 
 interface GreetResult {
