@@ -162,15 +162,15 @@ catalogs:
     '@pinia/colada':
       specifier: ^1.4.2
       version: 1.4.2
+    '@unhead/vue':
+      specifier: ^2.1.12
+      version: 2.1.17
     '@vue/tsconfig':
       specifier: ^0.9.1
       version: 0.9.1
     pinia:
       specifier: ^4.0.2
       version: 4.0.2
-    unhead:
-      specifier: ^2.1.12
-      version: 2.1.17
     vue:
       specifier: ^3.5.41
       version: 3.5.41
@@ -221,6 +221,9 @@ importers:
       '@trpc/server':
         specifier: catalog:trpc
         version: 11.18.0(typescript@5.9.3)
+      '@unhead/vue':
+        specifier: catalog:vue
+        version: 2.1.17(vue@3.5.41(typescript@5.9.3))
       better-auth:
         specifier: catalog:better-auth
         version: 1.7.0-rc.4(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3))
@@ -330,9 +333,6 @@ importers:
       typescript:
         specifier: catalog:typescript
         version: 5.9.3
-      unhead:
-        specifier: catalog:vue
-        version: 2.1.17
       vite:
         specifier: catalog:vite
         version: 8.2.1(@types/node@24.13.3)(@vitejs/devtools@0.4.12)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.9.0)
