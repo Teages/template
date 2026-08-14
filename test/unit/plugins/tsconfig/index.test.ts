@@ -4,6 +4,7 @@ import {
   getNodeTSConfig,
   getServerTSConfig,
   resolveGeneratedTSConfigDir,
+  toRelative,
 } from '~/plugins/tsconfig/index'
 
 const paths = {
@@ -11,6 +12,29 @@ const paths = {
   tsconfigDir: '/proj/.generated',
   buildDir: '/proj/node_modules/.nitro',
 } as const
+
+describe('toRelative', () => {
+  it('prefixes a same-directory hidden path so tsc treats it as relative', () => {
+    expect(toRelative('/proj', '/proj/.generated/app.ts')).toBe('./.generated/app.ts')
+    expect(toRelative('/proj', '/proj/.env.d.ts')).toBe('./.env.d.ts')
+  })
+
+  it('leaves TypeScript-relative results unchanged', () => {
+    expect(toRelative('/proj/.generated', '/proj')).toBe('..')
+    expect(toRelative('/proj/.generated', '/proj/.generated')).toBe('.')
+    expect(toRelative('/proj/.generated', '/proj/app')).toBe('../app')
+  })
+
+  it('prefixes a same-directory unprefixed path', () => {
+    expect(toRelative('/proj/.generated', '/proj/.generated/app/**/*.ts')).toBe(
+      './app/**/*.ts',
+    )
+  })
+
+  it('keeps an unrelatable absolute path absolute', () => {
+    expect(toRelative('C:/foo', 'D:/bar')).toBe('D:/bar')
+  })
+})
 
 describe('generated tsconfig directory', () => {
   it('places generated tsconfigs under .generated when given a project root', () => {

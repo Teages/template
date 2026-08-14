@@ -3,7 +3,7 @@ import type { TSConfig } from 'pkg-types'
 import type { Plugin } from 'vite'
 import type { VueCompilerOptions } from './vue'
 import { mkdir } from 'node:fs/promises'
-import { relative, resolve } from 'pathe'
+import { isAbsolute, relative, resolve } from 'pathe'
 import { writeTSConfig } from 'pkg-types'
 
 export interface TSConfigPaths {
@@ -16,12 +16,18 @@ export function resolveGeneratedTSConfigDir(rootDir: string): string {
   return resolve(rootDir, '.generated')
 }
 
-function toRelative(from: string, to: string): string {
+export function toRelative(from: string, to: string): string {
   const result = relative(from, to)
-  if (result === '' || result === '.') {
+  if (result === '') {
     return '.'
   }
-  if (result.startsWith('.')) {
+  if (
+    isAbsolute(result)
+    || result === '.'
+    || result === '..'
+    || result.startsWith('./')
+    || result.startsWith('../')
+  ) {
     return result
   }
   return `./${result}`
