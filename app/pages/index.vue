@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { setInfiniteQueryData, useInfiniteQuery, useMutation, useQueryCache } from '@pinia/colada'
-import { formatWhen } from '~/app/utils/format-when'
 import { COUNT_QUERY_KEYS } from '~/app/utils/query-keys'
 import { createGraphQLClient, GraphQLRequestError } from '~/plugins/graphql-schema/runtime/app/client'
 import { gazania } from '~/plugins/graphql-schema/runtime/shared/gazania'
@@ -113,7 +112,6 @@ const {
   data: queryData,
   error: queryError,
   hasNextPage,
-  isLoading: queryLoading,
   loadNextPage,
 } = useInfiniteQuery<SnapshotPage, Error, string | null>({
   key: COUNT_QUERY_KEYS.graphql,
@@ -218,20 +216,6 @@ const errorMessage = computed(() => {
   const error = mutationError.value ?? queryError.value
   return error ? toUserMessage(error) : null
 })
-
-const loadingMore = shallowRef(false)
-
-async function loadMore(): Promise<void> {
-  if (!hasNextPage.value)
-    return
-  loadingMore.value = true
-  try {
-    await loadNextPage()
-  }
-  finally {
-    loadingMore.value = false
-  }
-}
 </script>
 
 <template>
@@ -245,68 +229,17 @@ async function loadMore(): Promise<void> {
       </p>
     </div>
 
-    <UCard>
-      <template #header>
-        <h2 class="font-semibold text-highlighted">
-          Counter
-        </h2>
-      </template>
+    <CountControls
+      :count="snapshot.count"
+      :error-message="errorMessage"
+      :loading="mutating"
+      @increment="increment()"
+    />
 
-      <p class="mb-4 text-2xl font-bold tabular-nums">
-        Count: {{ snapshot.count }}
-      </p>
-
-      <p v-if="errorMessage" class="mb-4 text-sm text-error">
-        {{ errorMessage }}
-      </p>
-
-      <UButton
-        label="Count"
-        icon="i-lucide-plus"
-        :loading="mutating || queryLoading"
-        @click="increment()"
-      />
-    </UCard>
-
-    <UCard>
-      <template #header>
-        <h2 class="font-semibold text-highlighted">
-          Event feed
-        </h2>
-      </template>
-
-      <ul v-if="snapshot.events.length > 0" class="divide-y divide-default">
-        <li
-          v-for="event in snapshot.events"
-          :key="event.id"
-          class="flex flex-col gap-1 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
-        >
-          <div>
-            <p class="font-medium text-highlighted">
-              {{ event.userName }}
-            </p>
-            <p class="text-sm text-muted">
-              {{ event.userEmail }}
-            </p>
-          </div>
-          <time class="text-sm text-muted" :datetime="event.createdAt">
-            {{ formatWhen(event.createdAt) }}
-          </time>
-        </li>
-      </ul>
-      <p v-else class="text-sm text-muted">
-        No counts yet. Be the first to click.
-      </p>
-
-      <template v-if="hasNextPage" #footer>
-        <UButton
-          label="Load more"
-          color="neutral"
-          variant="soft"
-          :loading="loadingMore"
-          @click="loadMore"
-        />
-      </template>
-    </UCard>
+    <CountEventFeed
+      :events="snapshot.events"
+      :has-more="hasNextPage"
+      :load-more="loadNextPage"
+    />
   </div>
 </template>

@@ -2,7 +2,6 @@
 import type { RestCountEventPage } from '~/app/utils/rest-client'
 import { setInfiniteQueryData, useInfiniteQuery, useMutation, useQueryCache } from '@pinia/colada'
 import { FetchError } from 'ofetch'
-import { formatWhen } from '~/app/utils/format-when'
 import { COUNT_QUERY_KEYS } from '~/app/utils/query-keys'
 import { createRestClient } from '~/app/utils/rest-client'
 import { useAppContext } from '~/plugins/vue-ssr/runtime/app/composables/useAppContext'
@@ -22,7 +21,6 @@ const {
   data: queryData,
   error: queryError,
   hasNextPage,
-  isLoading: queryLoading,
   loadNextPage,
 } = useInfiniteQuery<RestCountEventPage, Error, string | null>({
   key: COUNT_QUERY_KEYS.rest,
@@ -85,19 +83,6 @@ const errorMessage = computed(() => {
   const error = mutationError.value ?? queryError.value
   return error ? mapError(error) : null
 })
-const loadingMore = shallowRef(false)
-
-async function loadMore(): Promise<void> {
-  if (!hasNextPage.value)
-    return
-  loadingMore.value = true
-  try {
-    await loadNextPage()
-  }
-  finally {
-    loadingMore.value = false
-  }
-}
 </script>
 
 <template>
@@ -111,7 +96,12 @@ async function loadMore(): Promise<void> {
       </p>
     </div>
 
-    <UCard>
+    <CountControls
+      :count="data.meta.total"
+      :error-message="errorMessage"
+      :loading="mutating"
+      @increment="recordCount()"
+    >
       <template #header>
         <div class="flex items-center gap-2">
           <UBadge color="warning" variant="subtle" label="protected" />
@@ -122,60 +112,12 @@ async function loadMore(): Promise<void> {
           </h2>
         </div>
       </template>
+    </CountControls>
 
-      <p class="mb-4 text-2xl font-bold tabular-nums">
-        Count: {{ data.meta.total }}
-      </p>
-      <p v-if="errorMessage" class="mb-4 text-sm text-error">
-        {{ errorMessage }}
-      </p>
-      <UButton
-        label="Count"
-        icon="i-lucide-plus"
-        :loading="mutating || queryLoading"
-        @click="recordCount()"
-      />
-    </UCard>
-
-    <UCard>
-      <template #header>
-        <h2 class="font-semibold text-highlighted">
-          Event feed
-        </h2>
-      </template>
-
-      <ul v-if="data.data.length > 0" class="divide-y divide-default">
-        <li
-          v-for="event in data.data"
-          :key="event.id"
-          class="flex flex-col gap-1 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
-        >
-          <div>
-            <p class="font-medium text-highlighted">
-              {{ event.userName }}
-            </p>
-            <p class="text-sm text-muted">
-              {{ event.userEmail }}
-            </p>
-          </div>
-          <time class="text-sm text-muted" :datetime="event.createdAt">
-            {{ formatWhen(event.createdAt) }}
-          </time>
-        </li>
-      </ul>
-      <p v-else class="text-sm text-muted">
-        No counts yet. Be the first to click.
-      </p>
-
-      <template v-if="hasNextPage" #footer>
-        <UButton
-          label="Load more"
-          color="neutral"
-          variant="soft"
-          :loading="loadingMore"
-          @click="loadMore"
-        />
-      </template>
-    </UCard>
+    <CountEventFeed
+      :events="data.data"
+      :has-more="hasNextPage"
+      :load-more="loadNextPage"
+    />
   </div>
 </template>
