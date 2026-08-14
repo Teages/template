@@ -63,14 +63,9 @@ describe('ssr app payload', () => {
     expect(html).not.toContain('No counts yet. Be the first to click.')
 
     const payload = parsePayloadScript(html)
-    expect(getQueryData(payload, AUTH_SESSION_QUERY_KEY)).toEqual(
-      objectContaining({
-        user: objectContaining({
-          email,
-          name: 'Vitest User',
-        }),
-      }),
-    )
+    // The session is deliberately not embedded: the client fetches it once
+    // at hydration instead of trusting the SSR payload.
+    expect(getQueryData(payload, AUTH_SESSION_QUERY_KEY)).toBeUndefined()
     const countData = getQueryData<UseInfiniteQueryData<{
       count: number
       events: Array<{ userName: string }>

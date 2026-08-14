@@ -1,5 +1,11 @@
 <script setup lang="ts">
+import { useQueryCache } from '@pinia/colada'
+import { refreshAuthSession } from '~/app/utils/auth-session'
+import { useAppContext } from '~/plugins/vue-ssr/runtime/app/composables/useAppContext'
+
 const router = useRouter()
+const queryCache = useQueryCache()
+const { $requestFetch } = useAppContext()
 const pending = ref(false)
 const error = ref<string | null>(null)
 
@@ -21,6 +27,9 @@ async function onSubmit(): Promise<void> {
       error.value = signUpError.message ?? 'Could not create account'
       return
     }
+    // The navigation guard reads the session from the query cache, so
+    // refresh it before navigating to the protected destination.
+    await refreshAuthSession({ queryCache, $requestFetch })
     await router.push('/')
   }
   finally {
