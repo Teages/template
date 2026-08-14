@@ -16,7 +16,7 @@ Use pnpm. Node.js 24+ is required.
 pnpm install
 cp .env.example .env      # then set BETTER_AUTH_SECRET (openssl rand -base64 32)
 pnpm dev                  # MOCK_DATABASE=true (PGlite)
-pnpm dev:prod             # real Postgres via NITRO_DATABASE_URL
+pnpm dev:prod             # real Postgres via POSTGRES_*
 pnpm build                # client + SSR + Nitro
 pnpm preview
 pnpm typecheck            # prepare + vue-tsc
@@ -27,6 +27,8 @@ pnpm test:e2e             # full Nitro + PGlite + Vue SSR
 pnpm db:generate          # generate Drizzle migrations
 pnpm db:migrate           # apply migrations (prod DB)
 pnpm auth:generate        # regenerate Better Auth schema
+docker compose -f compose.dev.yaml up -d   # local Postgres on localhost:5433
+docker compose up --build                  # production: Postgres + migrate + app
 ```
 
 Run `pnpm typecheck`, `pnpm lint`, and the relevant test project for every code change.
@@ -37,6 +39,8 @@ Run `pnpm typecheck`, `pnpm lint`, and the relevant test project for every code 
 
 `schema.graphql` and everything under `.generated/` (including `tsconfig.app.json`, `tsconfig.server.json`, and `tsconfig.node.json`) are produced by `pnpm prepare` — do not hand-edit them, and regenerate after any GraphQL schema change.
 
+`compose.yaml` is the production stack (Postgres + migrate + app on port 3000). `compose.dev.yaml` is local Postgres only (host 5433). Do not set `MOCK_DATABASE` in Compose. Compose sets Better Auth URL/origins from `APP_ORIGIN` (default `http://localhost:3000`), not from the Vite-dev `BETTER_AUTH_URL`. The app reads those values from `process.env` at runtime (`server/utils/auth-env.ts`). Postgres credentials are the structured `POSTGRES_*` fields (`server/utils/postgres-connection.ts`), not a concatenated URI.
+
 ## Conventions
 
 - **Imports**: auto-imports (Vue, Vue Router, `@nuxt/ui` composables, and `app/utils`, `app/composables`, `app/components`) apply only inside `app/`. Server code uses explicit imports, the `~/*` alias with `.ts` extensions, and H3 functions from `nitro/h3`.
@@ -44,7 +48,7 @@ Run `pnpm typecheck`, `pnpm lint`, and the relevant test project for every code 
 - **`$fetch`**: use `useAppContext().$fetch` for ordinary/external requests, `useAppContext().$requestFetch` for internal API clients (e.g. `/api/graphql`). During SSR, `$requestFetch` may forward the incoming cookie only for single-slash relative paths; `$fetch` must never forward credentials to absolute or user-controlled URLs. Never mutate `globalThis.fetch` — SSR requests run concurrently and global state leaks across requests.
 - **APIs**: REST, GraphQL, and tRPC expose the same count-event capabilities but follow their own ecosystem conventions. Do not force a shared envelope. When shared business behavior changes, update all three and extend `test/e2e/api/count-contract.test.ts`.
 - **Auth**: Better Auth owns `/api/auth/*`. Read the session via `useAuthSession(event)` (or `…(event, 'required')` for protected REST/GraphQL ops; `protectedProcedure` for tRPC). Client navigation guards are not API authorization.
-- **Database**: tables in `server/database/schema.ts`, relations in `server/database/relations.ts`. Call `useDrizzle()` inside handlers/resolvers/procedures/tests — never at module scope. Generate migrations with `pnpm db:generate`; never hand-edit snapshots. Keep pagination deterministic (unique tie-breaker after timestamps).
+- **Database**: tables in `server/database/schema.ts`, relations in `server/database/relations.ts`. Call `useDrizzle()` inside handlers/resolvers/procedures/tests — never at module scope. Read `POSTGRES_*` through `readPostgresConnection()` (structured fields, never a concatenated URI). Generate migrations with `pnpm db:generate`; never hand-edit snapshots. Keep pagination deterministic (unique tie-breaker after timestamps).
 - **Tests**: reset PGlite before mutating shared data. Test auth/validation failures, ordering, pagination boundaries. Keep transport-specific assertions in their transport suite and cross-transport equivalence in `count-contract.test.ts` — never weaken assertions to hide nondeterministic ordering.
 
 Install repository skills with `pnpm skills:install`.
