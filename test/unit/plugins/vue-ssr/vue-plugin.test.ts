@@ -3,7 +3,7 @@ import type {
   ServerVuePluginContext,
 } from '~/plugins/vue-ssr/runtime/app/vue-plugin'
 import { readFileSync } from 'node:fs'
-import { createHead } from 'unhead/server'
+import { createHead } from '@unhead/vue/server'
 import { describe, expect, it } from 'vitest'
 import { createSSRApp } from 'vue'
 import { createMemoryHistory, createRouter } from 'vue-router'

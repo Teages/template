@@ -1,5 +1,5 @@
+import { createHead, transformHtmlTemplate } from '@unhead/vue/server'
 import { serverFetch } from 'nitro/app'
-import { createHead, transformHtmlTemplate } from 'unhead/server'
 import { createMemoryHistory } from 'vue-router'
 import { renderToString } from 'vue/server-renderer'
 import { createAppContext } from './app-context.ts'
@@ -45,6 +45,9 @@ async function handler(request: Request): Promise<Response> {
     environment: 'server',
     history: createMemoryHistory(),
   })
+  // Installing the Vue-integrated head is what makes `useHead()` inside page
+  // components register their entries during renderToString below.
+  app.use(head)
 
   try {
     const pluginResponse = await initializeVueApp({
@@ -117,12 +120,12 @@ async function handler(request: Request): Promise<Response> {
 }
 
 function htmlTemplate(body: string, payloadScript: string): string {
+  // All <head> content (charset, viewport, title, links) is owned by unhead:
+  // the defaults live in app/plugins/head.server.ts and pages extend them
+  // via useHead().
   return /* html */ `<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-</head>
+<head></head>
 <body>
   <div id="root" class="isolate">${body}</div>
   ${payloadScript}

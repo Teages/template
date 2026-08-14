@@ -1,5 +1,5 @@
 import type { useQueryCache } from '@pinia/colada'
-import type { ResolvableHead, Unhead } from 'unhead/types'
+import type { createHead as createVueServerHead } from '@unhead/vue/server'
 import type { App } from 'vue'
 import type { Router } from 'vue-router'
 import type { AppContext } from './app-context.ts'
@@ -17,7 +17,7 @@ export interface ClientVuePluginContext extends VuePluginContextBase {
 
 export interface ServerVuePluginContext extends VuePluginContextBase {
   readonly environment: 'server'
-  readonly head: Unhead<ResolvableHead>
+  readonly head: ReturnType<typeof createVueServerHead>
   readonly request: Request
 }
 
