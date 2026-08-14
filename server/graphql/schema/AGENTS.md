@@ -22,10 +22,19 @@ server/graphql/schema/
 ## Resolver Rules
 
 - Call `useDrizzle()` inside every resolver. Never capture the database at module scope.
-- Enforce protected operations with `useAuthSession(event, 'required')`.
+- Enforce protected operations with `requireAuthSession(event)` from `server/graphql/errors.ts`, and declare `UnauthorizedError` in the field's `errors` option.
 - Keep database ordering deterministic. Add a unique tie-breaker after non-unique columns.
 - Use Drizzle-aware Pothos fields and relations so selection sets control database loading.
-- Return domain-safe errors. Do not expose database or internal implementation details.
+- Return domain-safe errors as data. Do not expose database or internal implementation details.
+
+## Errors as Data
+
+Domain failures are typed members of the schema, not masked GraphQL errors (errors plugin in `builder.ts`):
+
+- Define error classes in `server/graphql/errors.ts` as `Error` subclasses and register them against the shared `Error` interface in `builder.ts`.
+- Fields opt in via `errors: { types: [...] }`. Object-typed fields should add `directResult: true` so the Result union contains the payload itself; scalar fields use the generated `<Parent><Field>Success` wrapper with a `data` field.
+- Clients and tests select `__typename` and match inline fragments (`... on UnauthorizedError { message }`) instead of parsing error messages.
+- Undeclared errors stay on the GraphQL error path and are masked by Yoga's `maskedErrors` in production.
 
 ## Schema Conventions
 
@@ -64,7 +73,7 @@ const RecordCountPayload = builder.simpleObject('RecordCountPayload', {
 
 ## Tests
 
-Place GraphQL e2e tests under `test/e2e/graphql/<domain>/operations/`.
+Place GraphQL e2e tests under `test/e2e/api/graphql/<domain>/operations/`.
 
 Each operation suite must cover the behavior relevant to that operation:
 
