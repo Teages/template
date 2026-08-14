@@ -7,8 +7,5 @@ export default defineConfig({
     tasks: true,
     asyncContext: true,
   },
-  runtimeConfig: {
-    databaseUrl: '',
-  },
   traceDeps: ['tslib*'],
 })

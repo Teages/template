@@ -2,9 +2,9 @@ import type { PGlite } from '@electric-sql/pglite'
 import type { DrizzleConfig } from 'drizzle-orm'
 import type { PgAsyncDatabase, PgQueryResultHKT } from 'drizzle-orm/pg-core'
 import { drizzle } from 'drizzle-orm/postgres-js'
-import { useRuntimeConfig } from 'nitro/runtime-config'
 import { relations } from '../database/relations'
 import * as schema from '../database/schema'
+import { readPostgresConnection } from './postgres-connection'
 
 export type DrizzleDatabase = PgAsyncDatabase<PgQueryResultHKT, typeof relations>
 
@@ -23,10 +23,9 @@ function initDrizzle(): DrizzleDatabase {
     )
   }
 
-  const runtimeConfig = useRuntimeConfig()
   const db = drizzle({
     ...config,
-    connection: runtimeConfig.databaseUrl,
+    connection: readPostgresConnection(),
   }) as unknown as DrizzleDatabase
   return db
 }
