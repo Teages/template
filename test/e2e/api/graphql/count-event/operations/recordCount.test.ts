@@ -16,35 +16,43 @@ describe('mutation recordCount', () => {
       gazania.mutation('RecordCount')
         .select($ => $.select([{
           recordCount: $ => $.select([
-            'totalCount',
+            '__typename',
             {
-              countEvent: $ => $.select([
-                'id',
-                'createdAt',
-                { user: $ => $.select(['name', 'email']) },
+              '... on RecordCountPayload': $ => $.select([
+                'totalCount',
+                {
+                  countEvent: $ => $.select([
+                    'id',
+                    'createdAt',
+                    { user: $ => $.select(['name', 'email']) },
+                  ]),
+                },
               ]),
             },
           ]),
         }])),
     )
 
+    expect(res.recordCount.__typename).toBe('RecordCountPayload')
     expect(res.recordCount.countEvent.id).toBeTruthy()
     expect(res.recordCount.countEvent.user.name).toBe('Vitest User')
     expect(res.recordCount.countEvent.createdAt).toBeTruthy()
     expect(res.recordCount.totalCount).toBe(1)
   })
 
-  it('rejects unauthenticated requests', async () => {
+  it('resolves unauthenticated requests with an UnauthorizedError', async () => {
     const unauthenticated = createGraphQLTestClient(serverFetch)
-    await expect(
-      unauthenticated.mutation(
-        gazania.mutation('RecordCountUnauth')
-          .select($ => $.select([{
-            recordCount: $ => $.select([{
-              countEvent: $ => $.select(['id']),
-            }]),
-          }])),
-      ),
-    ).rejects.toThrow(/Unauthorized/)
+    const res = await unauthenticated.mutation(
+      gazania.mutation('RecordCountUnauth')
+        .select($ => $.select([{
+          recordCount: $ => $.select([
+            '__typename',
+            { '... on UnauthorizedError': $ => $.select(['message']) },
+          ]),
+        }])),
+    )
+
+    expect(res.recordCount.__typename).toBe('UnauthorizedError')
+    expect(res.recordCount.message).toBe('Unauthorized')
   })
 })

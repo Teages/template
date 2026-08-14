@@ -37,7 +37,7 @@ describe('ssr app payload', () => {
         'cookie': cookie,
       },
       body: JSON.stringify({
-        query: 'mutation { recordCount { countEvent { id } } }',
+        query: 'mutation { recordCount { ... on RecordCountPayload { countEvent { id } } } }',
       }),
     })
     expect(recordRes.status).toBe(200)

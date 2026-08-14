@@ -21,9 +21,10 @@ describe('query countEvents', () => {
     await firstClient.mutation(
       gazania.mutation('RecordForEventsA')
         .select($ => $.select([{
-          recordCount: $ => $.select([{
-            countEvent: $ => $.select(['id']),
-          }]),
+          recordCount: $ => $.select([
+            '__typename',
+            { '... on RecordCountPayload': $ => $.select([{ countEvent: $ => $.select(['id']) }]) },
+          ]),
         }])),
     )
 
@@ -43,23 +44,31 @@ describe('query countEvents', () => {
     await secondClient.mutation(
       gazania.mutation('RecordForEventsB')
         .select($ => $.select([{
-          recordCount: $ => $.select([{
-            countEvent: $ => $.select(['id']),
-          }]),
+          recordCount: $ => $.select([
+            '__typename',
+            { '... on RecordCountPayload': $ => $.select([{ countEvent: $ => $.select(['id']) }]) },
+          ]),
         }])),
     )
 
     const res = await secondClient.query(
       gazania.query('CountEventsList')
         .select($ => $.select([{
-          countEvents: $ => $.select([{
-            edges: $ => $.select([{
-              node: $ => $.select([
-                'id',
-                { user: $ => $.select(['name', 'email']) },
+          countEvents: $ => $.select([
+            '__typename',
+            {
+              '... on QueryCountEventsConnection': $ => $.select([
+                {
+                  edges: $ => $.select([{
+                    node: $ => $.select([
+                      'id',
+                      { user: $ => $.select(['name', 'email']) },
+                    ]),
+                  }]),
+                },
               ]),
-            }]),
-          }]),
+            },
+          ]),
         }])),
     )
 
@@ -74,9 +83,10 @@ describe('query countEvents', () => {
       await client.mutation(
         gazania.mutation(`RecordForPage${index}`)
           .select($ => $.select([{
-            recordCount: $ => $.select([{
-              countEvent: $ => $.select(['id']),
-            }]),
+            recordCount: $ => $.select([
+              '__typename',
+              { '... on RecordCountPayload': $ => $.select([{ countEvent: $ => $.select(['id']) }]) },
+            ]),
           }])),
       )
     }
@@ -84,10 +94,15 @@ describe('query countEvents', () => {
     const first = await client.query(
       gazania.query('FirstCountEventsPage')
         .select($ => $.select([{
-          countEvents: $ => $.args({ first: 2 }).select([{
-            edges: $ => $.select(['cursor', { node: $ => $.select(['id']) }]),
-            pageInfo: $ => $.select(['endCursor', 'hasNextPage']),
-          }]),
+          countEvents: $ => $.args({ first: 2 }).select([
+            '__typename',
+            {
+              '... on QueryCountEventsConnection': $ => $.select([{
+                edges: $ => $.select(['cursor', { node: $ => $.select(['id']) }]),
+                pageInfo: $ => $.select(['endCursor', 'hasNextPage']),
+              }]),
+            },
+          ]),
         }])),
     )
     expect(first.countEvents.edges).toHaveLength(2)
@@ -100,10 +115,15 @@ describe('query countEvents', () => {
           countEvents: $ => $.args({
             first: 2,
             after: first.countEvents.pageInfo.endCursor,
-          }).select([{
-            edges: $ => $.select([{ node: $ => $.select(['id']) }]),
-            pageInfo: $ => $.select(['hasNextPage']),
-          }]),
+          }).select([
+            '__typename',
+            {
+              '... on QueryCountEventsConnection': $ => $.select([{
+                edges: $ => $.select([{ node: $ => $.select(['id']) }]),
+                pageInfo: $ => $.select(['hasNextPage']),
+              }]),
+            },
+          ]),
         }])),
     )
     expect(second.countEvents.edges).toHaveLength(1)
@@ -111,19 +131,19 @@ describe('query countEvents', () => {
     expect(second.countEvents.edges[0]!.node.id).not.toBe(first.countEvents.edges[0]!.node.id)
   })
 
-  it('rejects unauthenticated requests', async () => {
+  it('resolves unauthenticated requests with an UnauthorizedError', async () => {
     const unauthenticated = createGraphQLTestClient(serverFetch)
-    await expect(
-      unauthenticated.query(
-        gazania.query('CountEventsListUnauth')
-          .select($ => $.select([{
-            countEvents: $ => $.select([{
-              edges: $ => $.select([{
-                node: $ => $.select(['id']),
-              }]),
-            }]),
-          }])),
-      ),
-    ).rejects.toThrow(/Unauthorized/)
+    const res = await unauthenticated.query(
+      gazania.query('CountEventsListUnauth')
+        .select($ => $.select([{
+          countEvents: $ => $.select([
+            '__typename',
+            { '... on UnauthorizedError': $ => $.select(['message']) },
+          ]),
+        }])),
+    )
+
+    expect(res.countEvents.__typename).toBe('UnauthorizedError')
+    expect(res.countEvents.message).toBe('Unauthorized')
   })
 })

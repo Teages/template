@@ -15,27 +15,40 @@ describe('query count', () => {
     await client.mutation(
       gazania.mutation('RecordForCountQuery')
         .select($ => $.select([{
-          recordCount: $ => $.select([{
-            countEvent: $ => $.select(['id']),
-          }]),
+          recordCount: $ => $.select([
+            '__typename',
+            { '... on RecordCountPayload': $ => $.select([{ countEvent: $ => $.select(['id']) }]) },
+          ]),
         }])),
     )
 
     const res = await client.query(
       gazania.query('CountTotal')
-        .select($ => $.select(['count'])),
+        .select($ => $.select([{
+          count: $ => $.select([
+            '__typename',
+            { '... on QueryCountSuccess': $ => $.select(['data']) },
+          ]),
+        }])),
     )
 
-    expect(res.count).toBe(1)
+    expect(res.count.__typename).toBe('QueryCountSuccess')
+    expect(res.count.data).toBe(1)
   })
 
-  it('rejects unauthenticated requests', async () => {
+  it('resolves unauthenticated requests with an UnauthorizedError', async () => {
     const unauthenticated = createGraphQLTestClient(serverFetch)
-    await expect(
-      unauthenticated.query(
-        gazania.query('CountTotalUnauth')
-          .select($ => $.select(['count'])),
-      ),
-    ).rejects.toThrow(/Unauthorized/)
+    const res = await unauthenticated.query(
+      gazania.query('CountTotalUnauth')
+        .select($ => $.select([{
+          count: $ => $.select([
+            '__typename',
+            { '... on UnauthorizedError': $ => $.select(['message']) },
+          ]),
+        }])),
+    )
+
+    expect(res.count.__typename).toBe('UnauthorizedError')
+    expect(res.count.message).toBe('Unauthorized')
   })
 })

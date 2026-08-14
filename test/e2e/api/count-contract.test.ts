@@ -29,9 +29,10 @@ describe('count API business contract', () => {
     await graphql.mutation(
       gazania.mutation('CreateCountEventForContract')
         .select($ => $.select([{
-          recordCount: $ => $.select([{
-            countEvent: $ => $.select(['id']),
-          }]),
+          recordCount: $ => $.select([
+            '__typename',
+            { '... on RecordCountPayload': $ => $.select([{ countEvent: $ => $.select(['id']) }]) },
+          ]),
         }])),
     )
     await trpc.count.create.mutate()
@@ -43,21 +44,27 @@ describe('count API business contract', () => {
     }
     const graph = await graphql.query(
       gazania.query('ReadCountEventsForContract')
-        .select($ => $.select([
-          'count',
-          {
-            countEvents: $ => $.args({ first: 10 }).select([{
-              edges: $ => $.select([{
-                node: $ => $.select(['id', { user: $ => $.select(['name']) }]),
+        .select($ => $.select([{
+          count: $ => $.select([
+            '__typename',
+            { '... on QueryCountSuccess': $ => $.select(['data']) },
+          ]),
+          countEvents: $ => $.args({ first: 10 }).select([
+            '__typename',
+            {
+              '... on QueryCountEventsConnection': $ => $.select([{
+                edges: $ => $.select([{
+                  node: $ => $.select(['id', { user: $ => $.select(['name']) }]),
+                }]),
               }]),
-            }]),
-          },
-        ])),
+            },
+          ]),
+        }])),
     )
     const rpc = await trpc.count.list.query({ limit: 10 })
 
     expect(rest.meta.total).toBe(3)
-    expect(graph.count).toBe(3)
+    expect(graph.count.data).toBe(3)
     expect(rpc.total).toBe(3)
 
     const restIds = rest.data.map(event => event.id)
@@ -89,10 +96,15 @@ describe('count API business contract', () => {
     const graphFirst = await graphql.query(
       gazania.query('ReadFirstCountEventsPageForContract')
         .select($ => $.select([{
-          countEvents: $ => $.args({ first: 2 }).select([{
-            edges: $ => $.select([{ node: $ => $.select(['id']) }]),
-            pageInfo: $ => $.select(['endCursor', 'hasNextPage']),
-          }]),
+          countEvents: $ => $.args({ first: 2 }).select([
+            '__typename',
+            {
+              '... on QueryCountEventsConnection': $ => $.select([{
+                edges: $ => $.select([{ node: $ => $.select(['id']) }]),
+                pageInfo: $ => $.select(['endCursor', 'hasNextPage']),
+              }]),
+            },
+          ]),
         }])),
     )
     const rpcFirst = await trpc.count.list.query({ limit: 2 })
@@ -121,11 +133,16 @@ describe('count API business contract', () => {
         .select($ => $.select([{
           countEvents: $ => $.args({
             first: 2,
-            after: graphFirst.countEvents.pageInfo.endCursor!,
-          }).select([{
-            edges: $ => $.select([{ node: $ => $.select(['id']) }]),
-            pageInfo: $ => $.select(['hasNextPage']),
-          }]),
+            after: graphFirst.countEvents.pageInfo.endCursor,
+          }).select([
+            '__typename',
+            {
+              '... on QueryCountEventsConnection': $ => $.select([{
+                edges: $ => $.select([{ node: $ => $.select(['id']) }]),
+                pageInfo: $ => $.select(['hasNextPage']),
+              }]),
+            },
+          ]),
         }])),
     )
     const rpcSecond = await trpc.count.list.query({
