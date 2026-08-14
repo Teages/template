@@ -1,3 +1,4 @@
+import { createHead } from '@unhead/vue/client'
 import { ofetch } from 'ofetch'
 import { createWebHistory } from 'vue-router'
 import { handleHotUpdate } from 'vue-router/auto-routes'
@@ -16,6 +17,9 @@ async function main(): Promise<void> {
     history: createWebHistory(),
     payload,
   })
+  // The client head takes over the server-rendered <head> tags during
+  // hydration and keeps them in sync with useHead() calls afterwards.
+  app.use(createHead())
 
   await initializeVueApp({
     environment: 'client',
