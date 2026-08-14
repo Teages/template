@@ -1,7 +1,7 @@
 import antfu from '@antfu/eslint-config'
 
 export default antfu({
-  ignores: ['.generated', '.omo', '.agents'],
+  ignores: ['.generated', '.omo', '.agents', 'server/database/migrations/**/snapshot.json'],
   typescript: {
     tsconfigPath: './tsconfig.json',
     overridesTypeAware: {
