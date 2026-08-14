@@ -1,11 +1,13 @@
 import type { H3Event } from 'nitro/h3'
 import SchemaBuilder from '@pothos/core'
 import DrizzlePlugin from '@pothos/plugin-drizzle'
+import ErrorsPlugin from '@pothos/plugin-errors'
 import RelayPlugin from '@pothos/plugin-relay'
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
 import WithInputPlugin from '@pothos/plugin-with-input'
 import { getTableConfig } from 'drizzle-orm/pg-core'
 import { relations } from '~/server/database/relations'
+import { UnauthorizedError } from '~/server/graphql/errors'
 import { useDrizzle } from '~/server/utils/drizzle'
 
 export const builder = new SchemaBuilder<{
@@ -18,7 +20,9 @@ export const builder = new SchemaBuilder<{
   }
 }>({
   defaultFieldNullability: false,
-  plugins: [DrizzlePlugin, RelayPlugin, SimpleObjectsPlugin, WithInputPlugin],
+  // The errors plugin must come first so its field wrapping wraps the
+  // drizzle/relay plugins' fields.
+  plugins: [ErrorsPlugin, DrizzlePlugin, RelayPlugin, SimpleObjectsPlugin, WithInputPlugin],
   drizzle: {
     client: () => useDrizzle().db,
     getTableConfig,
@@ -45,6 +49,21 @@ builder.scalarType('UUID', {
       throw new Error('Invalid UUID')
     return value
   },
+})
+
+// Shared Error interface so clients can match `... on Error { message }`
+// fragments across every error type. Domain errors implement it; unexpected
+// errors are NOT part of this contract — Yoga's maskedErrors still hides
+// them in production.
+const ErrorInterface = builder.interfaceRef<Error>('Error').implement({
+  fields: t => ({
+    message: t.exposeString('message'),
+  }),
+})
+
+builder.objectType(UnauthorizedError, {
+  name: 'UnauthorizedError',
+  interfaces: [ErrorInterface],
 })
 
 builder.queryType({})
