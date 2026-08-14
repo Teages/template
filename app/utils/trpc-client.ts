@@ -9,7 +9,6 @@ import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
  * and forwards SSR credentials only to relative internal routes.
  *
  * Usage:
- *   const result = await trpc.greet.greet.query({ name: 'World' })
  *   const page = await trpc.count.list.query({ limit: 20 })
  *   await trpc.count.create.mutate()
  */

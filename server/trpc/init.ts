@@ -25,7 +25,7 @@ export function createTRPCContext(event: H3Event): TRPCContext {
 
 const t = initTRPC.context<TRPCContext>().create()
 
-/** Procedure callable without authentication (e.g. the greet demo). */
+/** Procedure callable without authentication. */
 export const publicProcedure = t.procedure
 
 /**
