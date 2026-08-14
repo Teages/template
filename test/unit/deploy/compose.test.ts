@@ -29,6 +29,24 @@ describe('production compose stack', () => {
     expect(dockerfile).not.toContain('MOCK_DATABASE')
   })
 
+  it('runs migrations from a slim node stage instead of the full builder', () => {
+    const dockerfile = readRepoFile('Dockerfile')
+    const migrateConfig = readRepoFile('vite.config.migrate.ts')
+    const pkg = readRepoFile('package.json')
+
+    expect(dockerfile).toContain('CMD ["node", ".output/server/migrate.mjs"]')
+    expect(dockerfile).not.toContain('FROM builder AS migrate')
+    // corepack enable is on the deprecation track; use the official installer.
+    expect(dockerfile).toContain('npm install -g corepack@latest')
+    expect(dockerfile).not.toContain('corepack enable')
+
+    // The standalone script must be part of the normal build chain and must
+    // never wipe the Nitro output directory.
+    expect(pkg).toContain('vite.config.migrate.ts')
+    expect(migrateConfig).toContain('emptyOutDir: false')
+    expect(migrateConfig).toContain('resolve(import.meta.dirname, \'server/scripts/migrate.ts\')')
+  })
+
   it('keeps local Postgres on 5433 with a volume distinct from production', () => {
     const dev = readRepoFile('compose.dev.yaml')
     const prod = readRepoFile('compose.yaml')
