@@ -20,7 +20,11 @@ export default defineConfig({
     vueSsrPlugin(),
     ui({
       autoImport: {
-        imports: ['vue', 'vue-router'],
+        imports: [
+          'vue',
+          'vue-router',
+          { '@unhead/vue': ['useHead'] },
+        ],
         dirs: ['app/composables', 'app/utils'],
         dts: '.generated/app/auto-imports.d.ts',
       },
