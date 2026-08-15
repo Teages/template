@@ -84,6 +84,7 @@
     "skills": "catalog:tooling",
     "srvx": "catalog:nitro",
     "typescript": "catalog:typescript",
+    "unplugin-auto-import": "catalog:vite",
     "vite": "catalog:vite",
     "vite-plugin-devtools-json": "catalog:vite",
     "vitest": "catalog:vitest",
