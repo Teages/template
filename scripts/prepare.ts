@@ -3,6 +3,7 @@ import { resolve } from 'node:path'
 import { exit } from 'node:process'
 import { writeTSConfig } from 'pkg-types'
 import { createServer } from 'vite'
+import { generatedCleanPlugin } from '../plugins/generated-clean/index.ts'
 import {
   getAppTSConfig,
   getNodeTSConfig,
@@ -32,6 +33,10 @@ async function main() {
   ])
 
   const server = await createServer({
+    // Empties `.generated` (preserving runtime state and incremental caches)
+    // before the plugin chain below regenerates it — this boot is the one
+    // context that rewrites every artifact, so only it may clear.
+    plugins: [generatedCleanPlugin()],
     logLevel: 'silent',
     server: {
       middlewareMode: true,
