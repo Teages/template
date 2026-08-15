@@ -2,6 +2,7 @@ import { env } from 'node:process'
 import ui from '@nuxt/ui/vite'
 import { nitro } from 'nitro/vite'
 import { defineConfig } from 'vite'
+import { autoImportPlugin } from './plugins/auto-import/index.ts'
 import devToolsPlugin from './plugins/dev-tools/index.ts'
 import DrizzleStudio from './plugins/drizzle-studio/index.ts'
 import { graphqlSchemaPlugin } from './plugins/graphql-schema/index.ts'
@@ -19,20 +20,15 @@ export default defineConfig({
     }),
     vueSsrPlugin(),
     ui({
-      autoImport: {
-        imports: [
-          'vue',
-          'vue-router',
-          { '@unhead/vue': ['useHead'] },
-        ],
-        dirs: ['app/composables', 'app/utils'],
-        dts: '.generated/app/auto-imports.d.ts',
-      },
+      // Auto-imports are owned by plugins/auto-import; only the component
+      // resolver stays with @nuxt/ui (see plugins/auto-import/index.ts).
+      autoImport: false,
       components: {
         dirs: ['app/components'],
         dts: '.generated/app/components.d.ts',
       },
     }),
+    autoImportPlugin(),
     graphqlSchemaPlugin({
       schema: 'server/graphql/schema.ts',
       schemaExport: 'schema',
