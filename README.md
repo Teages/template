@@ -4,6 +4,14 @@ A login-required Count App demonstrating interchangeable **REST**, **GraphQL**, 
 
 Requires **Node.js 24+** and **pnpm**. See [`AGENTS.md`](./AGENTS.md) for repository conventions.
 
+## Use this template
+
+```bash
+npx giget@latest gh:teages/template#fullstack-nitro-vue app-name
+```
+
+This copies the branch as plain files without git history — `git init` if you want version control. Then continue with the steps below.
+
 ## Getting started
 
 ```bash
