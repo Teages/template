@@ -1,6 +1,6 @@
 import type { ChildProcess } from 'node:child_process'
 import { spawn } from 'node:child_process'
-import { existsSync, writeFileSync } from 'node:fs'
+import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { setTimeout as delay } from 'node:timers/promises'
 import { getRandomPort } from 'get-port-please'
@@ -13,17 +13,20 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 // runs for real. Both modes boot the server the way the Docker runtime does
 // (`node .output/server/index.mjs` — the same server `pnpm preview` wraps):
 //
-// - `pglite` (default, `pnpm test:smoke`): builds a MOCK_DATABASE flavor into
-//   `.output-smoke` when absent (so no Postgres or Docker is needed) and
-//   exercises the full request path over in-process PGlite. The artifact
-//   requires the repo's node_modules for drizzle-kit (see applySchema in
-//   server/utils/pglite-db.ts) and is reused until deleted — rebuild after
-//   source changes with `rm -rf .output-smoke`.
-// - `postgres` (`SMOKE_DATABASE=postgres`, used in CI): runs the real
-//   `pnpm build` output against a real Postgres (compose.dev.yaml on 5433
-//   matches the readPostgresConnection() defaults; export POSTGRES_* to
-//   override) and additionally verifies the standalone migrate bundle.
-//   Skipped until `pnpm build` produced `.output`.
+// - `pglite` (default, `pnpm test:smoke`): a MOCK_DATABASE flavor built into
+//   `.output-smoke` by the `pretest:smoke` hook — no Postgres or Docker
+//   needed. The artifact requires the repo's node_modules for drizzle-kit
+//   (see applySchema in server/utils/pglite-db.ts), so it must run from
+//   within the repository.
+// - `postgres` (`pnpm test:smoke:postgres`, used in CI): the real `pnpm
+//   build` output (rebuilt by `pretest:smoke:postgres`) against a real
+//   Postgres (compose.dev.yaml on 5433 matches the readPostgresConnection()
+//   defaults; export POSTGRES_* to override) and additionally verifies the
+//   standalone migrate bundle.
+//
+// Both pre hooks force a fresh build, so the suite always tests the current
+// sources. Invoking vitest directly (no pre hook) skips when the artifact is
+// missing — run through the pnpm scripts instead.
 
 type SmokeDatabase = 'pglite' | 'postgres'
 
@@ -35,11 +38,10 @@ const rootDir = resolve(import.meta.dirname, '../..')
 const outputDir = resolve(rootDir, realDb ? '.output' : '.output-smoke')
 const serverEntry = resolve(outputDir, 'server/index.mjs')
 const migrateEntry = resolve(rootDir, '.output/server/migrate.mjs')
-const buildMarker = resolve(outputDir, 'smoke-build.json')
 
-const hasRealBuild = existsSync(migrateEntry) && existsSync(serverEntry)
-if (realDb && !hasRealBuild) {
-  console.warn('[smoke] .output build not found — run `pnpm build` first; skipping')
+const hasBuild = existsSync(serverEntry) && (!realDb || existsSync(migrateEntry))
+if (!hasBuild) {
+  console.warn('[smoke] build output not found — run `pnpm test:smoke` / `pnpm test:smoke:postgres` (their pre hooks build); skipping')
 }
 
 const RECORD_COUNT_MUTATION = /* GraphQL */ `
@@ -66,7 +68,7 @@ interface RecordCountBody {
   }
 }
 
-const run = !realDb || hasRealBuild ? describe : describe.skip
+const run = hasBuild ? describe : describe.skip
 
 run(`production build smoke (${database})`, () => {
   let baseUrl: string
@@ -98,30 +100,6 @@ run(`production build smoke (${database})`, () => {
         output += chunk
       })
       child.once('exit', code => resolveRun({ code, output }))
-    })
-  }
-
-  function buildMockArtifact(): Promise<void> {
-    console.warn('[smoke] no mock build in .output-smoke — building (vite build, ~a minute)…')
-    return new Promise((resolveBuild, rejectBuild) => {
-      const child = spawn('pnpm', ['exec', 'vite', 'build'], {
-        cwd: rootDir,
-        stdio: 'inherit',
-        env: {
-          ...process.env,
-          MOCK_DATABASE: 'true',
-          SMOKE_OUTPUT_DIR: '.output-smoke',
-        },
-      })
-      child.once('error', rejectBuild)
-      child.once('exit', (code) => {
-        if (code !== 0) {
-          rejectBuild(new Error(`mock build exited with ${code}`))
-          return
-        }
-        writeFileSync(buildMarker, JSON.stringify({ flavor: 'pglite' }))
-        resolveBuild()
-      })
     })
   }
 
@@ -171,9 +149,6 @@ run(`production build smoke (${database})`, () => {
         }
       }
     }
-    else if (!existsSync(serverEntry) || !existsSync(buildMarker)) {
-      await buildMockArtifact()
-    }
 
     const port = await getRandomPort()
     baseUrl = `http://127.0.0.1:${port}`
@@ -216,7 +191,7 @@ run(`production build smoke (${database})`, () => {
     }
 
     sessionCookie = await signUp()
-  }, 300_000)
+  }, 120_000)
 
   afterAll(async () => {
     if (!server || server.exitCode !== null) {
