@@ -61,6 +61,10 @@ export default defineConfig({
           env: {
             ...authTestEnv,
             BETTER_AUTH_URL: 'http://localhost:20399',
+            // e2e sends cross-origin requests from :20398 (see test/utils.ts
+            // testOrigin) while the server runs on :20399 — trust it
+            // explicitly instead of relying on a developer's local .env.
+            BETTER_AUTH_TRUSTED_ORIGINS: 'http://localhost:20398',
           },
         },
         define: {

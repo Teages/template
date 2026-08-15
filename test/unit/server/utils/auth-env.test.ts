@@ -27,6 +27,15 @@ describe('readBetterAuthEnv', () => {
     ])
   })
 
+  it('does not trust the dev origin when BETTER_AUTH_URL is explicitly configured', () => {
+    const result = readBetterAuthEnv({
+      BETTER_AUTH_URL: 'https://example.com',
+      BETTER_AUTH_TRUSTED_ORIGINS: 'https://a.example',
+    })
+
+    expect(result.trustedOrigins).toEqual(['https://a.example'])
+  })
+
   it('uses BETTER_AUTH_ALLOWED_HOSTS when set and localhost defaults otherwise', () => {
     expect(readBetterAuthEnv({
       BETTER_AUTH_ALLOWED_HOSTS: 'example.com, example.com:*',
