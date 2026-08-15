@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  ci:
+    name: lint, typecheck, test, build & smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: passwd
+          POSTGRES_DB: mydb
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U user -d mydb"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm lint
+
+      - run: pnpm typecheck
+
+      # In-process suites. The e2e project runs Nitro through the dev pipeline
+      # against PGlite, so it needs no Postgres service.
+      - run: pnpm test
+
+      # Build the traced production output — `pnpm test` never touches it, so
+      # the smoke below is the only automated coverage for nft-trace
+      # regressions (see the tslib entry in WORKAROUND.md).
+      - run: pnpm build
+
+      # The smoke defaults to a self-built PGlite flavor; CI runs the real
+      # database flavor against the service (also covers the standalone
+      # migrate bundle, which needs a real Postgres wire endpoint).
+      - run: pnpm test:smoke
+        env:
+          SMOKE_DATABASE: postgres
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: '5433'
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: passwd
+          POSTGRES_DB: mydb
