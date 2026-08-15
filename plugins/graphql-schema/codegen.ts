@@ -14,6 +14,10 @@ if (!isSchema(schema)) {
 export const graphql = printSchema(schema)
 export const gazania = generate({
   source: graphql,
-  scalars: {},
+  // Map custom scalars to their wire types: the Date scalar serializes to an
+  // ISO string, so results must not surface as `unknown`.
+  scalars: {
+    Date: { input: 'string | number', output: 'string' },
+  },
   url: 'http://localhost',
 })
