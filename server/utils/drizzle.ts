@@ -19,7 +19,7 @@ export const config: DrizzleConfig<typeof schema, typeof relations> & {
 function initDrizzle(): DrizzleDatabase {
   if (import.meta.MOCK_DATABASE) {
     throw new Error(
-      'PGlite database not initialized. Ensure the pglite-e2e plugin runs before handling requests.',
+      'PGlite database not initialized. Ensure the server/plugins/pglite-mock.ts startup plugin runs before handling requests.',
     )
   }
 
