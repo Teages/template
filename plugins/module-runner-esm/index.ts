@@ -13,9 +13,11 @@ import { createRequire } from 'node:module'
  * `@whatwg-node/fetch` specifically ships a CJS `node-ponyfill.js` whose
  * top-level `require('./create-node-ponyfill')` throws inside the dev/test
  * ModuleRunner. Its ESM `esm-ponyfill.js` entry avoids this and is what the
- * Vite SSR/nitro environments import. This remap does NOT touch the bundled
- * production server: Nitro's nft trace copies the real package and Node's
- * native ESM/CJS interop handles it there (the prod tslib crash is covered
+ * Vite SSR/nitro environments import. The remap is gated to serve mode
+ * (`vite dev` + Vitest): in `vite build` it would inline a second Vue copy
+ * into the SSR bundle and break provide/inject across traced dependencies.
+ * Nitro's nft trace copies the real packages and Node's native ESM/CJS
+ * interop handles them in production (the prod tslib crash is covered
  * separately by `traceDeps` in `nitro.config.ts`). Do not remove this remap
  * based on "prod is fine" — that was the regression in the commit that
  * dropped it, which surfaced as `ReferenceError: require is not defined`.
@@ -39,6 +41,14 @@ export function moduleRunnerEsmPlugin(): Plugin {
   return {
     name: 'module-runner-esm',
     enforce: 'pre',
+    // Serve mode only (dev + Vitest): rewriting `vue` to a file path during
+    // `vite build` inlines a private Vue copy into the SSR service bundle
+    // while traced dependencies (unhead, pinia-colada, …) keep their own —
+    // two Vue runtimes whose provide/inject contexts never meet, so every
+    // production SSR render 500s. In build, `vue` must stay a bare
+    // specifier so all importers share the single traced copy.
+    apply: (_config, { command, isPreview }) =>
+      command === 'serve' && !isPreview,
     applyToEnvironment(environment) {
       return environment.name === 'ssr' || environment.name === 'nitro'
     },

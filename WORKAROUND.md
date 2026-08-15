@@ -42,9 +42,15 @@ its runtime, with real database).
   `plugins/module-runner-esm/index.ts` resolves the Vue runtime graph and
   `@whatwg-node/fetch` to their ESM bundler entries. Unlike Nuxt's bundled SSR
   pipeline, standalone Nitro's env-runner cannot delegate their CJS wrappers
-  to Node. The `@whatwg-node/fetch` remap targets `dist/esm-ponyfill.js`; it is
-  a dev/test fix only and does not affect the bundled production server (see
-  the tslib entry below).
+  to Node. The `@whatwg-node/fetch` remap targets `dist/esm-ponyfill.js`.
+  The remap plugin is gated to serve mode (`vite dev` + Vitest, not preview):
+  during `vite build` it rewrote bare `vue` imports into file paths, which
+  inlined a private Vue copy into the SSR service bundle while nft-traced
+  dependencies (unhead, pinia-colada, …) kept their own — two Vue runtimes
+  whose provide/inject contexts never met, so every production SSR render
+  returned 500 (`useHead() was called without provide context`). In builds,
+  `vue` must stay a bare specifier so all importers share the single traced
+  copy; the production smoke (`pnpm test:smoke`) guards this.
 - follow up: Remove the explicit `mainFields` once Nitro preserves Vite's
   ESM-first server defaults, and revisit the remaps as upstream packages ship
   env-runner-compatible ESM entrypoints.
@@ -75,7 +81,6 @@ its runtime, with real database).
   dropped (once nitro 3.0.260606-beta stopped masking it via SSR-warmup
   timeouts). Both fixes are needed — the remap for dev/test, `traceDeps` for
   prod. Do not remove the remap again based on "prod is fine".
-
 ### @vitejs/plugin-vue transforms ?assets queries
 - reason: `plugins/vue-ssr/runtime/app/entry-server.ts` imports page modules
   with a `?assets` query to
