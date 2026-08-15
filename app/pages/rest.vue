@@ -4,7 +4,6 @@ import { setInfiniteQueryData, useInfiniteQuery, useMutation, useQueryCache } fr
 import { FetchError } from 'ofetch'
 import { COUNT_QUERY_KEYS } from '~/app/utils/query-keys'
 import { createRestClient } from '~/app/utils/rest-client'
-import { useAppContext } from '~/plugins/vue-ssr/runtime/app/composables/useAppContext'
 
 const rest = createRestClient(useAppContext().$requestFetch)
 

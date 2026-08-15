@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useQueryCache } from '@pinia/colada'
 import { refreshAuthSession } from '~/app/utils/auth-session'
-import { useAppContext } from '~/plugins/vue-ssr/runtime/app/composables/useAppContext'
 
 const router = useRouter()
 const queryCache = useQueryCache()

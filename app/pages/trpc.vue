@@ -5,7 +5,6 @@ import { setInfiniteQueryData, useInfiniteQuery, useMutation, useQueryCache } fr
 import { TRPCClientError } from '@trpc/client'
 import { COUNT_QUERY_KEYS } from '~/app/utils/query-keys'
 import { createTRPCClient } from '~/app/utils/trpc-client'
-import { useAppContext } from '~/plugins/vue-ssr/runtime/app/composables/useAppContext'
 
 const trpc = createTRPCClient(useAppContext().$requestFetch)
 
