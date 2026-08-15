@@ -122,4 +122,13 @@ describe('rest /api/count-events', () => {
     expect((await serverFetch('/api/count-events?limit=0', { headers })).status).toBe(400)
     expect((await serverFetch('/api/count-events?cursor=broken', { headers })).status).toBe(400)
   })
+
+  it('rejects a non-UUID id instead of leaking a database error', async () => {
+    const { cookie } = await signInTestUser('count-invalid-id')
+    const headers = { Cookie: cookie }
+
+    expect(
+      (await serverFetch('/api/count-events/not-a-uuid', { headers })).status,
+    ).toBe(400)
+  })
 })

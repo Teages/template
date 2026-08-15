@@ -4,11 +4,15 @@ import { countEvents, users } from '~/server/database/schema'
 import { useDrizzle } from '~/server/utils/drizzle'
 import { useAuthSession } from '~/server/utils/session'
 
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export default defineHandler(async (event) => {
   useAuthSession(event, 'required')
   const id = getRouterParam(event, 'id')
   if (!id)
     throw HTTPError.status(400, 'Event id is required')
+  if (!UUID_PATTERN.test(id))
+    throw HTTPError.status(400, 'Event id must be a UUID')
 
   const [row] = await useDrizzle().db.select({
     id: countEvents.id,
