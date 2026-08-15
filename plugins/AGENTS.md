@@ -30,7 +30,11 @@ are not shipped to an app or server environment stay beside `index.ts`.
   `nitro.options.routes`, `nitro.options.plugins`, or virtual modules as the
   target environment requires.
 - Keep callable runtime APIs explicit at their consumer. Do not inject ordinary
-  functions globally or expand app auto-imports to all plugin runtime files.
+  functions globally. The one opt-in exception mirrors Nuxt modules: files under
+  `runtime/app/composables/` and `runtime/app/utils/` are scanned into app
+  auto-imports by `plugins/auto-import` — a plugin that wants a composable or
+  util available bare inside `app/` (like `useAppContext`) puts it there; every
+  other runtime API stays an explicit import.
 - The runtime globs in `plugins/tsconfig/index.ts` provide type visibility only;
   they do not load or execute runtime files.
 - Direct local dependencies are preferable to capability registries or generic
