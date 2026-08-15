@@ -166,6 +166,7 @@ export function getNodeTSConfig(paths: TSConfigPaths): TSConfig {
       pathToRoot('test/env.ts'),
       pathToRoot('test/global-setup.ts'),
       pathToRoot('test/unit/**/*.ts'),
+      pathToRoot('test/smoke/**/*.ts'),
       pathToRoot('scripts/**/*.ts'),
       pathToRoot('plugins/**/*.ts'),
       pathToRoot('*.ts'),

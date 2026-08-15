@@ -33,6 +33,19 @@ export default defineConfig({
           ],
         },
       }),
+      // Bundled production output. Defaults to a self-built PGlite flavor
+      // (zero infra); SMOKE_DATABASE=postgres runs the real `pnpm build`
+      // output against Postgres. Excluded from `pnpm test`.
+      defineConfig({
+        plugins: [],
+        test: {
+          name: 'smoke',
+          environment: 'node',
+          include: ['test/smoke/**/*.test.ts'],
+          testTimeout: 120_000,
+          hookTimeout: 300_000,
+        },
+      }),
       // Full Nitro + Vue + Nuxt UI stack.
       mergeConfig(viteConfig, defineConfig({
         plugins: [nitroTestPlugin()],
