@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import type { FragmentOf } from 'gazania'
 import { setInfiniteQueryData, useInfiniteQuery, useMutation, useQueryCache } from '@pinia/colada'
+import { readFragment } from 'gazania'
 import { COUNT_QUERY_KEYS } from '~/app/utils/query-keys'
 import { createGraphQLClient, GraphQLRequestError } from '~/plugins/graphql-schema/runtime/app/client'
 import { gazania } from '~/plugins/graphql-schema/runtime/shared/gazania'
@@ -8,25 +10,20 @@ const graphql = createGraphQLClient(useAppContext().$requestFetch)
 
 useHead({ title: 'GraphQL Demo' })
 
-interface CountEvent {
-  readonly id: string
-  readonly userName: string
-  readonly userEmail: string
-  readonly createdAt: string
-}
-
-/** One fetched page of the count snapshot; auth failures map to `unauthorized`. */
-type SnapshotPage
-  = | { readonly kind: 'unauthorized' }
-    | {
-      readonly kind: 'ready'
-      readonly count: number
-      readonly events: readonly CountEvent[]
-      readonly endCursor: string | null
-      readonly hasNextPage: boolean
-    }
-
 const PAGE_SIZE = 20
+
+/**
+ * The event feed's data contract as a masked fragment: the query and the
+ * mutation compose it, and only `readFragment` at the UI boundary can see
+ * the fields — refactoring the selection breaks exactly where it is read.
+ */
+const CountEventFields = gazania.partial('CountEventFields')
+  .on('CountEvent')
+  .select($ => $.select([
+    'id',
+    'createdAt',
+    { user: $ => $.select(['name', 'email']) },
+  ]))
 
 const CountSnapshotQuery = gazania.query('CountSnapshot')
   .vars({ first: 'Int!', after: 'String' })
@@ -41,9 +38,8 @@ const CountSnapshotQuery = gazania.query('CountSnapshot')
         '... on QueryCountEventsConnection': $ => $.select([{
           edges: $ => $.select([{
             node: $ => $.select([
-              'id',
-              'createdAt',
-              { user: $ => $.select(['name', 'email']) },
+              ...CountEventFields(vars),
+              '__typename',
             ]),
           }]),
           pageInfo: $ => $.select(['endCursor', 'hasNextPage']),
@@ -52,28 +48,42 @@ const CountSnapshotQuery = gazania.query('CountSnapshot')
     ]),
   }]))
 
-function formatCreatedAt(value: unknown): string {
-  if (typeof value === 'string')
-    return value
-  if (value instanceof Date)
-    return value.toISOString()
-  if (typeof value === 'number')
-    return new Date(value).toISOString()
-  throw new Error('Invalid createdAt value')
-}
+const RecordCountMutation = gazania.mutation('RecordCount')
+  .select($ => $.select([{
+    recordCount: $ => $.select([
+      '__typename',
+      {
+        '... on RecordCountPayload': $ => $.select([
+          'totalCount',
+          { countEvent: $ => $.select([...CountEventFields({}), '__typename']) },
+        ]),
+      },
+    ]),
+  }]))
 
-function mapEvent(node: {
-  id: string | number
-  createdAt: unknown
-  user: { name: string, email: string }
-}): CountEvent {
+/** Flatten one masked fragment into the feed's transport-agnostic item. */
+function toFeedItem(node: FragmentOf<typeof CountEventFields>) {
+  const event = readFragment(CountEventFields, node)
   return {
-    id: String(node.id),
-    userName: node.user.name,
-    userEmail: node.user.email,
-    createdAt: formatCreatedAt(node.createdAt),
+    id: event.id,
+    userName: event.user.name,
+    userEmail: event.user.email,
+    createdAt: event.createdAt,
   }
 }
+
+type CountEventItem = ReturnType<typeof toFeedItem>
+
+/** One fetched page of the count snapshot; auth failures map to `unauthorized`. */
+type SnapshotPage
+  = | { readonly kind: 'unauthorized' }
+    | {
+      readonly kind: 'ready'
+      readonly count: number
+      readonly events: readonly CountEventItem[]
+      readonly endCursor: string | null
+      readonly hasNextPage: boolean
+    }
 
 function mapSnapshotPage(data: Awaited<ReturnType<typeof fetchSnapshot>>): SnapshotPage {
   if (
@@ -85,7 +95,7 @@ function mapSnapshotPage(data: Awaited<ReturnType<typeof fetchSnapshot>>): Snaps
   return {
     kind: 'ready',
     count: data.count.data,
-    events: data.countEvents.edges.map(edge => mapEvent(edge.node)),
+    events: data.countEvents.edges.map(edge => toFeedItem(edge.node)),
     endCursor: data.countEvents.pageInfo.endCursor ?? null,
     hasNextPage: data.countEvents.pageInfo.hasNextPage,
   }
@@ -142,33 +152,14 @@ const {
   mutate: increment,
 } = useMutation({
   mutation: async () => {
-    const result = await graphql.request(
-      gazania.mutation('RecordCount')
-        .select($ => $.select([{
-          recordCount: $ => $.select([
-            '__typename',
-            {
-              '... on RecordCountPayload': $ => $.select([
-                'totalCount',
-                {
-                  countEvent: $ => $.select([
-                    'id',
-                    'createdAt',
-                    { user: $ => $.select(['name', 'email']) },
-                  ]),
-                },
-              ]),
-            },
-          ]),
-        }])),
-    )
+    const result = await graphql.request(RecordCountMutation)
     if (result.recordCount.__typename === 'UnauthorizedError') {
       // Domain errors resolve as data; surface them through the mutation
       // error path so the existing error banner renders them.
       throw new Error('You must sign in to view the counter')
     }
     return {
-      event: mapEvent(result.recordCount.countEvent),
+      event: toFeedItem(result.recordCount.countEvent),
       total: result.recordCount.totalCount,
     }
   },
