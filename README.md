@@ -28,6 +28,28 @@ Open http://localhost:20398, sign up, and pick an API implementation:
 
 All three operate on the same count-event business model. A real project keeps the API style it needs rather than shipping all three.
 
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| `pnpm dev` | Dev server with in-memory PGlite (`MOCK_DATABASE=true`) |
+| `pnpm dev:prod` | Dev server against Postgres (`POSTGRES_*`) |
+| `pnpm build` / `pnpm preview` | Build and preview the production bundle |
+| `pnpm typecheck` | Regenerate `.generated/` then run `vue-tsc` |
+| `pnpm lint` | ESLint |
+| `pnpm test` | Unit + e2e suites (PGlite, no Docker); smoke excluded |
+| `pnpm test:smoke` | Build a PGlite-flavored artifact (`.output-smoke`) and smoke-test it — both smoke scripts always rebuild first |
+| `pnpm test:smoke:postgres` | Same against the real production build + Postgres |
+| `pnpm db:generate` / `pnpm db:migrate` | Generate / apply Drizzle migrations |
+| `pnpm auth:generate` | Regenerate the Better Auth schema |
+
+`pnpm install` runs `prepare` automatically, which regenerates `.generated/` (tsconfigs, auto-import declarations, gazania types). Run `pnpm prepare` after changing GraphQL schema files.
+
+## Troubleshooting
+
+- **Port already in use** — Vite dev listens on `:20398`, compose.dev Postgres on `:5433`. Find the listener with `lsof -i :20398` and stop it, or change the dev URL in `.env` (`BETTER_AUTH_URL`).
+- **`pnpm prepare` fails** — it boots the full Vite plugin chain and needs Node.js 24+. Re-run `pnpm install` (which also runs prepare) and then `pnpm prepare` on its own to see the clean error. A transient `[TSCONFIG_ERROR]` / dev-worker stack trace right before a successful (exit 0) prepare is known noise from the `.generated` clear/rewrite window and can be ignored.
+
 ## Deploying
 
 Docker Compose runs Postgres, applies Drizzle migrations, then starts the Nitro production server. Bare `docker compose up` is this production stack — local Postgres-only dev uses `-f compose.dev.yaml`.
