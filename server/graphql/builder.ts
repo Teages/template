@@ -7,7 +7,13 @@ import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
 import WithInputPlugin from '@pothos/plugin-with-input'
 import { getTableConfig } from 'drizzle-orm/pg-core'
 import { relations } from '~/server/database/relations'
-import { UnauthorizedError } from '~/server/graphql/errors'
+import {
+  BadUserInputError,
+  ConflictError,
+  InvalidCredentialsError,
+  RateLimitedError,
+  UnauthorizedError,
+} from '~/server/graphql/errors'
 import { useDrizzle } from '~/server/utils/drizzle'
 
 export const builder = new SchemaBuilder<{
@@ -63,6 +69,26 @@ const ErrorInterface = builder.interfaceRef<Error>('Error').implement({
 
 builder.objectType(UnauthorizedError, {
   name: 'UnauthorizedError',
+  interfaces: [ErrorInterface],
+})
+
+builder.objectType(InvalidCredentialsError, {
+  name: 'InvalidCredentialsError',
+  interfaces: [ErrorInterface],
+})
+
+builder.objectType(BadUserInputError, {
+  name: 'BadUserInputError',
+  interfaces: [ErrorInterface],
+})
+
+builder.objectType(ConflictError, {
+  name: 'ConflictError',
+  interfaces: [ErrorInterface],
+})
+
+builder.objectType(RateLimitedError, {
+  name: 'RateLimitedError',
   interfaces: [ErrorInterface],
 })
 
