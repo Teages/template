@@ -1,5 +1,5 @@
 import type { Nitro } from 'nitro/types'
-import type { Plugin } from 'vite'
+import type { Plugin, ServerOptions } from 'vite'
 import { randomUUID } from 'node:crypto'
 import { env } from 'node:process'
 import { createConsola } from 'consola'
@@ -16,7 +16,6 @@ const STUDIO_AUTH_KEY_REPLACEMENT = 'import.meta.DRIZZLE_STUDIO_KEY'
 const logger = createConsola({}).withTag('drizzle-studio')
 
 interface StudioEnvironment {
-  readonly MOCK_DATABASE?: string
   readonly VITEST?: string
 }
 
@@ -25,7 +24,7 @@ type StudioNitroOptions = Pick<Nitro['options'], 'replace' | 'routes'>
 export function isDrizzleStudioEnabled(
   environment: StudioEnvironment,
 ): boolean {
-  return Boolean(environment.MOCK_DATABASE) && !environment.VITEST
+  return !environment.VITEST
 }
 
 export function configureDrizzleStudioNitro(
@@ -41,6 +40,13 @@ export function configureDrizzleStudioNitro(
 /** The Studio web app that pairs with the loopback proxy port. */
 export function drizzleStudioUrl(port: number): string {
   return `https://local.drizzle.studio?port=${port}`
+}
+
+export function shouldStartStudioProxy(
+  enabled: boolean,
+  middlewareMode: ServerOptions['middlewareMode'],
+): boolean {
+  return enabled && !middlewareMode
 }
 
 export default function DrizzleStudio(): Plugin {
@@ -68,7 +74,7 @@ export default function DrizzleStudio(): Plugin {
       },
     },
     configureServer(server) {
-      if (!enabled || !studioAuthKey) {
+      if (!shouldStartStudioProxy(enabled, server.config.server.middlewareMode) || !studioAuthKey) {
         return
       }
       const authKey = studioAuthKey
