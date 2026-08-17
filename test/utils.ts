@@ -11,7 +11,7 @@ export async function resetTestDatabase(): Promise<void> {
     throw new Error('resetTestDatabase() is only available in the mock-database test environment.')
   }
   // The request hook waits for the asynchronous PGlite plugin initialization.
-  await serverFetch('/api/auth/get-session')
+  await serverFetch('/api/health')
   const { db } = useDrizzle()
   await clearDatabase(db)
 }
@@ -51,11 +51,14 @@ export async function getAuthTestHelpers(): Promise<TestHelpers> {
   return authTestHelpers
 }
 
-export async function signInTestUser(scope: string): Promise<TestAuthSession> {
+export async function signInTestUser(
+  scope: string,
+  options?: { name?: string },
+): Promise<TestAuthSession> {
   const test = await getAuthTestHelpers()
   const user = test.createUser({
     email: uniqueAuthEmail(scope),
-    name: 'Vitest User',
+    name: options?.name ?? 'Vitest User',
   })
   await test.saveUser(user)
   const { headers, user: savedUser } = await test.login({ userId: user.id })
@@ -82,18 +85,44 @@ export const jsonHeaders = {
   'Origin': testOrigin,
 } as const
 
+export async function postGraphQL(
+  fetch: (req: string | Request | URL, init?: RequestInit) => Promise<Response>,
+  body: { query: string, variables?: Record<string, unknown> },
+  options?: { cookie?: string, origin?: string, contentType?: string },
+): Promise<{ status: number, json: unknown, cookie: string }> {
+  const headers = new Headers()
+  headers.set('Content-Type', options?.contentType ?? 'application/json')
+  headers.set('Origin', options?.origin ?? testOrigin)
+  if (options?.cookie)
+    headers.set('Cookie', options.cookie)
+
+  const res = await fetch('/api/graphql', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  })
+  return {
+    status: res.status,
+    json: await res.json(),
+    cookie: cookieHeader(res),
+  }
+}
+
 export function createGraphQLTestClient(
   fetch: (req: string | Request | URL, init?: RequestInit) => Promise<Response>,
-  options?: { cookie?: string },
+  options?: { cookie?: string, origin?: string },
 ) {
   const cookie = options?.cookie
-  const authedFetch = cookie
-    ? (req: string | Request | URL, init?: RequestInit) => {
-        const headers = new Headers(init?.headers)
-        headers.set('Cookie', cookie)
-        return fetch(req, { ...init, headers })
-      }
-    : fetch
+  const origin = options?.origin ?? testOrigin
+  const authedFetch = (req: string | Request | URL, init?: RequestInit) => {
+    const headers = new Headers(init?.headers)
+    headers.set('Origin', origin)
+    if (!headers.has('Content-Type') && !headers.has('content-type'))
+      headers.set('Content-Type', 'application/json')
+    if (cookie)
+      headers.set('Cookie', cookie)
+    return fetch(req, { ...init, headers })
+  }
 
   return createClient('http://localhost/api/graphql', {
     ofetch: createFetch({ fetch: authedFetch }),
