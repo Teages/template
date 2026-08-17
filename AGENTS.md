@@ -16,7 +16,7 @@ Use pnpm. Node.js 24+ is required.
 pnpm install
 cp .env.example .env      # then set BETTER_AUTH_SECRET (openssl rand -base64 32)
 pnpm dev                  # MOCK_DATABASE=true (PGlite)
-pnpm dev:prod             # real Postgres via POSTGRES_*
+pnpm dev:prod             # real Postgres via NITRO_POSTGRES_*
 pnpm build                # Nitro server bundle + standalone migrate script
 pnpm preview
 pnpm typecheck            # prepare + tsc
@@ -43,7 +43,7 @@ CI (`.github/workflows/ci.yaml`) runs lint, typecheck, the in-process test suite
 
 `schema.graphql` and everything under `.generated/` (including `tsconfig.server.json` and `tsconfig.node.json`) are produced by `pnpm prepare` — do not hand-edit them, and regenerate after any GraphQL schema change. `pnpm prepare` empties `.generated` first, so stale artifacts never survive a prepare.
 
-`compose.yaml` is the production stack (Postgres + migrate + app on port 3000). `compose.dev.yaml` is local Postgres only (host 5433). Do not set `MOCK_DATABASE` in Compose. Compose sets Better Auth URL/origins from `APP_ORIGIN` (default `http://localhost:3000`), not from the dev `BETTER_AUTH_URL`. The app reads those values from `process.env` at runtime (`server/utils/auth-env.ts`). Postgres credentials are the structured `POSTGRES_*` fields (`server/utils/postgres-connection.ts`), not a concatenated URI.
+`compose.yaml` is the production stack (Postgres + migrate + app on port 3000). `compose.dev.yaml` is local Postgres only (host 5433). Do not set `MOCK_DATABASE` in Compose. Compose sets Better Auth URL/origins from `APP_ORIGIN` (default `http://localhost:3000`), not from the dev `BETTER_AUTH_URL`. The app reads those values from `process.env` at runtime (`server/utils/auth-env.ts`). Inside Nitro, Postgres credentials come from `useRuntimeConfig().postgres` (overridden by `NITRO_POSTGRES_*`, never a concatenated URI). `drizzle.config.ts` and the standalone migrate script read the same `NITRO_POSTGRES_*` fields. The official Postgres image still uses `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` inside the container; Compose interpolates those from `NITRO_POSTGRES_*`.
 
 ## Conventions
 
@@ -51,7 +51,7 @@ CI (`.github/workflows/ci.yaml`) runs lint, typecheck, the in-process test suite
 - **Template plugins**: every root `plugins/<name>/index.ts` is a Vite plugin entry. Startup side effects are registered there explicitly; callable runtime APIs remain explicit imports from `runtime/server` or `runtime/shared`. Runtime tsconfig globs make files type-visible but do not execute them. Do not add automatic plugin scanning or an external module framework.
 - **APIs**: GraphQL is the only API surface, exposed at `/api/graphql` (see `server/graphql/schema/AGENTS.md` for schema conventions). GraphQL documents are type-checked through gazania (`plugins/graphql-schema/runtime/shared/gazania.ts` against `.generated/shared/gazania.d.ts`); e2e tests compose operations with it.
 - **Auth**: Better Auth is an internal engine (`server/auth/`, `auth.api.*`). Public auth is the GraphQL allowlist (`session`, `signUpEmail`, `signInEmail`, `signOut`). Do not mount a Better Auth `/api/auth/*` catch-all. Read the session via `useAuthSession(event)`, or `requireAuthSession(event)` (which resolves a 401 as an `UnauthorizedError`) for protected GraphQL fields. Map GraphQL inputs explicitly; never forward them into `auth.api.*`. Forward request headers and Better Auth `Set-Cookie` values on the GraphQL response. Auth mutation rate limits use the Nitro KV mount `better-auth:rate-limit` (memory driver).
-- **Database**: tables in `server/database/schema.ts`, relations in `server/database/relations.ts`. Call `useDrizzle()` inside handlers/resolvers/procedures/tests — never at module scope. Read `POSTGRES_*` through `readPostgresConnection()` (structured fields, never a concatenated URI). Generate migrations with `pnpm db:generate`; never hand-edit snapshots. Keep pagination deterministic (unique tie-breaker after timestamps).
+- **Database**: tables in `server/database/schema.ts`, relations in `server/database/relations.ts`. Call `useDrizzle()` inside handlers/resolvers/procedures/tests — never at module scope. Inside Nitro, read Postgres from `useRuntimeConfig().postgres` (never a concatenated URI; unset fields use the compose.dev defaults). `drizzle.config.ts` and the standalone migrate script read `NITRO_POSTGRES_*` from the environment. Generate migrations with `pnpm db:generate`; never hand-edit snapshots. Keep pagination deterministic (unique tie-breaker after timestamps).
 - **Tests**: reset PGlite before mutating shared data. Test auth/validation failures, ordering, pagination boundaries. Keep GraphQL e2e assertions in the operation suite under `test/e2e/api/graphql/` — never weaken assertions to hide nondeterministic ordering.
 
 Install repository skills with `pnpm skills:install`.

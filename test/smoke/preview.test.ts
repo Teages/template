@@ -20,8 +20,8 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 //   within the repository.
 // - `postgres` (`pnpm test:smoke:postgres`, used in CI): the real `pnpm
 //   build` output (rebuilt by `pretest:smoke:postgres`) against a real
-//   Postgres (compose.dev.yaml on 5433 matches the readPostgresConnection()
-//   defaults; export POSTGRES_* to override) and additionally verifies the
+//   Postgres (compose.dev.yaml on 5433 matches the NITRO_POSTGRES_*
+//   defaults; export NITRO_POSTGRES_* to override) and additionally verifies the
 //   standalone migrate bundle.
 //
 // Both pre hooks force a fresh build, so the suite always tests the current
