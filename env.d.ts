@@ -12,3 +12,7 @@ interface ImportMeta {
   readonly DRIZZLE_STUDIO_KEY?: string
   readonly vitest?: typeof import('vitest')
 }
+
+declare module 'virtual:nitro-test/env-runner-origin' {
+  export const envRunnerOrigin: string
+}

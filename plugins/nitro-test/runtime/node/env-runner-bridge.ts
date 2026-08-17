@@ -1,33 +1,21 @@
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { envRunnerOrigin } from 'virtual:nitro-test/env-runner-origin'
 
 /**
- * Port file written by `nitroTestPlugin` when it binds a localhost proxy in
- * front of `environments.nitro.dispatchFetch` (env-runner).
+ * HTTP client for the e2e document tests. `nitroTestPlugin` binds a loopback
+ * proxy in front of `environments.nitro.dispatchFetch` (env-runner) and
+ * injects its origin via the `virtual:nitro-test/env-runner-origin` module.
  *
  * Tests cannot share `globalThis` or module state with the Vite host process /
  * ModuleRunner split, so document requests bridge over loopback HTTP instead.
+ * This module must only be imported through the e2e Vite pipeline — it is the
+ * only project that registers `nitroTestPlugin` to resolve the virtual import.
  */
-export const ENV_RUNNER_PORT_FILE = resolve(
-  import.meta.dirname,
-  '../../../../.generated/e2e-env-runner-port',
-)
-
-export function readEnvRunnerOrigin(): string {
-  const port = readFileSync(ENV_RUNNER_PORT_FILE, 'utf8').trim()
-  if (!/^\d+$/.test(port)) {
-    throw new Error(`Invalid env-runner port in ${ENV_RUNNER_PORT_FILE}: ${port}`)
-  }
-  return `http://127.0.0.1:${port}`
-}
-
 export async function fetch(
   path: string,
   init?: RequestInit,
 ): Promise<Response> {
-  const origin = readEnvRunnerOrigin()
   const url = path.startsWith('http')
     ? path
-    : `${origin}${path.startsWith('/') ? path : `/${path}`}`
+    : `${envRunnerOrigin}${path.startsWith('/') ? path : `/${path}`}`
   return await globalThis.fetch(url, init)
 }
