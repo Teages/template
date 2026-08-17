@@ -28,32 +28,23 @@ its runtime, with real database).
 ### CJS-only entrypoints inlined into the SSR ModuleRunner
 - reason: Some packages expose ESM through `module`/`jsnext:*` fields but CJS
   through `main`. Without an explicit SSR main-field order, Nitro's test
-  environment leaves `mainFields` empty and Vite falls back to `main`; for
-  example, `aria-hidden` then resolves to `dist/es5` and throws
-  `ReferenceError: exports is not defined`. Nitro's env-runner evaluates these
-  inlined dependencies without Node's `require`/`exports` globals. Vue's
-  `node` import also resolves through `index.mjs` to the CJS `index.js` wrapper.
-  `@whatwg-node/fetch` (a `graphql-yoga` dependency) similarly exposes a CJS
+  environment leaves `mainFields` empty and Vite falls back to `main`.
+  `@whatwg-node/fetch` (a `graphql-yoga` dependency) exposes a CJS
   `node-ponyfill.js` entry whose top-level `require('./create-node-ponyfill')`
-  fails inside the ModuleRunner.
+  fails inside the ModuleRunner — Nitro's env-runner evaluates inlined
+  dependencies without Node's `require`/`exports` globals.
 - affected: dev, test
-- patched: `vite.config.ts` sets the SSR `mainFields` to the ESM package fields
-  and follows Nuxt's `resolve.dedupe: ['vue']` configuration.
-  `plugins/module-runner-esm/index.ts` resolves the Vue runtime graph and
-  `@whatwg-node/fetch` to their ESM bundler entries. Unlike Nuxt's bundled SSR
-  pipeline, standalone Nitro's env-runner cannot delegate their CJS wrappers
-  to Node. The `@whatwg-node/fetch` remap targets `dist/esm-ponyfill.js`.
-  The remap plugin is gated to serve mode (`vite dev` + Vitest, not preview):
-  during `vite build` it rewrote bare `vue` imports into file paths, which
-  inlined a private Vue copy into the SSR service bundle while nft-traced
-  dependencies (unhead, pinia-colada, …) kept their own — two Vue runtimes
-  whose provide/inject contexts never met, so every production SSR render
-  returned 500 (`useHead() was called without provide context`). In builds,
-  `vue` must stay a bare specifier so all importers share the single traced
-  copy; the production smoke (`pnpm test:smoke`) guards this.
+- patched: `vite.config.ts` sets the SSR `mainFields` to the ESM package
+  fields. `plugins/module-runner-esm/index.ts` resolves `@whatwg-node/fetch`
+  to its ESM `dist/esm-ponyfill.js` entry — unlike Nuxt's bundled SSR
+  pipeline, standalone Nitro's env-runner cannot delegate the CJS wrapper to
+  Node. The remap plugin is gated to serve mode (`vite dev` + Vitest, not
+  preview): during `vite build` the specifier must stay bare so nft tracing
+  keeps copying the real package and Node's native ESM/CJS interop handles it
+  in production; the production smoke (`pnpm test:smoke`) guards this.
 - follow up: Remove the explicit `mainFields` once Nitro preserves Vite's
-  ESM-first server defaults, and revisit the remaps as upstream packages ship
-  env-runner-compatible ESM entrypoints.
+  ESM-first server defaults, and drop the remap when upstream ships an
+  env-runner-compatible ESM entrypoint.
 
 ### Nitro trace omits tslib, crashing graphql-yoga in production
 - reason: `graphql-yoga` and its `@whatwg-node/*` chain (`node-fetch`,
@@ -99,26 +90,3 @@ its runtime, with real database).
   it must run from within the repository.
 - follow up: Revisit if Nitro learns to emit fs-referenced package assets
   for bundled dependencies.
-
-### @vitejs/plugin-vue transforms ?assets queries
-- reason: `plugins/vue-ssr/runtime/app/entry-server.ts` imports page modules
-  with a `?assets` query to
-  preload SSR assets. Without an exclusion, `@vitejs/plugin-vue` strips the
-  query and tries to parse Nitro's generated asset module as a Vue SFC.
-- affected: dev, build
-- patched: `plugins/vue-ssr/index.ts` passes `exclude: /\?assets/` to the Vue
-  plugin. Its native transform hook filter sees the full request ID and skips
-  asset queries.
-- follow up: Remove once `@vitejs/plugin-vue` handles `?assets` queries
-  natively; track the upstream issue.
-
-### Vite DevTools leaves its standalone WebSocket open under Vitest
-- reason: Vitest runs Vite in middleware mode without an HTTP server, so
-  `@vitejs/devtools` starts a standalone WebSocket server and does not close it.
-  Vitest then reaches its 10s shutdown timeout. `vite-plugin-devtools-json` only
-  installs middleware and is not part of the problem.
-- affected: test
-- patched: `vite.config.ts` disables only `DevTools()` when `env.VITEST` is
-  truthy; `devtoolsJson()` remains enabled.
-- follow up: Upstream fix tracked at https://github.com/vitejs/devtools/pull/519.
-  Remove the conditional once that lands and is released.
