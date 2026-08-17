@@ -1,5 +1,5 @@
 import { defineHandler, HTTPError } from 'nitro/h3'
-import { usePgliteClient } from '~/server/utils/drizzle.ts'
+import { useDrizzle } from '~/server/utils/drizzle.ts'
 import {
   handleStudioProtocol,
   studioCorsHeaders,
@@ -7,10 +7,6 @@ import {
 } from './protocol.ts'
 
 export default defineHandler(async (event) => {
-  if (!import.meta.MOCK_DATABASE) {
-    throw HTTPError.status(404, 'Not Found')
-  }
-
   const authError = validateStudioAuthorization(
     import.meta.DRIZZLE_STUDIO_KEY,
     event.req.headers.get('authorization'),
@@ -34,5 +30,5 @@ export default defineHandler(async (event) => {
   }
 
   const body = await event.req.json()
-  return await handleStudioProtocol(usePgliteClient(), body)
+  return await handleStudioProtocol(useDrizzle().db, body)
 })

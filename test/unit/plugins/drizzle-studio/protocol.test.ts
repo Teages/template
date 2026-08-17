@@ -1,4 +1,6 @@
 import { PGlite } from '@electric-sql/pglite'
+import { sql } from 'drizzle-orm'
+import { drizzle } from 'drizzle-orm/pglite'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import {
   handleStudioProtocol,
@@ -21,18 +23,17 @@ describe('validateStudioAuthorization', () => {
 })
 
 describe('handleStudioProtocol', () => {
-  // Real PGlite instance so the proxy/tproxy/bproxy paths execute real SQL.
-  let client: PGlite
+  // Drizzle over in-memory Postgres so proxy/tproxy/bproxy exercise the ORM API.
+  const client = new PGlite()
+  const db = drizzle({ client })
 
   beforeAll(async () => {
-    client = new PGlite()
-    await client.query(
+    await db.execute(
       'CREATE TABLE studio_items (id serial PRIMARY KEY, name text NOT NULL)',
     )
-    await client.query(
-      'INSERT INTO studio_items (name) VALUES ($1), ($2)',
-      ['alpha', 'beta'],
-    )
+    await db.execute(sql`
+      INSERT INTO studio_items (name) VALUES (${'alpha'}), (${'beta'})
+    `)
   })
 
   afterAll(async () => {
@@ -40,7 +41,7 @@ describe('handleStudioProtocol', () => {
   })
 
   it('rejects malformed protocol requests', async () => {
-    const response = await handleStudioProtocol(client, {})
+    const response = await handleStudioProtocol(db, {})
 
     expect(response.status).toBe(400)
     await expect(response.json()).resolves.toEqual({
@@ -50,18 +51,18 @@ describe('handleStudioProtocol', () => {
   })
 
   it('answers the initialization request without querying the database', async () => {
-    const response = await handleStudioProtocol(client, { type: 'init' })
+    const response = await handleStudioProtocol(db, { type: 'init' })
 
     expect(response.status).toBe(200)
     await expect(response.json()).resolves.toMatchObject({
       version: '6.3',
       dialect: 'postgresql',
-      driver: 'pglite',
+      driver: 'drizzle-orm',
     })
   })
 
   it('returns object-mode rows for a proxy query', async () => {
-    const response = await handleStudioProtocol(client, {
+    const response = await handleStudioProtocol(db, {
       type: 'proxy',
       data: { sql: 'SELECT id, name FROM studio_items ORDER BY id' },
     })
@@ -74,7 +75,7 @@ describe('handleStudioProtocol', () => {
   })
 
   it('honors array row mode for a proxy query', async () => {
-    const response = await handleStudioProtocol(client, {
+    const response = await handleStudioProtocol(db, {
       type: 'proxy',
       data: {
         sql: 'SELECT name FROM studio_items ORDER BY id',
@@ -86,8 +87,34 @@ describe('handleStudioProtocol', () => {
     await expect(response.json()).resolves.toEqual([['alpha'], ['beta']])
   })
 
+  it('binds $n after an identifier that contains dollar signs', async () => {
+    const response = await handleStudioProtocol(db, {
+      type: 'proxy',
+      data: {
+        sql: 'SELECT 1 AS foo$tag$, $1::int AS value',
+        params: [7],
+      },
+    })
+
+    expect(response.status).toBe(200)
+    await expect(response.json()).resolves.toEqual([{ foo$tag$: 1, value: 7 }])
+  })
+
+  it('binds $n params without rewriting the same token in a string literal', async () => {
+    const response = await handleStudioProtocol(db, {
+      type: 'proxy',
+      data: {
+        sql: 'SELECT \'$1\' AS literal, $1::int AS value',
+        params: [7],
+      },
+    })
+
+    expect(response.status).toBe(200)
+    await expect(response.json()).resolves.toEqual([{ literal: '$1', value: 7 }])
+  })
+
   it('binds positional params on a proxy query', async () => {
-    const response = await handleStudioProtocol(client, {
+    const response = await handleStudioProtocol(db, {
       type: 'proxy',
       data: {
         sql: 'SELECT $1::int + $2::int AS sum',
@@ -100,7 +127,7 @@ describe('handleStudioProtocol', () => {
   })
 
   it('normalizes binary params to JSON before binding', async () => {
-    const response = await handleStudioProtocol(client, {
+    const response = await handleStudioProtocol(db, {
       type: 'proxy',
       data: {
         sql: 'SELECT $1::text AS v',
@@ -112,8 +139,8 @@ describe('handleStudioProtocol', () => {
     await expect(response.json()).resolves.toEqual([{ v: '{"foo":1}' }])
   })
 
-  it('keeps timestamp values as strings via the configured parsers', async () => {
-    const response = await handleStudioProtocol(client, {
+  it('keeps timestamp values as strings', async () => {
+    const response = await handleStudioProtocol(db, {
       type: 'proxy',
       data: {
         sql: 'SELECT \'2024-01-02T03:04:05Z\'::timestamptz AS ts',
@@ -127,7 +154,7 @@ describe('handleStudioProtocol', () => {
   })
 
   it('returns each result set of a tproxy batch in order', async () => {
-    const response = await handleStudioProtocol(client, {
+    const response = await handleStudioProtocol(db, {
       type: 'tproxy',
       data: [
         { sql: 'SELECT name FROM studio_items ORDER BY id LIMIT 1' },
@@ -143,7 +170,7 @@ describe('handleStudioProtocol', () => {
   })
 
   it('rolls back a tproxy batch on error and surfaces the failure', async () => {
-    const response = await handleStudioProtocol(client, {
+    const response = await handleStudioProtocol(db, {
       type: 'tproxy',
       data: [
         { sql: 'INSERT INTO studio_items (name) VALUES (\'gamma\')' },
@@ -157,7 +184,7 @@ describe('handleStudioProtocol', () => {
       { error: expect.stringMatching(/nonexistent_table/) as string },
     ])
 
-    const verify = await handleStudioProtocol(client, {
+    const verify = await handleStudioProtocol(db, {
       type: 'proxy',
       data: { sql: 'SELECT count(*)::int AS total FROM studio_items' },
     })
@@ -165,7 +192,7 @@ describe('handleStudioProtocol', () => {
   })
 
   it('runs a bproxy the requested number of times and returns timings', async () => {
-    const response = await handleStudioProtocol(client, {
+    const response = await handleStudioProtocol(db, {
       type: 'bproxy',
       data: { query: { sql: 'SELECT 1 AS n' }, repeats: 3 },
     })
@@ -179,7 +206,7 @@ describe('handleStudioProtocol', () => {
   })
 
   it('rejects the defaults request with a server error', async () => {
-    const response = await handleStudioProtocol(client, {
+    const response = await handleStudioProtocol(db, {
       type: 'defaults',
       data: [],
     })
@@ -187,7 +214,7 @@ describe('handleStudioProtocol', () => {
     expect(response.status).toBe(500)
     await expect(response.json()).resolves.toEqual({
       status: 'error',
-      error: 'Custom defaults are not configured for the mock database',
+      error: 'Custom defaults are not configured',
     })
   })
 })
