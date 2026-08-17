@@ -89,13 +89,6 @@ catalogs:
     skills:
       specifier: ^1.5.22
       version: 1.5.22
-  trpc:
-    '@trpc/client':
-      specifier: ^11.18.0
-      version: 11.18.0
-    '@trpc/server':
-      specifier: ^11.18.0
-      version: 11.18.0
   typescript:
     '@tsconfig/node24':
       specifier: ^24.0.4
@@ -165,12 +158,6 @@ importers:
       '@teages/oh-my-graphql':
         specifier: catalog:graphql
         version: 0.1.4(graphql@16.14.2)
-      '@trpc/client':
-        specifier: catalog:trpc
-        version: 11.18.0(@trpc/server@11.18.0(typescript@5.9.3))(typescript@5.9.3)
-      '@trpc/server':
-        specifier: catalog:trpc
-        version: 11.18.0(typescript@5.9.3)
       better-auth:
         specifier: catalog:better-auth
         version: 1.7.0-rc.4(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3))
@@ -1345,19 +1332,6 @@ packages:
 
   '@teages/oh-my-graphql@0.1.4':
     resolution: {integrity: sha512-bfJRCKesqq1kV5+TV4PTa3f7Y3VlCPPlHBkWeNtkhRk5CRkqlLxe/Gf9OWbid/WInHW/VB2+lUCFhayPrM41qg==}
-
-  '@trpc/client@11.18.0':
-    resolution: {integrity: sha512-wOqeg3Fvl25V1ZisQhUD3K8G60ZJDlSGJNSyeXrLH24xAo5w6GSR2Kzb1cSNY9Y+IQ2YZvYGZstBU+V/ulo/ow==}
-    hasBin: true
-    peerDependencies:
-      '@trpc/server': 11.18.0
-      typescript: '>=5.7.2'
-
-  '@trpc/server@11.18.0':
-    resolution: {integrity: sha512-JAvXOuNTxgXjIDfQaOvDq1j66LMNfDJUH1IU7Slfn8EvRv2EkH6ehu3A7zpYhjO0syHHiYg77v2lG2JFJgvw7Q==}
-    hasBin: true
-    peerDependencies:
-      typescript: '>=5.7.2'
 
   '@tsconfig/node24@24.0.4':
     resolution: {integrity: sha512-2A933l5P5oCbv6qSxHs7ckKwobs8BDAe9SJ/Xr2Hy+nDlwmLE1GhFh/g/vXGRZWgxBg9nX/5piDtHR9Dkw/XuA==}
@@ -4558,15 +4532,6 @@ snapshots:
       ofetch: 1.5.1
     transitivePeerDependencies:
       - graphql
-
-  '@trpc/client@11.18.0(@trpc/server@11.18.0(typescript@5.9.3))(typescript@5.9.3)':
-    dependencies:
-      '@trpc/server': 11.18.0(typescript@5.9.3)
-      typescript: 5.9.3
-
-  '@trpc/server@11.18.0(typescript@5.9.3)':
-    dependencies:
-      typescript: 5.9.3
 
   '@tsconfig/node24@24.0.4': {}
 

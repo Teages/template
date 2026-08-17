@@ -47,10 +47,6 @@ catalogs:
     jiti: ^2.7.0
     skills: ^1.5.22
 
-  trpc:
-    '@trpc/client': ^11.18.0
-    '@trpc/server': ^11.18.0
-
   typescript:
     '@tsconfig/node24': ^24.0.4
     '@types/node': ^24.13.3

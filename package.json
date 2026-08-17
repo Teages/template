@@ -41,8 +41,6 @@
     "@pothos/plugin-simple-objects": "catalog:graphql",
     "@pothos/plugin-with-input": "catalog:graphql",
     "@teages/oh-my-graphql": "catalog:graphql",
-    "@trpc/client": "catalog:trpc",
-    "@trpc/server": "catalog:trpc",
     "better-auth": "catalog:better-auth",
     "consola": "catalog:utilities",
     "drizzle-orm": "catalog:database",
