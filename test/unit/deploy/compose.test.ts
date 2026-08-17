@@ -67,8 +67,13 @@ describe('production compose stack', () => {
 
   it('does not concatenate a postgres URI in nitro runtimeConfig', () => {
     const nitro = readRepoFile('nitro.config.ts')
+    const compose = readRepoFile('compose.yaml')
 
+    expect(nitro).toContain('postgres:')
+    expect(nitro).not.toContain('envPrefix:')
     expect(nitro).not.toContain('postgresql://')
-    expect(nitro).not.toContain('{{POSTGRES_PASSWORD}}')
+    expect(nitro).not.toContain('{{NITRO_POSTGRES_PASSWORD}}')
+    expect(compose).toContain('NITRO_POSTGRES_HOST')
+    expect(compose).toMatch(/POSTGRES_USER: \$\{NITRO_POSTGRES_USER:-user\}/)
   })
 })
