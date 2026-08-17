@@ -111,7 +111,7 @@ export function graphqlSchemaPlugin(options: GraphqlSchemaPluginOptions): Plugin
     configResolved(config) {
       root = config.root
     },
-    // Awaited during createServer — same pattern as auto-import dts generation.
+    // Awaited during createServer so the artifacts exist before dev serves.
     async buildStart() {
       if (shouldSkip() || printedOnStart)
         return
