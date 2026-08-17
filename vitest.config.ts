@@ -28,7 +28,6 @@ export default defineConfig({
           include: ['test/unit/**/*.test.ts'],
           includeSource: [
             'server/**/*.ts',
-            'app/**/*.ts',
             'plugins/*/runtime/**/*.ts',
           ],
         },
@@ -47,13 +46,12 @@ export default defineConfig({
           hookTimeout: 120_000,
         },
       }),
-      // Full Nitro + Vue + Nuxt UI stack.
+      // Full Nitro + Vite stack through the dev pipeline.
       mergeConfig(viteConfig, defineConfig({
         plugins: [nitroTestPlugin()],
         test: {
           name: 'e2e',
           include: ['test/e2e/**/*.test.ts'],
-          setupFiles: './test/setup',
           environment: './test/env',
           isolate: false,
           maxWorkers: 1,
