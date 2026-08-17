@@ -12,5 +12,4 @@ export default antfu({
       'ts/switch-exhaustiveness-check': 'off',
     },
   },
-  vue: true,
 })
