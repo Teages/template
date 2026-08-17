@@ -5,7 +5,6 @@ import { writeTSConfig } from 'pkg-types'
 import { createServer } from 'vite'
 import { generatedCleanPlugin } from '../plugins/generated-clean/index.ts'
 import {
-  getAppTSConfig,
   getNodeTSConfig,
   getServerTSConfig,
   resolveGeneratedTSConfigDir,
@@ -22,12 +21,10 @@ async function main() {
 
   await mkdir(tsconfigDir, { recursive: true })
 
-  const appConfig = getAppTSConfig(paths)
   const serverConfig = getServerTSConfig(paths)
   const nodeConfig = getNodeTSConfig(paths)
 
   await Promise.all([
-    writeTSConfig(resolve(tsconfigDir, 'tsconfig.app.json'), appConfig),
     writeTSConfig(resolve(tsconfigDir, 'tsconfig.server.json'), serverConfig),
     writeTSConfig(resolve(tsconfigDir, 'tsconfig.node.json'), nodeConfig),
   ])
