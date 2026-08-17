@@ -31,8 +31,7 @@ pnpm dev:prod
 The API listens on http://localhost:3000:
 
 - `/api/health` — liveness probe
-- `/api/graphql` — code-first Pothos schema, Relay pagination
-- `/api/auth/*` — Better Auth email/password sessions
+- `/api/graphql` — code-first Pothos schema, Relay pagination, email/password auth
 
 The count-event model behind the GraphQL schema is a starting point — replace it with your own domain.
 
