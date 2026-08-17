@@ -72,3 +72,26 @@ its runtime, with real database).
   dropped (once nitro 3.0.260606-beta stopped masking it via SSR-warmup
   timeouts). Both fixes are needed — the remap for dev/test, `traceDeps` for
   prod. Do not remove the remap again based on "prod is fine".
+
+### Rolldown helper sharing deadlocks production ESM evaluation
+- reason: Nitro's Rolldown `codeSplitting.groups` puts each `node_modules`
+  package in its own `_libs/*` chunk. Shared runtime helpers
+  (`__exportAll`, `__toESM`, `__require`, `__commonJSMin`) then land in an
+  app chunk (`_chunks/drizzle.mjs`) because that file also uses
+  `import * as schema`. The app chunk imports `@pothos/plugin-drizzle`,
+  which imports `@better-auth/drizzle-adapter`, which calls
+  `__exportAll` at module top-level from the still-evaluating app chunk.
+  Node links the live binding as `undefined`, so the first GraphQL/server
+  boot throws `TypeError: __exportAll is not a function`. Dev and
+  in-process e2e never hit this: they run through Vite's ModuleRunner, not
+  the split production graph.
+- affected: build
+- patched: `nitro.config.ts` sets `inlineDynamicImports: true`, which Nitro
+  turns into Rolldown `codeSplitting: false` so helpers stay local to the
+  single server file. `test/smoke/server-eval.test.ts` boots
+  `.output/server/index.mjs` without Postgres and asserts the process
+  answers `/api/health`.
+- follow up: Remove once Rolldown places shared helpers in a leaf chunk
+  that participates in no import cycle, or Nitro stops grouping
+  `node_modules` in a way that re-exports drizzle-orm through Pothos and
+  Better Auth adapter chunks. Track rolldown and nitro releases.
