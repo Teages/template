@@ -8,9 +8,9 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 // Smoke for the bundled production output — the surface `pnpm test` never
 // touches: its suites run Nitro in-process through the dev pipeline, while
-// bundling regressions (nft trace misses, duplicated runtimes — see the
-// tslib and vue entries in WORKAROUND.md) only appear when `.output/server`
-// runs for real. Both modes boot the server the way the Docker runtime does
+// bundling regressions (nft trace misses — see the tslib entry in
+// WORKAROUND.md) only appear when `.output/server` runs for real. Both modes
+// boot the server the way the Docker runtime does
 // (`node .output/server/index.mjs` — the same server `pnpm preview` wraps):
 //
 // - `pglite` (default, `pnpm test:smoke`): a MOCK_DATABASE flavor built into
@@ -213,27 +213,8 @@ run(`production build smoke (${database})`, () => {
     expect(await res.json()).toEqual({ ok: true })
   })
 
-  it('redirects unauthenticated document requests to the sign-in page', async () => {
+  it('answers routes outside /api with a 404 (API-only server)', async () => {
     const res = await fetch(`${baseUrl}/`, {
-      redirect: 'manual',
-      headers: { accept: 'text/html' },
-    })
-    expect(res.status).toBe(302)
-    expect(res.headers.get('location')).toBe('/sign-in?redirect=%2F')
-  })
-
-  it('renders SSR HTML for a signed-in document request', async () => {
-    const res = await fetch(`${baseUrl}/`, {
-      headers: { accept: 'text/html', cookie: sessionCookie },
-    })
-    expect(res.status, `SSR rendering failed:\n${serverLogs}`).toBe(200)
-    const html = await res.text()
-    expect(html).toContain('<!DOCTYPE html>')
-    expect(html).toContain('<div id="root"')
-  })
-
-  it('answers unknown document routes with a 404 status', async () => {
-    const res = await fetch(`${baseUrl}/no/such/page`, {
       headers: { accept: 'text/html', cookie: sessionCookie },
     })
     expect(res.status).toBe(404)
