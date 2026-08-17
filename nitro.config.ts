@@ -12,6 +12,11 @@ export default defineConfig({
     tasks: true,
     asyncContext: true,
   },
+  storage: {
+    'better-auth:rate-limit': {
+      driver: 'memory',
+    },
+  },
   traceDeps: [
     // Transitive helper that nft misses (see WORKAROUND.md).
     'tslib*',
