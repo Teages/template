@@ -1,4 +1,3 @@
-import type { PGlite } from '@electric-sql/pglite'
 import type { DrizzleConfig } from 'drizzle-orm'
 import type { PgAsyncDatabase, PgQueryResultHKT } from 'drizzle-orm/pg-core'
 import { drizzle } from 'drizzle-orm/postgres-js'
@@ -38,7 +37,6 @@ function initDrizzle(): DrizzleDatabase {
 }
 
 let _db: DrizzleDatabase | null = null
-let _pglite: PGlite | null = null
 
 export function useDrizzle(): {
   db: DrizzleDatabase
@@ -51,17 +49,6 @@ export function useDrizzle(): {
 }
 
 /** @internal */
-export function usePgliteClient(): PGlite {
-  if (!_pglite) {
-    throw new Error(
-      'PGlite client not initialized. Ensure the pglite-mock plugin runs before handling requests.',
-    )
-  }
-  return _pglite
-}
-
-/** @internal */
-export function injectDrizzle(db: DrizzleDatabase, client?: PGlite): void {
+export function injectDrizzle(db: DrizzleDatabase): void {
   _db = db
-  _pglite = client ?? null
 }

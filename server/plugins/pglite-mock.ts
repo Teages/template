@@ -5,10 +5,10 @@ import { createPgliteDatabase } from '../utils/pglite-db'
 export default definePlugin((nitro) => {
   if (import.meta.MOCK_DATABASE) {
     async function setup() {
-      const { db, client } = await createPgliteDatabase({
+      const { db } = await createPgliteDatabase({
         seed: import.meta.MOCK_DATABASE === 'seed',
       })
-      injectDrizzle(db, client)
+      injectDrizzle(db)
     }
 
     const promise = setup()
