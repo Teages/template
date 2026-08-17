@@ -72,21 +72,3 @@ its runtime, with real database).
   dropped (once nitro 3.0.260606-beta stopped masking it via SSR-warmup
   timeouts). Both fixes are needed — the remap for dev/test, `traceDeps` for
   prod. Do not remove the remap again based on "prod is fine".
-
-### Bundling PGlite into a rollup chunk drops its sidecar assets
-- reason: `@electric-sql/pglite` loads runtime assets (`pglite.data` FS
-  image, extension tarballs, wasm) via reads relative to its module file.
-  Nitro's vite build inlines the package into a `_libs/*.mjs` chunk, and
-  rollup emits none of the sidecars — a `MOCK_DATABASE=true` production
-  build boots and then fails every DB-touching request with
-  `ENOENT .../_libs/pglite.data`.
-- affected: build (MOCK flavor only — used by the PGlite smoke in
-  `test/smoke/preview.test.ts`; real builds never execute the PGlite path)
-- patched: `nitro.config.ts` adds `'@electric-sql/pglite*'` to `traceDeps`
-  when `MOCK_DATABASE` is set — the `*` suffix externalizes and full-traces
-  the package so it lands in `.output*/server/node_modules` with all
-  sidecars, matching the dev/test context. The mock artifact also resolves
-  `drizzle-kit` (schema push) from the repo's `node_modules` at runtime, so
-  it must run from within the repository.
-- follow up: Revisit if Nitro learns to emit fs-referenced package assets
-  for bundled dependencies.

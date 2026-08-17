@@ -9,39 +9,24 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 // Smoke for the bundled production output — the surface `pnpm test` never
 // touches: its suites run Nitro in-process through the dev pipeline, while
 // bundling regressions (nft trace misses — see the tslib entry in
-// WORKAROUND.md) only appear when `.output/server` runs for real. Both modes
-// boot the server the way the Docker runtime does
-// (`node .output/server/index.mjs` — the same server `pnpm preview` wraps):
+// WORKAROUND.md) only appear when `.output/server` runs for real. Boots the
+// server the way the Docker runtime does (`node .output/server/index.mjs` —
+// the same server `pnpm preview` wraps) against real Postgres
+// (compose.dev.yaml on 5433 matches the NITRO_POSTGRES_* defaults; export
+// NITRO_POSTGRES_* to override) and verifies the standalone migrate bundle.
 //
-// - `pglite` (default, `pnpm test:smoke`): a MOCK_DATABASE flavor built into
-//   `.output-smoke` by the `pretest:smoke` hook — no Postgres or Docker
-//   needed. The artifact requires the repo's node_modules for drizzle-kit
-//   (see applySchema in server/utils/pglite-db.ts), so it must run from
-//   within the repository.
-// - `postgres` (`pnpm test:smoke:postgres`, used in CI): the real `pnpm
-//   build` output (rebuilt by `pretest:smoke:postgres`) against a real
-//   Postgres (compose.dev.yaml on 5433 matches the NITRO_POSTGRES_*
-//   defaults; export NITRO_POSTGRES_* to override) and additionally verifies the
-//   standalone migrate bundle.
-//
-// Both pre hooks force a fresh build, so the suite always tests the current
+// `pretest:smoke` runs `pnpm build`, so the suite always tests the current
 // sources. Invoking vitest directly (no pre hook) skips when the artifact is
-// missing — run through the pnpm scripts instead.
-
-type SmokeDatabase = 'pglite' | 'postgres'
-
-const database: SmokeDatabase
-  = process.env.SMOKE_DATABASE === 'postgres' ? 'postgres' : 'pglite'
-const realDb = database === 'postgres'
+// missing — run through `pnpm test:smoke` instead.
 
 const rootDir = resolve(import.meta.dirname, '../..')
-const outputDir = resolve(rootDir, realDb ? '.output' : '.output-smoke')
+const outputDir = resolve(rootDir, '.output')
 const serverEntry = resolve(outputDir, 'server/index.mjs')
 const migrateEntry = resolve(rootDir, '.output/server/migrate.mjs')
 
-const hasBuild = existsSync(serverEntry) && (!realDb || existsSync(migrateEntry))
+const hasBuild = existsSync(serverEntry) && existsSync(migrateEntry)
 if (!hasBuild) {
-  console.warn('[smoke] build output not found — run `pnpm test:smoke` / `pnpm test:smoke:postgres` (their pre hooks build); skipping')
+  console.warn('[smoke] build output not found — run `pnpm test:smoke` (its pre hook builds); skipping')
 }
 
 const SIGN_UP_MUTATION = /* GraphQL */ `
@@ -84,7 +69,7 @@ interface RecordCountBody {
 
 const run = hasBuild ? describe : describe.skip
 
-run(`production build smoke (${database})`, () => {
+run('production build smoke', () => {
   let baseUrl: string
   let sessionCookie: string
   let server: ChildProcess | undefined
@@ -162,18 +147,16 @@ run(`production build smoke (${database})`, () => {
   }
 
   beforeAll(async () => {
-    if (realDb) {
-      // The standalone migrate bundle runs twice on purpose: it must stay
-      // idempotent, since the compose migrate job may re-run after crashes.
-      for (const attempt of [1, 2]) {
-        const result = await runNode(migrateEntry, {})
-        if (result.code !== 0) {
-          throw new Error(
-            `migrate #${attempt} exited with ${result.code}:\n${result.output}`
-            + '\nHint: is Postgres reachable on localhost:5433?'
-            + ' (docker compose -f compose.dev.yaml up -d)',
-          )
-        }
+    // The standalone migrate bundle runs twice on purpose: it must stay
+    // idempotent, since the compose migrate job may re-run after crashes.
+    for (const attempt of [1, 2]) {
+      const result = await runNode(migrateEntry, {})
+      if (result.code !== 0) {
+        throw new Error(
+          `migrate #${attempt} exited with ${result.code}:\n${result.output}`
+          + '\nHint: is Postgres reachable on localhost:5433?'
+          + ' (docker compose -f compose.dev.yaml up -d)',
+        )
       }
     }
 

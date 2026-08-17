@@ -7,7 +7,6 @@ bun.lockb
 .nitro
 .data
 .output
-.output-smoke
 dist
 nitro.d.ts
 

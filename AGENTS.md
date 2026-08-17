@@ -24,8 +24,7 @@ pnpm lint
 pnpm test                 # unit + e2e (smoke excluded)
 pnpm test:unit            # pure Node + in-source
 pnpm test:e2e             # full Nitro + PGlite (in-process, dev pipeline)
-pnpm test:smoke           # bundled-output smoke; PGlite flavor, pre hook rebuilds .output-smoke
-pnpm test:smoke:postgres  # same against real Postgres; pre hook runs pnpm build (compose.dev.yaml)
+pnpm test:smoke           # bundled-output smoke against Postgres; pre hook runs pnpm build (compose.dev.yaml)
 pnpm db:generate          # generate Drizzle migrations
 pnpm db:migrate           # apply migrations (prod DB)
 pnpm auth:generate        # regenerate Better Auth schema
@@ -35,7 +34,7 @@ docker compose up --build                  # production: Postgres + migrate + ap
 
 Run `pnpm typecheck`, `pnpm lint`, and the relevant test project for every code change.
 
-CI (`.github/workflows/ci.yaml`) runs lint, typecheck, the in-process test suites, `pnpm build`, and the smoke (`SMOKE_DATABASE=postgres`, real Postgres service) — the only automated coverage for nft-trace and bundled-output regressions, which the dev-pipeline tests cannot see (see `WORKAROUND.md`). Both smoke scripts force a fresh build through their `pretest:` hooks, so they always test the current sources; the default PGlite flavor needs no Docker or Postgres.
+CI (`.github/workflows/ci.yaml`) runs lint, typecheck, the in-process test suites, `pnpm build`, and the smoke (real Postgres service) — the only automated coverage for nft-trace and bundled-output regressions, which the dev-pipeline tests cannot see (see `WORKAROUND.md`). `pnpm test:smoke` forces a fresh build through its `pretest:` hook, so it always tests the current sources. Local smoke needs Postgres on localhost:5433 (`docker compose -f compose.dev.yaml up -d`).
 
 ## Project Structure
 
