@@ -18,9 +18,9 @@ export class UnauthorizedError extends Error {
 }
 
 /**
- * Auth guard for GraphQL resolvers: same session cache as the REST/tRPC
- * surfaces, but converts the transport-level 401 into the schema-level
- * {@link UnauthorizedError} so it resolves as data.
+ * Auth guard for GraphQL resolvers: reads the same per-event session cache
+ * filled by the auth middleware, but converts the transport-level 401 into
+ * the schema-level {@link UnauthorizedError} so it resolves as data.
  */
 export function requireAuthSession(event: H3Event): AuthSession {
   try {

@@ -2,7 +2,7 @@
 
 # AGENTS.md
 
-This is an API-only TypeScript template built on [Nitro v3](https://nitro.build), [h3](https://h3.dev/), [Vite](https://vite.dev/) and [rolldown](https://rolldown.rs/), with Drizzle ORM, Better Auth, and three interchangeable API styles (REST, GraphQL, tRPC). There is no frontend: the server renders no HTML, and any route outside the API handlers answers with Nitro's 404.
+This is an API-only TypeScript template built on [Nitro v3](https://nitro.build), [h3](https://h3.dev/), [Vite](https://vite.dev/) and [rolldown](https://rolldown.rs/), with Drizzle ORM, Better Auth, and a GraphQL API (Pothos + GraphQL Yoga). There is no frontend: the server renders no HTML, and any route outside the API handlers answers with Nitro's 404.
 
 Refer to `node_modules/nitro/dist/docs/README.md` when working on the server — your Nitro v3 knowledge is likely outdated. This is **not** a Nuxt application: do not introduce `nuxt.config.ts`, route middleware, Nitro auto-import assumptions, or Nuxt composables.
 
@@ -39,7 +39,7 @@ CI (`.github/workflows/ci.yaml`) runs lint, typecheck, the in-process test suite
 
 ## Project Structure
 
-`server/` contains Nitro server code under the supported subdirs: `api/` (`/api`-prefixed handlers for REST, GraphQL, tRPC, and auth), `middleware/`, `plugins/`, `utils/`, `tasks/`, and the domain dirs `rest/`, `graphql/`, `trpc/`, and `database/`. Root `plugins/` contains local, source-visible Vite plugins and their explicitly wired runtime code; it is distinct from Nitro startup plugins under `server/plugins/`. Read `plugins/AGENTS.md` before editing a template plugin. `test/` is split into `unit/`, `e2e/`, and `smoke/` (production-build suite; skips without a `.output`). Config files: `vite.config.ts` (loads `nitro/vite` and registers the local template plugins), `nitro.config.ts`, `drizzle.config.ts`, and the root `tsconfig.json` that references generated project configs under `.generated/`.
+`server/` contains Nitro server code under the supported subdirs: `api/` (`/api`-prefixed handlers for GraphQL and auth), `middleware/`, `plugins/`, `utils/`, `tasks/`, and the domain dirs `graphql/` and `database/`. Root `plugins/` contains local, source-visible Vite plugins and their explicitly wired runtime code; it is distinct from Nitro startup plugins under `server/plugins/`. Read `plugins/AGENTS.md` before editing a template plugin. `test/` is split into `unit/`, `e2e/`, and `smoke/` (production-build suite; skips without a `.output`). Config files: `vite.config.ts` (loads `nitro/vite` and registers the local template plugins), `nitro.config.ts`, `drizzle.config.ts`, and the root `tsconfig.json` that references generated project configs under `.generated/`.
 
 `schema.graphql` and everything under `.generated/` (including `tsconfig.server.json` and `tsconfig.node.json`) are produced by `pnpm prepare` — do not hand-edit them, and regenerate after any GraphQL schema change. `pnpm prepare` empties `.generated` first, so stale artifacts never survive a prepare.
 
@@ -49,9 +49,9 @@ CI (`.github/workflows/ci.yaml`) runs lint, typecheck, the in-process test suite
 
 - **Imports**: server code uses explicit imports, the `~/*` alias with `.ts` extensions, and H3 functions from `nitro/h3`. There are no auto-imports anywhere in this template.
 - **Template plugins**: every root `plugins/<name>/index.ts` is a Vite plugin entry. Startup side effects are registered there explicitly; callable runtime APIs remain explicit imports from `runtime/server` or `runtime/shared`. Runtime tsconfig globs make files type-visible but do not execute them. Do not add automatic plugin scanning or an external module framework.
-- **APIs**: REST, GraphQL, and tRPC expose the same count-event capabilities but follow their own ecosystem conventions. Do not force a shared envelope. When shared business behavior changes, update all three and extend `test/e2e/api/count-contract.test.ts`. GraphQL documents are type-checked through gazania (`plugins/graphql-schema/runtime/shared/gazania.ts` against `.generated/shared/gazania.d.ts`); e2e tests compose operations with it.
-- **Auth**: Better Auth owns `/api/auth/*`. Read the session via `useAuthSession(event)` (or `…(event, 'required')` for protected REST/GraphQL ops; `protectedProcedure` for tRPC).
+- **APIs**: GraphQL is the only API surface, exposed at `/api/graphql` (see `server/graphql/schema/AGENTS.md` for schema conventions). GraphQL documents are type-checked through gazania (`plugins/graphql-schema/runtime/shared/gazania.ts` against `.generated/shared/gazania.d.ts`); e2e tests compose operations with it.
+- **Auth**: Better Auth owns `/api/auth/*`. Read the session via `useAuthSession(event)`, or `requireAuthSession(event)` (which resolves a 401 as an `UnauthorizedError`) for protected GraphQL fields.
 - **Database**: tables in `server/database/schema.ts`, relations in `server/database/relations.ts`. Call `useDrizzle()` inside handlers/resolvers/procedures/tests — never at module scope. Read `POSTGRES_*` through `readPostgresConnection()` (structured fields, never a concatenated URI). Generate migrations with `pnpm db:generate`; never hand-edit snapshots. Keep pagination deterministic (unique tie-breaker after timestamps).
-- **Tests**: reset PGlite before mutating shared data. Test auth/validation failures, ordering, pagination boundaries. Keep transport-specific assertions in their transport suite and cross-transport equivalence in `count-contract.test.ts` — never weaken assertions to hide nondeterministic ordering.
+- **Tests**: reset PGlite before mutating shared data. Test auth/validation failures, ordering, pagination boundaries. Keep GraphQL e2e assertions in the operation suite under `test/e2e/api/graphql/` — never weaken assertions to hide nondeterministic ordering.
 
 Install repository skills with `pnpm skills:install`.

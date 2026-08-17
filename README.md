@@ -1,6 +1,6 @@
 # Nitro API template
 
-An API-only template demonstrating interchangeable **REST**, **GraphQL**, and **tRPC** designs on [Nitro](https://nitro.build/) v3, [h3](https://h3.dev/), [Vite](https://vite.dev/), Drizzle ORM, and Better Auth. There is no frontend — the server exposes JSON APIs and answers any other route with a 404.
+An API-only GraphQL template on [Nitro](https://nitro.build/) v3, [h3](https://h3.dev/), [Vite](https://vite.dev/), Drizzle ORM, and Better Auth. There is no frontend — the server exposes a JSON GraphQL API and answers any other route with a 404.
 
 Requires **Node.js 24+** and **pnpm**. See [`AGENTS.md`](./AGENTS.md) for repository conventions.
 
@@ -31,12 +31,10 @@ pnpm dev:prod
 The API listens on http://localhost:3000:
 
 - `/api/health` — liveness probe
-- `/api/count-events` — resource-oriented REST (HTTP status, opaque cursor pagination)
 - `/api/graphql` — code-first Pothos schema, Relay pagination
-- `/api/trpc` — end-to-end typed procedures (Zod-validated input)
 - `/api/auth/*` — Better Auth email/password sessions
 
-All three API styles operate on the same count-event business model. A real project keeps the style it needs rather than shipping all three.
+The count-event model behind the GraphQL schema is a starting point — replace it with your own domain.
 
 ## Commands
 

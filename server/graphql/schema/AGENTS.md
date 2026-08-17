@@ -60,7 +60,7 @@ Do not replace connections with raw arrays or offset pagination.
 
 ## Mutations
 
-Mutations should return a dedicated payload object even when they create one record. A payload can expose the created object and useful mutation metadata without coupling the schema to REST or tRPC response shapes.
+Mutations should return a dedicated payload object even when they create one record. A payload can expose the created object and useful mutation metadata without coupling the schema to flat response shapes.
 
 ```ts
 const RecordCountPayload = builder.simpleObject('RecordCountPayload', {
