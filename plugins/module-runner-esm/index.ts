@@ -6,33 +6,22 @@ import { createRequire } from 'node:module'
  *
  * The env-runner evaluates inlined modules without Node `require`/`exports`,
  * so packages whose default `node` condition / `main` field resolves to a
- * CJS wrapper throw when imported inside the runner. Currently remaps the
- * Vue runtime graph and `@whatwg-node/fetch` to their ESM bundler entries
- * (see the matching entries in `WORKAROUND.md`).
+ * CJS wrapper throw when imported inside the runner. Currently remaps
+ * `@whatwg-node/fetch` (a `graphql-yoga` dependency) to its ESM bundler
+ * entry (see the matching entry in `WORKAROUND.md`).
  *
  * `@whatwg-node/fetch` specifically ships a CJS `node-ponyfill.js` whose
  * top-level `require('./create-node-ponyfill')` throws inside the dev/test
  * ModuleRunner. Its ESM `esm-ponyfill.js` entry avoids this and is what the
  * Vite SSR/nitro environments import. The remap is gated to serve mode
- * (`vite dev` + Vitest): in `vite build` it would inline a second Vue copy
- * into the SSR bundle and break provide/inject across traced dependencies.
- * Nitro's nft trace copies the real packages and Node's native ESM/CJS
- * interop handles them in production (the prod tslib crash is covered
+ * (`vite dev` + Vitest): in `vite build` it would rewrite the bare specifier
+ * into a file path and inline the package into the bundle, while Nitro's nft
+ * trace should keep copying the real package (the prod tslib crash is covered
  * separately by `traceDeps` in `nitro.config.ts`). Do not remove this remap
  * based on "prod is fine" — that was the regression in the commit that
  * dropped it, which surfaced as `ReferenceError: require is not defined`.
  */
 export function moduleRunnerEsmPlugin(): Plugin {
-  const fromVue = createRequire(import.meta.resolve('vue/package.json'))
-  const vueEntries: Record<string, string> = {
-    'vue': fromVue.resolve('vue/dist/vue.runtime.esm-bundler.js'),
-    '@vue/runtime-dom': fromVue.resolve('@vue/runtime-dom/dist/runtime-dom.esm-bundler.js'),
-    '@vue/runtime-core': fromVue.resolve('@vue/runtime-core/dist/runtime-core.esm-bundler.js'),
-    '@vue/reactivity': fromVue.resolve('@vue/reactivity/dist/reactivity.esm-bundler.js'),
-    '@vue/shared': fromVue.resolve('@vue/shared/dist/shared.esm-bundler.js'),
-    '@vue/server-renderer': fromVue.resolve('@vue/server-renderer/dist/server-renderer.esm-bundler.js'),
-    'vue/server-renderer': fromVue.resolve('@vue/server-renderer/dist/server-renderer.esm-bundler.js'),
-  }
   const fromYoga = createRequire(import.meta.resolve('graphql-yoga/package.json'))
   const whatwgFetchEsm = fromYoga.resolve(
     '@whatwg-node/fetch/dist/esm-ponyfill.js',
@@ -41,20 +30,15 @@ export function moduleRunnerEsmPlugin(): Plugin {
   return {
     name: 'module-runner-esm',
     enforce: 'pre',
-    // Serve mode only (dev + Vitest): rewriting `vue` to a file path during
-    // `vite build` inlines a private Vue copy into the SSR service bundle
-    // while traced dependencies (unhead, pinia-colada, …) keep their own —
-    // two Vue runtimes whose provide/inject contexts never meet, so every
-    // production SSR render 500s. In build, `vue` must stay a bare
-    // specifier so all importers share the single traced copy.
+    // Serve mode only (dev + Vitest): during `vite build` the specifier must
+    // stay bare so nft tracing and Node's native ESM/CJS interop handle the
+    // real package in production.
     apply: (_config, { command, isPreview }) =>
       command === 'serve' && !isPreview,
     applyToEnvironment(environment) {
       return environment.name === 'ssr' || environment.name === 'nitro'
     },
     resolveId(id) {
-      if (vueEntries[id])
-        return vueEntries[id]
       if (id === '@whatwg-node/fetch')
         return whatwgFetchEsm
     },
