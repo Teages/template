@@ -33,9 +33,9 @@ async function main() {
   ])
 
   const server = await createServer({
-    // Empties `.generated` (preserving runtime state and incremental caches)
-    // before the plugin chain below regenerates it — this boot is the one
-    // context that rewrites every artifact, so only it may clear.
+    // Empties `.generated` before the plugin chain below regenerates it —
+    // this boot is the one context that rewrites every artifact, so only
+    // it may clear.
     plugins: [generatedCleanPlugin()],
     logLevel: 'silent',
     server: {
