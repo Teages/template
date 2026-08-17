@@ -19,6 +19,10 @@ export async function loadAuthSession(event: H3Event): Promise<AuthSession | nul
   return CACHE_MAP.get(event)!
 }
 
+export function replaceAuthSession(event: H3Event, session: AuthSession | null): void {
+  CACHE_MAP.set(event, session)
+}
+
 export function useAuthSession(event: H3Event, mode: 'required'): AuthSession
 export function useAuthSession(event: H3Event, mode: 'optional'): AuthSession | null
 export function useAuthSession(event: H3Event, mode: 'optional' | 'required'): AuthSession | null {
