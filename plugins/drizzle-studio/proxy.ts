@@ -42,6 +42,7 @@ async function startStudioProxy(
     gracefulShutdown: false,
     hostname: '127.0.0.1',
     port,
+    silent: true,
   })
   await proxyServer.ready()
   return proxyServer
