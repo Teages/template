@@ -63,8 +63,8 @@ jobs:
       - run: pnpm exec vitest run --project smoke
         env:
           SMOKE_DATABASE: postgres
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: '5433'
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: passwd
-          POSTGRES_DB: mydb
+          NITRO_POSTGRES_HOST: localhost
+          NITRO_POSTGRES_PORT: '5433'
+          NITRO_POSTGRES_USER: user
+          NITRO_POSTGRES_PASSWORD: passwd
+          NITRO_POSTGRES_DB: mydb
