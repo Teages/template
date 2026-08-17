@@ -44,6 +44,20 @@ if (!hasBuild) {
   console.warn('[smoke] build output not found — run `pnpm test:smoke` / `pnpm test:smoke:postgres` (their pre hooks build); skipping')
 }
 
+const SIGN_UP_MUTATION = /* GraphQL */ `
+  mutation SmokeSignUp($input: SignUpEmailInput!) {
+    signUpEmail(input: $input) {
+      __typename
+      ... on SignUpEmailPayload {
+        user { email }
+      }
+      ... on ConflictError { message }
+      ... on BadUserInputError { message }
+      ... on RateLimitedError { message }
+    }
+  }
+`
+
 const RECORD_COUNT_MUTATION = /* GraphQL */ `
   mutation SmokeRecordCount {
     recordCount {
@@ -104,16 +118,28 @@ run(`production build smoke (${database})`, () => {
   }
 
   async function signUp(): Promise<string> {
-    const res = await fetch(`${baseUrl}/api/auth/sign-up/email`, {
+    const email = `smoke-${crypto.randomUUID()}@test.local`
+    const res = await fetch(`${baseUrl}/api/graphql`, {
       method: 'POST',
       headers: { 'content-type': 'application/json', 'origin': baseUrl },
       body: JSON.stringify({
-        email: `smoke-${crypto.randomUUID()}@test.local`,
-        name: 'Smoke User',
-        password: 'password-8-chars',
+        query: SIGN_UP_MUTATION,
+        variables: {
+          input: {
+            email,
+            name: 'Smoke User',
+            password: 'password-8-chars',
+          },
+        },
       }),
     })
     expect(res.status, `sign-up failed:\n${serverLogs}`).toBe(200)
+    const body = await res.json() as {
+      errors?: Array<{ message: string }>
+      data?: { signUpEmail: { __typename: string } }
+    }
+    expect(body.errors, `sign-up GraphQL errors:\n${JSON.stringify(body)}\n${serverLogs}`).toBeUndefined()
+    expect(body.data?.signUpEmail.__typename).toBe('SignUpEmailPayload')
     const cookie = res.headers.getSetCookie()
       .map(entry => entry.split(';')[0]!)
       .join('; ')
@@ -126,6 +152,7 @@ run(`production build smoke (${database})`, () => {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
+        'origin': baseUrl,
         ...(cookie ? { cookie } : {}),
       },
       body: JSON.stringify({ query: RECORD_COUNT_MUTATION }),
@@ -205,6 +232,19 @@ run(`production build smoke (${database})`, () => {
     if (server.exitCode === null) {
       server.kill('SIGKILL')
     }
+  })
+
+  it('does not expose Better Auth HTTP routes', async () => {
+    const res = await fetch(`${baseUrl}/api/auth/sign-up/email`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'origin': baseUrl },
+      body: JSON.stringify({
+        email: `smoke-${crypto.randomUUID()}@test.local`,
+        name: 'Smoke User',
+        password: 'password-8-chars',
+      }),
+    })
+    expect(res.status).toBe(404)
   })
 
   it('answers /api/health', async () => {
