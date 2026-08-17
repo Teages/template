@@ -1,23 +1,7 @@
 import type { Plugin } from 'vite'
 import { mkdir, readdir, rm } from 'node:fs/promises'
 import { cwd } from 'node:process'
-import { basename, join, resolve } from 'pathe'
-import { ENV_RUNNER_PORT_FILE } from '../nitro-test/runtime/node/env-runner-bridge.ts'
-
-/**
- * Entries that outlive a `.generated` rebuild: the e2e env-runner port file
- * is runtime state written by `nitro:test` (not a generated artifact), and
- * `*.tsbuildinfo` are vue-tsc incremental caches — dropping them would turn
- * every typecheck into a cold run. The port file is matched by basename so
- * the rule keeps working for any rootDir (tests) while following the
- * nitro-test constant.
- */
-function isPreservedGeneratedEntry(entryPath: string): boolean {
-  return (
-    basename(entryPath) === basename(ENV_RUNNER_PORT_FILE)
-    || entryPath.endsWith('.tsbuildinfo')
-  )
-}
+import { join, resolve } from 'pathe'
 
 /**
  * Empty `.generated` so every rebuild starts from a clean slate — stale
@@ -29,10 +13,7 @@ export async function clearGeneratedDir(rootDir: string): Promise<void> {
   await mkdir(generatedDir, { recursive: true })
   const entries = await readdir(generatedDir)
   await Promise.all(
-    entries
-      .map(entry => join(generatedDir, entry))
-      .filter(entryPath => !isPreservedGeneratedEntry(entryPath))
-      .map(entryPath => rm(entryPath, { recursive: true, force: true })),
+    entries.map(entry => rm(join(generatedDir, entry), { recursive: true, force: true })),
   )
 }
 
