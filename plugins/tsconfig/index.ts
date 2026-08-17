@@ -1,7 +1,6 @@
 import type { Nitro } from 'nitro/types'
 import type { TSConfig } from 'pkg-types'
 import type { Plugin } from 'vite'
-import type { VueCompilerOptions } from './vue'
 import { mkdir } from 'node:fs/promises'
 import { isAbsolute, relative, resolve } from 'pathe'
 import { writeTSConfig } from 'pkg-types'
@@ -64,51 +63,15 @@ export default function tsconfigPlugin(): Plugin {
         buildDir: nitro.options.buildDir,
       } satisfies TSConfigPaths
 
-      const app = getAppTSConfig(paths)
       const server = getServerTSConfig(paths)
       const node = getNodeTSConfig(paths)
 
-      await nitro.hooks.callHook('prepare:types', { app, server, node })
-
       await mkdir(tsconfigDir, { recursive: true })
       await Promise.all([
-        writeTSConfig(resolve(tsconfigDir, 'tsconfig.app.json'), app),
         writeTSConfig(resolve(tsconfigDir, 'tsconfig.server.json'), server),
         writeTSConfig(resolve(tsconfigDir, 'tsconfig.node.json'), node),
       ])
     },
-  }
-}
-
-export function getAppTSConfig(paths: TSConfigPaths): TSConfig {
-  const { toRoot: pathToRoot, toBuild: pathToBuild } = pathResolvers(paths)
-
-  return {
-    extends: [
-      '@tsconfig/node24/tsconfig.json',
-      '@vue/tsconfig/tsconfig.dom.json',
-    ],
-    compilerOptions: {
-      rootDir: pathToRoot('.'),
-      paths: {
-        '~/*': [pathToRoot('./*')],
-        '#build/ui': [pathToRoot('./node_modules/.nuxt-ui/ui')],
-        '#build/ui/*': [pathToRoot('./node_modules/.nuxt-ui/ui/*')],
-        '#generated/*': [pathToRoot('./.generated/*')],
-      },
-      types: ['node', 'vite/client', 'nitro/vite/types'],
-      noUncheckedIndexedAccess: true,
-    },
-    include: [
-      pathToBuild('types/nitro-routes.d.ts'),
-      pathToRoot('env.d.ts'),
-      pathToRoot('.generated/app/**/*.ts'),
-      pathToRoot('.generated/shared/**/*.ts'),
-      pathToRoot('app/**/*.ts'),
-      pathToRoot('app/**/*.vue'),
-      pathToRoot('plugins/*/runtime/app/**/*.ts'),
-      pathToRoot('plugins/*/runtime/shared/**/*.ts'),
-    ],
   }
 }
 
@@ -136,9 +99,7 @@ export function getServerTSConfig(paths: TSConfigPaths): TSConfig {
       pathToRoot('server/**/*.ts'),
       pathToRoot('plugins/*/runtime/server/**/*.ts'),
       pathToRoot('plugins/*/runtime/shared/**/*.ts'),
-      pathToRoot('test/e2e/app/**/*.ts'),
       pathToRoot('test/e2e/api/**/*.ts'),
-      pathToRoot('test/setup.ts'),
       pathToRoot('test/utils.ts'),
     ],
   }
@@ -172,19 +133,8 @@ export function getNodeTSConfig(paths: TSConfigPaths): TSConfig {
       pathToRoot('*.ts'),
     ],
     exclude: [
-      pathToRoot('plugins/*/runtime/app/**/*.ts'),
       pathToRoot('plugins/*/runtime/server/**/*.ts'),
       pathToRoot('plugins/*/runtime/shared/**/*.ts'),
     ],
-  }
-}
-
-declare module 'nitro/types' {
-  interface NitroHooks {
-    'prepare:types': (configs: {
-      app: TSConfig & { vueCompilerOptions?: VueCompilerOptions }
-      server: TSConfig
-      node: TSConfig
-    }) => void
   }
 }
