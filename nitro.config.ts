@@ -12,6 +12,15 @@ export default defineConfig({
     tasks: true,
     asyncContext: true,
   },
+  runtimeConfig: {
+    postgres: {
+      host: 'localhost',
+      port: 5433,
+      user: 'user',
+      password: 'passwd',
+      db: 'mydb',
+    },
+  },
   storage: {
     'better-auth:rate-limit': {
       driver: 'memory',
