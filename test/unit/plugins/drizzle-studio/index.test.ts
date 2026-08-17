@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   configureDrizzleStudioNitro,
+  drizzleStudioUrl,
   isDrizzleStudioEnabled,
 } from '~/plugins/drizzle-studio/index'
 
@@ -35,5 +36,9 @@ describe('drizzle studio plugin wiring', () => {
     expect(JSON.stringify(options.routes)).toMatch(
       /plugins\/drizzle-studio\/runtime\/server\/handler\.ts/,
     )
+  })
+
+  it('points the studio web app at the loopback proxy port', () => {
+    expect(drizzleStudioUrl(4983)).toBe('https://local.drizzle.studio?port=4983')
   })
 })

@@ -1,4 +1,3 @@
-import type {} from '@vitejs/devtools-kit'
 import type { Nitro } from 'nitro/types'
 import type { Plugin } from 'vite'
 import { randomUUID } from 'node:crypto'
@@ -8,7 +7,6 @@ import { getPort } from 'get-port-please'
 import { resolve } from 'pathe'
 import { replaceStudioProxy } from './proxy.ts'
 
-const VIRTUAL_ID = 'virtual:drizzle-studio-dock'
 const NITRO_STUDIO_PATH = '/api/drizzle-studio'
 const NITRO_STUDIO_HANDLER = resolve(
   import.meta.dirname,
@@ -40,22 +38,9 @@ export function configureDrizzleStudioNitro(
   }
 }
 
-function dockClientSource(studioUrl: string): string {
-  return `
-export default function setup(ctx) {
-  ctx.current.events.on('dom:panel:mounted', (el) => {
-    el.style.cssText = 'position:relative;width:100%;height:100%;'
-    const iframe = document.createElement('iframe')
-    // Chrome/Edge Local Network Access: public origins in iframes need an
-    // explicit Permissions-Policy delegation before talking to loopback.
-    iframe.setAttribute('allow', 'local-network-access')
-    iframe.setAttribute('title', 'Drizzle Studio')
-    iframe.src = ${JSON.stringify(studioUrl)}
-    iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;'
-    el.appendChild(iframe)
-  })
-}
-`
+/** The Studio web app that pairs with the loopback proxy port. */
+export function drizzleStudioUrl(port: number): string {
+  return `https://local.drizzle.studio?port=${port}`
 }
 
 export default function DrizzleStudio(): Plugin {
@@ -82,22 +67,6 @@ export default function DrizzleStudio(): Plugin {
         configureDrizzleStudioNitro(nitro.options, studioAuthKey)
       },
     },
-    resolveId(id) {
-      if (!enabled) {
-        return
-      }
-      if (id === VIRTUAL_ID || id.startsWith(`${VIRTUAL_ID}?`)) {
-        return `\0${id}`
-      }
-    },
-    load(id) {
-      if (!enabled || !id.startsWith(`\0${VIRTUAL_ID}`)) {
-        return
-      }
-      const query = id.includes('?') ? id.slice(id.indexOf('?') + 1) : ''
-      const studioUrl = new URLSearchParams(query).get('url') ?? ''
-      return dockClientSource(studioUrl)
-    },
     configureServer(server) {
       if (!enabled || !studioAuthKey) {
         return
@@ -114,30 +83,11 @@ export default function DrizzleStudio(): Plugin {
             authKey,
             NITRO_STUDIO_PATH,
           )
+          logger.info(`Drizzle Studio: ${drizzleStudioUrl(port)}`)
         })().catch((error) => {
           logger.error('Failed to start Drizzle Studio proxy', error)
         })
       }
-    },
-    devtools: {
-      async setup(ctx) {
-        if (!enabled) {
-          return
-        }
-
-        const port = await resolvePort()
-        const url = `https://local.drizzle.studio?port=${port}`
-
-        ctx.docks.register({
-          id: 'drizzle-studio',
-          title: 'Drizzle Studio',
-          icon: 'simple-icons:drizzle',
-          type: 'custom-render',
-          renderer: {
-            importFrom: `${VIRTUAL_ID}?${new URLSearchParams({ url }).toString()}`,
-          },
-        })
-      },
     },
   }
 }
