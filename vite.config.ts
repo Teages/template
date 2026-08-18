@@ -30,12 +30,4 @@ export default defineConfig({
     'import.meta.vitest': 'undefined',
     'import.meta.MOCK_DATABASE': env.MOCK_DATABASE || 'undefined',
   },
-  environments: {
-    ssr: {
-      // Prefer ESM package fields before Vite's CJS `main` fallback.
-      resolve: {
-        mainFields: ['module', 'jsnext:main', 'jsnext'],
-      },
-    },
-  },
 })
