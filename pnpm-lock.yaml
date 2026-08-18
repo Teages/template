@@ -20,8 +20,8 @@ catalogs:
       version: 1.7.0-rc.4
   database:
     '@electric-sql/pglite':
-      specifier: ^0.5.4
-      version: 0.5.4
+      specifier: ^0.5.5
+      version: 0.5.5
     drizzle-kit:
       specifier: 1.0.0-rc.4
       version: 1.0.0-rc.4
@@ -70,8 +70,8 @@ catalogs:
       specifier: ^16.14.2
       version: 16.14.2
     graphql-yoga:
-      specifier: 5.21.2
-      version: 5.21.2
+      specifier: 5.21.3
+      version: 5.21.3
   nitro:
     nitro:
       specifier: 3.0.260610-beta
@@ -91,8 +91,8 @@ catalogs:
       version: 1.5.22
   typescript:
     '@tsconfig/node24':
-      specifier: ^24.0.4
-      version: 24.0.4
+      specifier: ^24.0.5
+      version: 24.0.5
     '@types/node':
       specifier: ^24.13.3
       version: 24.13.3
@@ -136,13 +136,13 @@ importers:
     dependencies:
       '@better-auth/drizzle-adapter':
         specifier: catalog:better-auth
-        version: 1.7.0-rc.4(@better-auth/core@1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2))(@better-auth/utils@0.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))
+        version: 1.7.0-rc.4(@better-auth/core@1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2))(@better-auth/utils@0.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))
       '@pothos/core':
         specifier: catalog:graphql
         version: 4.13.1(graphql@16.14.2)
       '@pothos/plugin-drizzle':
         specifier: catalog:graphql
-        version: 0.17.5(@pothos/core@4.13.1(graphql@16.14.2))(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(graphql@16.14.2)
+        version: 0.17.5(@pothos/core@4.13.1(graphql@16.14.2))(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(graphql@16.14.2)
       '@pothos/plugin-errors':
         specifier: catalog:graphql
         version: 4.9.1(@pothos/core@4.13.1(graphql@16.14.2))(graphql@16.14.2)
@@ -160,13 +160,13 @@ importers:
         version: 0.1.4(graphql@16.14.2)
       better-auth:
         specifier: catalog:better-auth
-        version: 1.7.0-rc.4(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3))
+        version: 1.7.0-rc.4(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3))
       consola:
         specifier: catalog:utilities
         version: 3.4.2
       drizzle-orm:
         specifier: catalog:database
-        version: 1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)
+        version: 1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)
       gazania:
         specifier: catalog:graphql
         version: 0.15.4(typescript@5.9.3)(vue@3.5.41(typescript@5.9.3))
@@ -175,7 +175,7 @@ importers:
         version: 16.14.2
       graphql-yoga:
         specifier: catalog:graphql
-        version: 5.21.2(graphql@16.14.2)
+        version: 5.21.3(graphql@16.14.2)
       ofetch:
         specifier: catalog:utilities
         version: 1.5.1
@@ -191,16 +191,16 @@ importers:
         version: 9.3.0(@typescript-eslint/typescript-estree@8.66.0(typescript@5.9.3))(@typescript-eslint/utils@8.66.0(eslint@10.8.1(jiti@2.7.0))(typescript@5.9.3))(@vue/compiler-sfc@3.5.41)(eslint@10.8.1(jiti@2.7.0))(typescript@5.9.3)(vitest@4.1.10)
       '@better-auth/test-utils':
         specifier: catalog:better-auth
-        version: 1.7.0-rc.4(@better-auth/core@1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2))(better-auth@1.7.0-rc.4(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3)))(vitest@4.1.10)
+        version: 1.7.0-rc.4(@better-auth/core@1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2))(better-auth@1.7.0-rc.4(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3)))(vitest@4.1.10)
       '@electric-sql/pglite':
         specifier: catalog:database
-        version: 0.5.4
+        version: 0.5.5
       '@graphql-typed-document-node/core':
         specifier: catalog:graphql
         version: 3.2.0(graphql@16.14.2)
       '@tsconfig/node24':
         specifier: catalog:typescript
-        version: 24.0.4
+        version: 24.0.5
       '@types/node':
         specifier: catalog:typescript
         version: 24.13.3
@@ -209,7 +209,7 @@ importers:
         version: 4.1.10(vitest@4.1.10)
       auth:
         specifier: catalog:better-auth
-        version: 1.7.0-rc.4(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(chokidar@5.0.0)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(giget@3.3.1)(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2)(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3))
+        version: 1.7.0-rc.4(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(chokidar@5.0.0)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(giget@3.3.1)(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2)(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3))
       drizzle-kit:
         specifier: catalog:database
         version: 1.0.0-rc.4
@@ -224,7 +224,7 @@ importers:
         version: 2.7.0
       nitro:
         specifier: catalog:nitro
-        version: 3.0.260610-beta(@electric-sql/pglite@0.5.4)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.1)
+        version: 3.0.260610-beta(@electric-sql/pglite@0.5.5)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.1)
       pathe:
         specifier: catalog:utilities
         version: 2.0.3
@@ -651,8 +651,8 @@ packages:
       oxlint:
         optional: true
 
-  '@electric-sql/pglite@0.5.4':
-    resolution: {integrity: sha512-yYZUyyXrHU7tPlCjwZQJ6hIG9DscdCCn7Uk0mYKwC1FeHX286AbcmFveMiRBEak8e9iPupjsoVImN3yJZVed2g==}
+  '@electric-sql/pglite@0.5.5':
+    resolution: {integrity: sha512-QeZ+oB7QaU4EJj2awrB8hwFZ5TXxLRBQ9Gfq0dQauYDdWsRtuWRCERgtri35vRfL07KQHlVlc/4Qxvn7a5AXeA==}
 
   '@envelop/core@5.5.1':
     resolution: {integrity: sha512-3DQg8sFskDo386TkL5j12jyRAdip/8yzK3x7YGbZBgobZ4aKXrvDU0GppU0SnmrpQnNaiTUsxBs9LKkwQ/eyvw==}
@@ -1047,8 +1047,8 @@ packages:
     resolution: {integrity: sha512-+CNAzxglkrpNf/kKywqQfk74QjtceuOE7Qm+AF8miRvPF/wmmK5+OJOgVh3AVTT3RP2mH3+FOaxlE5v72owk0A==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@fastify/busboy@3.2.0':
-    resolution: {integrity: sha512-m9FVDXU3GT2ITSe0UaMA5rU3QkfC/UXtCU8y0gSN/GugTqtVldOBWIB5V6V3sbmenVZUIpU6f+mPEO2+m5iTaA==}
+  '@fastify/busboy@3.2.1':
+    resolution: {integrity: sha512-tgK4O+57iz5ycYNGXE5ZWj1ES03lD2XnnBYWSbU/3wYZRMQzCUq7Ycds/RdyBZQeL5MU4fxBt6lzbIWf/Bickw==}
 
   '@floating-ui/core@1.8.0':
     resolution: {integrity: sha512-0CIZ5itps/8x7BG8dEIhs53BvCUH2PCoogtakwRTut+Arm58sJooJ0AuZhLw2HJYIR5cMLNPBSS728sPho2khQ==}
@@ -1065,14 +1065,14 @@ packages:
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
-  '@graphql-tools/merge@9.2.2':
-    resolution: {integrity: sha512-DSLLAztOIQId7QE3m8Ehk5lV+0pjxNSSRDHPzlYQ9E4KJ9AoUMBprC4C+eX3v4srh05S2ujm5/veqAr5yEWFSQ==}
+  '@graphql-tools/merge@9.2.3':
+    resolution: {integrity: sha512-cKRoXqJGy2zSRBLvotQpkACbXlHAb0yuHLN0l0ypKGCuL3NnF0zofYalkBJqiBxxxpK0lr3s9uowKFHCKi1/ZQ==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
-  '@graphql-tools/schema@10.0.38':
-    resolution: {integrity: sha512-Kckk2/vm+rELJ7ijvFaAn9ouWSVUTD0D4SJIvYF4rKeuQHAfCzE/jzMFonZVpTXleqJjPXLZjVbuaMorw7A5Og==}
+  '@graphql-tools/schema@10.1.0':
+    resolution: {integrity: sha512-wao48XQnfY631s3jXoNrhEHvCI8mlKXmIuWrR7F6zAdv92VuSOfHoq9P9KL2EnUMgBUnaStnByOx9Mn6RieWDg==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
@@ -1085,6 +1085,12 @@ packages:
 
   '@graphql-tools/utils@11.2.2':
     resolution: {integrity: sha512-Do2A/t6ayqOma8m7PvpYMsCBswL+NB35BQSng4GWSBqafL2/BnfAZy/NSENPwV721Rm2fG0BHETFC0+FJJZmLw==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+
+  '@graphql-tools/utils@12.0.0':
+    resolution: {integrity: sha512-aMdIo/l+8j4lhamWAf+MWHr+lOW8zArSBKXspqtKHgt5I2JF9LS55KDLUe/L9AiJOV/O6qJJ60hgYydbnJHbxg==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
@@ -1333,8 +1339,8 @@ packages:
   '@teages/oh-my-graphql@0.1.4':
     resolution: {integrity: sha512-bfJRCKesqq1kV5+TV4PTa3f7Y3VlCPPlHBkWeNtkhRk5CRkqlLxe/Gf9OWbid/WInHW/VB2+lUCFhayPrM41qg==}
 
-  '@tsconfig/node24@24.0.4':
-    resolution: {integrity: sha512-2A933l5P5oCbv6qSxHs7ckKwobs8BDAe9SJ/Xr2Hy+nDlwmLE1GhFh/g/vXGRZWgxBg9nX/5piDtHR9Dkw/XuA==}
+  '@tsconfig/node24@24.0.5':
+    resolution: {integrity: sha512-DWC54fGPuhZgg3Ighg4Y/A/bA3ZdB5hnzAuv/MkQ/X85sVsBsMQxu8t7khutdYeiNksBbFdDyeqv1HSW2Zl8aA==}
 
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
@@ -2471,8 +2477,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  graphql-yoga@5.21.2:
-    resolution: {integrity: sha512-IIRF/3xtjj2D6caAWL9177hQ8tV3mWB3hve1GRnz7njPhQ3iY1jFtSp98fNGv0yV9kaPh9kKQ8JWdJZnedVmDw==}
+  graphql-yoga@5.21.3:
+    resolution: {integrity: sha512-1hJTKZd7k2V0Q2tFMb+rIUSbcovL6uIkkKnW2W9HcldtrC1udukdf5CswKi6SzaI5keG4scxKPEolyZ6U83i/g==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       graphql: ^15.2.0 || ^16.0.0
@@ -3895,12 +3901,12 @@ snapshots:
       nanostores: 1.4.2
       zod: 4.4.3
 
-  '@better-auth/drizzle-adapter@1.7.0-rc.4(@better-auth/core@1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2))(@better-auth/utils@0.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))':
+  '@better-auth/drizzle-adapter@1.7.0-rc.4(@better-auth/core@1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2))(@better-auth/utils@0.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))':
     dependencies:
       '@better-auth/core': 1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2)
       '@better-auth/utils': 0.4.2
     optionalDependencies:
-      drizzle-orm: 1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)
+      drizzle-orm: 1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)
 
   '@better-auth/kysely-adapter@1.7.0-rc.4(@better-auth/core@1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2))(@better-auth/utils@0.4.2)(kysely@0.29.4)':
     dependencies:
@@ -3930,10 +3936,10 @@ snapshots:
       '@better-auth/utils': 0.4.2
       '@better-fetch/fetch': 1.3.1
 
-  '@better-auth/test-utils@1.7.0-rc.4(@better-auth/core@1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2))(better-auth@1.7.0-rc.4(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3)))(vitest@4.1.10)':
+  '@better-auth/test-utils@1.7.0-rc.4(@better-auth/core@1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2))(better-auth@1.7.0-rc.4(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3)))(vitest@4.1.10)':
     dependencies:
       '@better-auth/core': 1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2)
-      better-auth: 1.7.0-rc.4(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3))
+      better-auth: 1.7.0-rc.4(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3))
       vitest: 4.1.10(@types/node@24.13.3)(@vitest/ui@4.1.10)(vite@8.2.1)
 
   '@better-auth/utils@0.4.2':
@@ -4033,7 +4039,7 @@ snapshots:
     optionalDependencies:
       eslint: 10.8.1(jiti@2.7.0)
 
-  '@electric-sql/pglite@0.5.4': {}
+  '@electric-sql/pglite@0.5.5': {}
 
   '@envelop/core@5.5.1':
     dependencies:
@@ -4293,7 +4299,7 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@fastify/busboy@3.2.0': {}
+  '@fastify/busboy@3.2.1': {}
 
   '@floating-ui/core@1.8.0':
     dependencies:
@@ -4319,16 +4325,16 @@ snapshots:
       graphql: 16.14.2
       tslib: 2.8.1
 
-  '@graphql-tools/merge@9.2.2(graphql@16.14.2)':
+  '@graphql-tools/merge@9.2.3(graphql@16.14.2)':
     dependencies:
-      '@graphql-tools/utils': 11.2.2(graphql@16.14.2)
+      '@graphql-tools/utils': 12.0.0(graphql@16.14.2)
       graphql: 16.14.2
       tslib: 2.8.1
 
-  '@graphql-tools/schema@10.0.38(graphql@16.14.2)':
+  '@graphql-tools/schema@10.1.0(graphql@16.14.2)':
     dependencies:
-      '@graphql-tools/merge': 9.2.2(graphql@16.14.2)
-      '@graphql-tools/utils': 11.2.2(graphql@16.14.2)
+      '@graphql-tools/merge': 9.2.3(graphql@16.14.2)
+      '@graphql-tools/utils': 12.0.0(graphql@16.14.2)
       graphql: 16.14.2
       tslib: 2.8.1
 
@@ -4341,6 +4347,14 @@ snapshots:
       tslib: 2.8.1
 
   '@graphql-tools/utils@11.2.2(graphql@16.14.2)':
+    dependencies:
+      '@graphql-typed-document-node/core': 3.2.0(graphql@16.14.2)
+      '@whatwg-node/promise-helpers': 1.3.2
+      cross-inspect: 1.0.1
+      graphql: 16.14.2
+      tslib: 2.8.1
+
+  '@graphql-tools/utils@12.0.0(graphql@16.14.2)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.14.2)
       '@whatwg-node/promise-helpers': 1.3.2
@@ -4439,10 +4453,10 @@ snapshots:
     dependencies:
       graphql: 16.14.2
 
-  '@pothos/plugin-drizzle@0.17.5(@pothos/core@4.13.1(graphql@16.14.2))(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(graphql@16.14.2)':
+  '@pothos/plugin-drizzle@0.17.5(@pothos/core@4.13.1(graphql@16.14.2))(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(graphql@16.14.2)':
     dependencies:
       '@pothos/core': 4.13.1(graphql@16.14.2)
-      drizzle-orm: 1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)
+      drizzle-orm: 1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)
       graphql: 16.14.2
 
   '@pothos/plugin-errors@4.9.1(@pothos/core@4.13.1(graphql@16.14.2))(graphql@16.14.2)':
@@ -4533,7 +4547,7 @@ snapshots:
     transitivePeerDependencies:
       - graphql
 
-  '@tsconfig/node24@24.0.4': {}
+  '@tsconfig/node24@24.0.5': {}
 
   '@types/chai@5.2.3':
     dependencies:
@@ -4893,7 +4907,7 @@ snapshots:
 
   '@whatwg-node/node-fetch@0.8.6':
     dependencies:
-      '@fastify/busboy': 3.2.0
+      '@fastify/busboy': 3.2.1
       '@whatwg-node/disposablestack': 0.0.6
       '@whatwg-node/promise-helpers': 1.3.2
       tslib: 2.8.1
@@ -4929,7 +4943,7 @@ snapshots:
 
   assertion-error@2.0.1: {}
 
-  auth@1.7.0-rc.4(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(chokidar@5.0.0)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(giget@3.3.1)(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2)(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3)):
+  auth@1.7.0-rc.4(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(chokidar@5.0.0)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(giget@3.3.1)(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2)(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3)):
     dependencies:
       '@babel/core': 7.29.7
       '@babel/preset-react': 7.29.7(@babel/core@7.29.7)
@@ -4939,7 +4953,7 @@ snapshots:
       '@better-auth/utils': 0.4.2
       '@clack/prompts': 1.7.0
       '@mrleebo/prisma-ast': 0.16.0
-      better-auth: 1.7.0-rc.4(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3))
+      better-auth: 1.7.0-rc.4(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3))
       c12: 4.0.0-beta.5(chokidar@5.0.0)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)
       chalk: 5.6.2
       commander: 15.0.0
@@ -4988,10 +5002,10 @@ snapshots:
 
   baseline-browser-mapping@2.11.12: {}
 
-  better-auth@1.7.0-rc.4(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3)):
+  better-auth@1.7.0-rc.4(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(vitest@4.1.10)(vue@3.5.41(typescript@5.9.3)):
     dependencies:
       '@better-auth/core': 1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2)
-      '@better-auth/drizzle-adapter': 1.7.0-rc.4(@better-auth/core@1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2))(@better-auth/utils@0.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))
+      '@better-auth/drizzle-adapter': 1.7.0-rc.4(@better-auth/core@1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2))(@better-auth/utils@0.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))
       '@better-auth/kysely-adapter': 1.7.0-rc.4(@better-auth/core@1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2))(@better-auth/utils@0.4.2)(kysely@0.29.4)
       '@better-auth/memory-adapter': 1.7.0-rc.4(@better-auth/core@1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2))(@better-auth/utils@0.4.2)
       '@better-auth/mongo-adapter': 1.7.0-rc.4(@better-auth/core@1.7.0-rc.4(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(better-call@1.3.7(zod@4.4.3))(jose@6.2.8)(kysely@0.29.4)(nanostores@1.4.2))(@better-auth/utils@0.4.2)
@@ -5009,7 +5023,7 @@ snapshots:
       zod: 4.4.3
     optionalDependencies:
       drizzle-kit: 1.0.0-rc.4
-      drizzle-orm: 1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)
+      drizzle-orm: 1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)
       vitest: 4.1.10(@types/node@24.13.3)(@vitest/ui@4.1.10)(vite@8.2.1)
       vue: 3.5.41(typescript@5.9.3)
     transitivePeerDependencies:
@@ -5148,10 +5162,10 @@ snapshots:
       d3-path: 3.1.0
     optional: true
 
-  db0@0.3.4(@electric-sql/pglite@0.5.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)):
+  db0@0.3.4(@electric-sql/pglite@0.5.5)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)):
     optionalDependencies:
-      '@electric-sql/pglite': 0.5.4
-      drizzle-orm: 1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)
+      '@electric-sql/pglite': 0.5.5
+      drizzle-orm: 1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)
 
   debug@4.4.3:
     dependencies:
@@ -5215,9 +5229,9 @@ snapshots:
       get-tsconfig: 4.14.1
       jiti: 2.7.0
 
-  drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3):
+  drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3):
     optionalDependencies:
-      '@electric-sql/pglite': 0.5.4
+      '@electric-sql/pglite': 0.5.5
       '@types/pg': 8.20.4
       postgres: 3.4.9
       valibot: 1.4.2(typescript@5.9.3)
@@ -5683,12 +5697,12 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  graphql-yoga@5.21.2(graphql@16.14.2):
+  graphql-yoga@5.21.3(graphql@16.14.2):
     dependencies:
       '@envelop/core': 5.5.1
       '@envelop/instrumentation': 1.0.0
       '@graphql-tools/executor': 1.5.7(graphql@16.14.2)
-      '@graphql-tools/schema': 10.0.38(graphql@16.14.2)
+      '@graphql-tools/schema': 10.1.0(graphql@16.14.2)
       '@graphql-tools/utils': 10.11.0(graphql@16.14.2)
       '@graphql-yoga/logger': 2.0.1
       '@graphql-yoga/subscription': 5.0.5
@@ -6264,11 +6278,11 @@ snapshots:
 
   nf3@0.3.23: {}
 
-  nitro@3.0.260610-beta(@electric-sql/pglite@0.5.4)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.1):
+  nitro@3.0.260610-beta(@electric-sql/pglite@0.5.5)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.1):
     dependencies:
       consola: 3.4.2
       crossws: 0.4.10(srvx@0.11.22)
-      db0: 0.3.4(@electric-sql/pglite@0.5.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))
+      db0: 0.3.4(@electric-sql/pglite@0.5.5)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))
       env-runner: 0.1.16
       h3: 2.0.1-rc.22(crossws@0.4.10(srvx@0.11.22))
       hookable: 6.1.1
@@ -6279,7 +6293,7 @@ snapshots:
       rolldown: 1.2.2
       srvx: 0.11.22
       unenv: 2.0.0-rc.24
-      unstorage: 2.0.0-alpha.7(chokidar@5.0.0)(db0@0.3.4(@electric-sql/pglite@0.5.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)))(lru-cache@11.5.2)(ofetch@2.0.0-alpha.3)
+      unstorage: 2.0.0-alpha.7(chokidar@5.0.0)(db0@0.3.4(@electric-sql/pglite@0.5.5)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)))(lru-cache@11.5.2)(ofetch@2.0.0-alpha.3)
     optionalDependencies:
       dotenv: 17.4.2
       giget: 3.3.1
@@ -6685,10 +6699,10 @@ snapshots:
       unist-util-is: 6.0.1
       unist-util-visit-parents: 6.0.2
 
-  unstorage@2.0.0-alpha.7(chokidar@5.0.0)(db0@0.3.4(@electric-sql/pglite@0.5.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)))(lru-cache@11.5.2)(ofetch@2.0.0-alpha.3):
+  unstorage@2.0.0-alpha.7(chokidar@5.0.0)(db0@0.3.4(@electric-sql/pglite@0.5.5)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)))(lru-cache@11.5.2)(ofetch@2.0.0-alpha.3):
     optionalDependencies:
       chokidar: 5.0.0
-      db0: 0.3.4(@electric-sql/pglite@0.5.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.4)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))
+      db0: 0.3.4(@electric-sql/pglite@0.5.5)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))
       lru-cache: 11.5.2
       ofetch: 2.0.0-alpha.3
 
