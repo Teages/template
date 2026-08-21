@@ -2,6 +2,3 @@
 # Install them with `pnpm skills:install`
 /*/
 !.gitignore
-
-# Local skills
-!/drizzle-*/

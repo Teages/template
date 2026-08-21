@@ -20,7 +20,7 @@ catalogs:
       version: 1.7.0-rc.4
   database:
     '@electric-sql/pglite':
-      specifier: ^0.5.4
+      specifier: ^0.5.5
       version: 0.5.5
     drizzle-kit:
       specifier: 1.0.0-rc.4
@@ -70,8 +70,8 @@ catalogs:
       specifier: ^16.14.2
       version: 16.14.2
     graphql-yoga:
-      specifier: 5.21.2
-      version: 5.21.2
+      specifier: 5.21.3
+      version: 5.21.3
   nitro:
     nitro:
       specifier: npm:nitro-nightly@3.0.1-20260821-005124-e36e7a60
@@ -98,7 +98,7 @@ catalogs:
       version: 11.18.0
   typescript:
     '@tsconfig/node24':
-      specifier: ^24.0.4
+      specifier: ^24.0.5
       version: 24.0.5
     '@types/node':
       specifier: ^24.13.3
@@ -253,7 +253,7 @@ importers:
         version: 16.14.2
       graphql-yoga:
         specifier: catalog:graphql
-        version: 5.21.2(graphql@16.14.2)
+        version: 5.21.3(graphql@16.14.2)
       ofetch:
         specifier: catalog:utilities
         version: 1.5.1
@@ -3433,8 +3433,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  graphql-yoga@5.21.2:
-    resolution: {integrity: sha512-IIRF/3xtjj2D6caAWL9177hQ8tV3mWB3hve1GRnz7njPhQ3iY1jFtSp98fNGv0yV9kaPh9kKQ8JWdJZnedVmDw==}
+  graphql-yoga@5.21.3:
+    resolution: {integrity: sha512-1hJTKZd7k2V0Q2tFMb+rIUSbcovL6uIkkKnW2W9HcldtrC1udukdf5CswKi6SzaI5keG4scxKPEolyZ6U83i/g==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       graphql: ^15.2.0 || ^16.0.0
@@ -8100,7 +8100,7 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  graphql-yoga@5.21.2(graphql@16.14.2):
+  graphql-yoga@5.21.3(graphql@16.14.2):
     dependencies:
       '@envelop/core': 5.5.1
       '@envelop/instrumentation': 1.0.0

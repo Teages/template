@@ -18,7 +18,7 @@ catalogs:
     better-auth: 1.7.0-rc.4
 
   database:
-    '@electric-sql/pglite': ^0.5.4
+    '@electric-sql/pglite': ^0.5.5
     drizzle-kit: 1.0.0-rc.4
     drizzle-orm: 1.0.0-rc.4
     postgres: ^3.4.9
@@ -38,7 +38,7 @@ catalogs:
     '@teages/oh-my-graphql': ^0.1.4
     gazania: ^0.15.4
     graphql: ^16.14.2
-    graphql-yoga: 5.21.2
+    graphql-yoga: 5.21.3
 
   nitro:
     nitro: npm:nitro-nightly@3.0.1-20260821-005124-e36e7a60
@@ -54,7 +54,7 @@ catalogs:
     '@trpc/server': ^11.18.0
 
   typescript:
-    '@tsconfig/node24': ^24.0.4
+    '@tsconfig/node24': ^24.0.5
     '@types/node': ^24.13.3
     typescript: ^5.9.2
 
