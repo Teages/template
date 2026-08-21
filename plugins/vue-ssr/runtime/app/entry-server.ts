@@ -1,6 +1,7 @@
 import { createHead, transformHtmlTemplate } from '@unhead/vue/server'
 import { createConsola } from 'consola'
 import { serverFetch } from 'nitro/app'
+import { defineHandler, writeEarlyHints } from 'nitro/h3'
 import { createMemoryHistory } from 'vue-router'
 import { renderToString } from 'vue/server-renderer'
 import { createAppContext } from './app-context.ts'
@@ -14,9 +15,26 @@ import { serializePayloadScript } from './payload.ts'
 import { createSsrFetchContext } from './ssr-fetch.ts'
 import { initializeVueApp } from './vue-plugin.ts'
 
-// Template plugins own their tagged logger instead of importing server utils
+// Template Plugins own their tagged logger instead of importing server utils
 // (see plugins/AGENTS.md boundaries).
 const logger = createConsola({}).withTag('vue-ssr')
+
+// The client bundle as HTTP `Link` values for a 103 Early Hints response — the
+// same stylesheet/modulepreload assets later injected into <head>. Statically
+// known from the client manifest, so it is built once here rather than per
+// request. Stylesheets go out as `preload; as=style` (the fetch-triggering
+// early-hint rel; the document's later `rel=stylesheet` matches the warmed
+// cache entry). `writeEarlyHints` self-no-ops on runtimes without a Node `res`.
+// Per-page assets are matched after routing and stay head-only.
+const clientAssetHints = {
+  link: [
+    ...clientAssets.css.map(({ href }) => `<${href}>; rel=preload; as=style`),
+    `<${clientAssets.entry}>; rel=modulepreload`,
+    ...clientAssets.js
+      .filter(({ href }) => href !== clientAssets.entry)
+      .map(({ href }) => `<${href}>; rel=modulepreload`),
+  ],
+}
 
 // Per-route ?assets bundles, keyed by page path for SSR <link> emission.
 const pageAssetsMap = import.meta.glob<typeof clientAssets>('/app/pages/**/*.vue', {
@@ -32,7 +50,14 @@ export function toPageAssetKey(filePath: string): string {
   return index === -1 ? normalized : normalized.slice(index)
 }
 
-async function handler(request: Request): Promise<Response> {
+// `defineHandler` (not a bare `{ fetch }`) so we hold the h3 `event` and can
+// flush the client-bundle preloads as HTTP 103 Early Hints before the render.
+const handler = defineHandler(async (event): Promise<Response> => {
+  // Flush preloads ahead of the buffered render so the browser downloads
+  // JS/CSS during it instead of waiting for the first HTML byte.
+  await writeEarlyHints(event, clientAssetHints)
+  const request = event.req
+
   // Use `serverFetch` (in-process `useNitroApp().fetch`) instead of
   // `fetchViteEnv('nitro', ...)`: under the dev env-runner the `nitro`
   // vite-service lookup intermittently resolves to `undefined` and throws
@@ -122,7 +147,7 @@ async function handler(request: Request): Promise<Response> {
   finally {
     queryCache.caches.clear()
   }
-}
+})
 
 function htmlTemplate(body: string, payloadScript: string): string {
   // All <head> content (charset, viewport, title, links) is owned by unhead:
@@ -138,6 +163,4 @@ function htmlTemplate(body: string, payloadScript: string): string {
 </html>`
 }
 
-export default {
-  fetch: handler,
-}
+export default handler
