@@ -14,8 +14,8 @@ import { describe, expect, it } from 'vitest'
 // (dependency upgrades, build config edits).
 //
 // Needs `.output/server` only, not Postgres: the spawned server gets fake
-// POSTGRES_* vars because the built server fails fast without them (the
-// auth middleware would turn /api/health into a 500) — better-auth's
+// NITRO_POSTGRES_* vars because the built server fails fast without them
+// (the auth middleware would turn /api/health into a 500) — better-auth's
 // getSession swallows the connection refusal, so /api/health stays 200.
 // `pretest:smoke` builds; invoking vitest directly skips when the
 // artifact is missing.
@@ -40,11 +40,11 @@ run('production server ESM evaluation', () => {
         BETTER_AUTH_URL: `http://127.0.0.1:${port}`,
         HOST: '127.0.0.1',
         PORT: String(port),
-        POSTGRES_HOST: '127.0.0.1',
-        POSTGRES_PORT: '1',
-        POSTGRES_USER: 'user',
-        POSTGRES_PASSWORD: 'passwd',
-        POSTGRES_DB: 'mydb',
+        NITRO_POSTGRES_HOST: '127.0.0.1',
+        NITRO_POSTGRES_PORT: '1',
+        NITRO_POSTGRES_USER: 'user',
+        NITRO_POSTGRES_PASSWORD: 'passwd',
+        NITRO_POSTGRES_DB: 'mydb',
       },
       stdio: ['ignore', 'pipe', 'pipe'],
     })

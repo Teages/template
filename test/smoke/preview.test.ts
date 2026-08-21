@@ -13,8 +13,8 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 // runs for real. Boots the server the way the Docker runtime does
 // (`node .output/server/index.mjs` — the same server `pnpm preview` wraps)
 // against real Postgres (compose.dev.yaml on 5433 matches the
-// readPostgresConnection() defaults; export POSTGRES_* to override) and
-// additionally verifies the standalone migrate bundle.
+// NITRO_POSTGRES_* runtimeConfig defaults; export NITRO_POSTGRES_* to
+// override) and additionally verifies the standalone migrate bundle.
 //
 // `pretest:smoke` runs `pnpm build`, so the suite always tests the current
 // sources. Invoking vitest directly (no pre hook) skips when the artifact is
