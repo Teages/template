@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
 import { env } from 'node:process'
-import { runMigrations } from '../utils/db-migrate'
+import { runMigrations } from '../utils/drizzle/migrate'
 import { logger } from '../utils/logger'
 
 // Bundled to .output/server/migrate.mjs by vite.config.migrate.ts; the SQL

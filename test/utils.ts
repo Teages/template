@@ -3,17 +3,12 @@ import { createClient } from '@teages/oh-my-graphql'
 import { serverFetch } from 'nitro/app'
 import { createFetch } from 'ofetch'
 import { useAuth } from '~/server/utils/auth'
-import { useDrizzle } from '~/server/utils/drizzle'
-import { clearDatabase } from '~/server/utils/pglite-db'
+import { resetDatabase } from '~/server/utils/drizzle/dev'
 
 export async function resetTestDatabase(): Promise<void> {
-  if (!import.meta.MOCK_DATABASE) {
-    throw new Error('resetTestDatabase() is only available in the mock-database test environment.')
-  }
   // The request hook waits for the asynchronous PGlite plugin initialization.
   await serverFetch('/api/health')
-  const { db } = useDrizzle()
-  await clearDatabase(db)
+  await resetDatabase()
 }
 
 export function uniqueAuthEmail(scope: string): string {
