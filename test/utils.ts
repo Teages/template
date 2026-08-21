@@ -80,44 +80,18 @@ export const jsonHeaders = {
   'Origin': testOrigin,
 } as const
 
-export async function postGraphQL(
-  fetch: (req: string | Request | URL, init?: RequestInit) => Promise<Response>,
-  body: { query: string, variables?: Record<string, unknown> },
-  options?: { cookie?: string, origin?: string, contentType?: string },
-): Promise<{ status: number, json: unknown, cookie: string }> {
-  const headers = new Headers()
-  headers.set('Content-Type', options?.contentType ?? 'application/json')
-  headers.set('Origin', options?.origin ?? testOrigin)
-  if (options?.cookie)
-    headers.set('Cookie', options.cookie)
-
-  const res = await fetch('/api/graphql', {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(body),
-  })
-  return {
-    status: res.status,
-    json: await res.json(),
-    cookie: cookieHeader(res),
-  }
-}
-
 export function createGraphQLTestClient(
   fetch: (req: string | Request | URL, init?: RequestInit) => Promise<Response>,
-  options?: { cookie?: string, origin?: string },
+  options?: { cookie?: string },
 ) {
   const cookie = options?.cookie
-  const origin = options?.origin ?? testOrigin
-  const authedFetch = (req: string | Request | URL, init?: RequestInit) => {
-    const headers = new Headers(init?.headers)
-    headers.set('Origin', origin)
-    if (!headers.has('Content-Type') && !headers.has('content-type'))
-      headers.set('Content-Type', 'application/json')
-    if (cookie)
-      headers.set('Cookie', cookie)
-    return fetch(req, { ...init, headers })
-  }
+  const authedFetch = cookie
+    ? (req: string | Request | URL, init?: RequestInit) => {
+        const headers = new Headers(init?.headers)
+        headers.set('Cookie', cookie)
+        return fetch(req, { ...init, headers })
+      }
+    : fetch
 
   return createClient('http://localhost/api/graphql', {
     ofetch: createFetch({ fetch: authedFetch }),
