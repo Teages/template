@@ -65,6 +65,19 @@ describe('production compose stack', () => {
     expect(compose).not.toMatch(/\$\{BETTER_AUTH_TRUSTED_ORIGINS/)
   })
 
+  it('rebuilds the real production output for smoke and does not ship a mock-database flavor', () => {
+    const pkg = readRepoFile('package.json')
+    const nitro = readRepoFile('nitro.config.ts')
+
+    expect(pkg).toContain('"pretest:smoke": "pnpm build"')
+    expect(pkg).toContain('"test:smoke": "vitest run --project smoke"')
+    expect(pkg).not.toContain('test:smoke:postgres')
+    expect(pkg).not.toContain('SMOKE_OUTPUT_DIR')
+    expect(pkg).not.toContain('SMOKE_DATABASE')
+    expect(nitro).not.toContain('SMOKE_OUTPUT_DIR')
+    expect(nitro).not.toContain('@electric-sql/pglite')
+  })
+
   it('does not concatenate a postgres URI in nitro runtimeConfig', () => {
     const nitro = readRepoFile('nitro.config.ts')
 

@@ -55,14 +55,11 @@ jobs:
       # regressions (see the tslib entry in WORKAROUND.md).
       - run: pnpm build
 
-      # The smoke defaults to a PGlite flavor; CI runs the real database
-      # flavor against the service (also covering the standalone migrate
-      # bundle, which needs a real Postgres wire endpoint). Invoking vitest
-      # directly skips the pretest:smoke:postgres hook — the build step above
-      # just produced a fresh output.
+      # Invoking vitest directly skips the pretest:smoke hook — the build
+      # step above just produced a fresh output. Also covers the standalone
+      # migrate bundle against the Postgres service.
       - run: pnpm exec vitest run --project smoke
         env:
-          SMOKE_DATABASE: postgres
           POSTGRES_HOST: localhost
           POSTGRES_PORT: '5433'
           POSTGRES_USER: user

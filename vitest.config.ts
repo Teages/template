@@ -33,10 +33,8 @@ export default defineConfig({
           ],
         },
       }),
-      // Bundled production output, always freshly built by the
-      // pretest:smoke(-postgres) hooks. Defaults to a PGlite flavor (zero
-      // infra); SMOKE_DATABASE=postgres runs the real output against
-      // Postgres. Excluded from `pnpm test`.
+      // Bundled production output against Postgres, freshly built by
+      // pretest:smoke (`pnpm build`). Excluded from `pnpm test`.
       defineConfig({
         plugins: [],
         test: {

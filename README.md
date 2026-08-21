@@ -46,8 +46,7 @@ All three operate on the same count-event business model. A real project keeps t
 | `pnpm typecheck` | Regenerate `.generated/` then run `vue-tsc` |
 | `pnpm lint` | ESLint |
 | `pnpm test` | Unit + e2e suites (PGlite, no Docker); smoke excluded |
-| `pnpm test:smoke` | Build a PGlite-flavored artifact (`.output-smoke`) and smoke-test it — both smoke scripts always rebuild first |
-| `pnpm test:smoke:postgres` | Same against the real production build + Postgres |
+| `pnpm test:smoke` | Build the production artifact and smoke-test it against Postgres (`compose.dev.yaml` on 5433) |
 | `pnpm db:generate` / `pnpm db:migrate` | Generate / apply Drizzle migrations |
 | `pnpm auth:generate` | Regenerate the Better Auth schema |
 
