@@ -1,3 +1,4 @@
+minimumReleaseAge: 0
 shellEmulator: true
 
 trustPolicy: no-downgrade
@@ -40,7 +41,7 @@ catalogs:
     graphql-yoga: 5.21.2
 
   nitro:
-    nitro: 3.0.260610-beta
+    nitro: npm:nitro-nightly@3.0.1-20260821-005124-e36e7a60
     srvx: ^0.12.5
 
   tooling:

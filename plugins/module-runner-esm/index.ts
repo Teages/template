@@ -21,6 +21,12 @@ import { createRequire } from 'node:module'
  * separately by `traceDeps` in `nitro.config.ts`). Do not remove this remap
  * based on "prod is fine" — that was the regression in the commit that
  * dropped it, which surfaced as `ReferenceError: require is not defined`.
+ *
+ * Still required with nitro-nightly 3.0.1-20260821 (verified 2026-08-21):
+ * the env-runner loopback path (e2e document tests hitting `/api/graphql`)
+ * inlines the CJS `main` and throws without the remap. The API-only
+ * `backend` branch could drop it only because nothing there exercises the
+ * env-runner — its e2e suites go through in-process `serverFetch`.
  */
 export function moduleRunnerEsmPlugin(): Plugin {
   const fromVue = createRequire(import.meta.resolve('vue/package.json'))

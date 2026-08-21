@@ -51,6 +51,17 @@ its runtime, with real database).
   returned 500 (`useHead() was called without provide context`). In builds,
   `vue` must stay a bare specifier so all importers share the single traced
   copy; the production smoke (`pnpm test:smoke`) guards this.
+- status: Re-verified against nitro-nightly 3.0.1-20260821 (2026-08-21): both
+  the `mainFields` and the two remaps are still required — dropping the
+  `@whatwg-node/fetch` remap fails `test/e2e/app/ssr-payload.test.ts` with
+  `ReferenceError: require is not defined` on the env-runner loopback path,
+  and dropping `mainFields` fails the document e2e suites with
+  `ReferenceError: exports is not defined` from `aria-hidden/dist/es5`. The
+  API-only `backend` branch could delete the remap only because nothing there
+  exercises the env-runner (its e2e suites go through in-process
+  `serverFetch`); it also deleted the matching `exportConditions: ['module']`
+  from `nitro.config.ts`, which this branch verified as safe to drop without
+  either failure reappearing.
 - follow up: Remove the explicit `mainFields` once Nitro preserves Vite's
   ESM-first server defaults, and revisit the remaps as upstream packages ship
   env-runner-compatible ESM entrypoints.

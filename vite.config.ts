@@ -53,7 +53,10 @@ export default defineConfig({
   },
   environments: {
     ssr: {
-      // Prefer ESM package fields before Vite's CJS `main` fallback.
+      // Prefer ESM package fields before Vite's CJS `main` fallback —
+      // without this, `aria-hidden` resolves to `dist/es5` (CJS) and throws
+      // `ReferenceError: exports is not defined` inside the ssr ModuleRunner
+      // (still the case with nitro nightly 2026-08-21; see WORKAROUND.md).
       resolve: {
         mainFields: ['module', 'jsnext:main', 'jsnext'],
       },

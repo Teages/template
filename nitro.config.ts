@@ -3,7 +3,6 @@ import { defineConfig } from 'nitro/config'
 
 export default defineConfig({
   serverDir: './server',
-  exportConditions: ['module'],
   // Redirects the whole output tree (serverDir/publicDir derive from it).
   // Set by the mock-database smoke build so `.output` keeps the real
   // production flavor (see test/smoke/preview.test.ts).
