@@ -18,9 +18,4 @@ export default defineConfig({
       db: 'mydb',
     },
   },
-  storage: {
-    'better-auth:rate-limit': {
-      driver: 'memory',
-    },
-  },
 })

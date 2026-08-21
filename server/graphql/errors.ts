@@ -17,34 +17,6 @@ export class UnauthorizedError extends Error {
   }
 }
 
-export class InvalidCredentialsError extends Error {
-  override readonly name = 'InvalidCredentialsError'
-  constructor(message = 'Invalid email or password') {
-    super(message)
-  }
-}
-
-export class BadUserInputError extends Error {
-  override readonly name = 'BadUserInputError'
-  constructor(message = 'Invalid input') {
-    super(message)
-  }
-}
-
-export class ConflictError extends Error {
-  override readonly name = 'ConflictError'
-  constructor(message = 'User already exists') {
-    super(message)
-  }
-}
-
-export class RateLimitedError extends Error {
-  override readonly name = 'RateLimitedError'
-  constructor(message = 'Too many requests') {
-    super(message)
-  }
-}
-
 /**
  * Auth guard for GraphQL resolvers: reads the same per-event session cache
  * filled by the auth middleware, but converts the transport-level 401 into
