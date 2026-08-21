@@ -58,6 +58,15 @@ root directory.
 - Keep module evaluation free of startup work. Put effects inside the setup
   function; a static CSS import owned by that plugin is the only current
   exception.
+- Vue `provide`/`inject` keys must be registry symbols —
+  `Symbol.for('template:<name>')`, never `Symbol(...)`. Nitro's dev worker
+  re-imports the SSR entry after each edit while request-time `import()`s
+  re-evaluate fresh, and both module copies can meet in one straddled render;
+  a registry symbol is the same key in both copies (see `APP_CONTEXT_KEY`).
+  Verified 2026-08-21 (nitro-nightly 3.0.1-20260821) that the dev worker
+  converges on edits without a custom reload plugin — Vite itself sends the
+  ssr environment's `full-reload` — so the straddle window is per-edit
+  transient, not permanent staleness.
 - Do not add object syntax, dependency graphs, parallel execution, hooks, or
   automatic global provides without a concrete requirement and new tests.
 

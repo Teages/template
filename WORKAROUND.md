@@ -62,6 +62,13 @@ its runtime, with real database).
   `serverFetch`); it also deleted the matching `exportConditions: ['module']`
   from `nitro.config.ts`, which this branch verified as safe to drop without
   either failure reappearing.
+- note: Attribution (2026-08-21, from studying unjs/undocs): this class of
+  workaround is dependency-borne, not Nitro-borne. undocs pins the same
+  nitro-nightly (`3.0.1-20260821-005124-e36e7a60`) and ships none of it —
+  its dependency tree is ESM-native (no reka-ui/aria-hidden, no
+  graphql-yoga/@whatwg-node CJS chain; the few node/wasm engines are forced
+  inline via `noExternals` instead). The durable fix here is also
+  dependency-level (preferring ESM-first packages), not config-level.
 - follow up: Remove the explicit `mainFields` once Nitro preserves Vite's
   ESM-first server defaults, and revisit the remaps as upstream packages ship
   env-runner-compatible ESM entrypoints.
