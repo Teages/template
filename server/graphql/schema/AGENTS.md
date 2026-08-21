@@ -13,7 +13,7 @@ server/graphql/schema/
         └── <operation>.ts
 ```
 
-- `<Type>.ts` defines a core Drizzle object and exports its reference. Auth session types are `simpleObject`s, not Drizzle objects.
+- `<Type>.ts` defines a core Drizzle object and exports its reference. Non-Drizzle payload types are `simpleObject`s.
 - `<Type>.<field>.ts` extends a type with one relation or derived field.
 - `operations/<operation>.ts` registers query or mutation root fields.
 
