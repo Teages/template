@@ -8,9 +8,9 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 // Smoke for the bundled production output — the surface `pnpm test` never
 // touches: its suites run Nitro in-process through the dev pipeline, while
-// bundling regressions (nft trace misses — see the tslib entry in
-// WORKAROUND.md) only appear when `.output/server` runs for real. Boots the
-// server the way the Docker runtime does (`node .output/server/index.mjs` —
+// bundling and dependency-tracing regressions only appear when
+// `.output/server` runs for real. Boots the server the way the Docker runtime
+// does (`node .output/server/index.mjs` —
 // the same server `pnpm preview` wraps) against real Postgres
 // (compose.dev.yaml on 5433 matches the NITRO_POSTGRES_* defaults; export
 // NITRO_POSTGRES_* to override) and verifies the standalone migrate bundle.

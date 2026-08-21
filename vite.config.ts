@@ -3,12 +3,10 @@ import { nitro } from 'nitro/vite'
 import { defineConfig } from 'vite'
 import DrizzleStudio from './plugins/drizzle-studio/index.ts'
 import { graphqlSchemaPlugin } from './plugins/graphql-schema/index.ts'
-import { moduleRunnerEsmPlugin } from './plugins/module-runner-esm/index.ts'
 import tsconfigPlugin from './plugins/tsconfig/index.ts'
 
 export default defineConfig({
   plugins: [
-    moduleRunnerEsmPlugin(),
     tsconfigPlugin(),
     graphqlSchemaPlugin({
       schema: 'server/graphql/schema.ts',

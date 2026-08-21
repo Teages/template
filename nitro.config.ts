@@ -2,7 +2,6 @@ import { defineConfig } from 'nitro/config'
 
 export default defineConfig({
   serverDir: './server',
-  exportConditions: ['module'],
   // Rolldown otherwise shares runtime helpers from an app chunk that lib
   // chunks import, which deadlocks ESM evaluation (see WORKAROUND.md).
   inlineDynamicImports: true,
@@ -24,8 +23,4 @@ export default defineConfig({
       driver: 'memory',
     },
   },
-  traceDeps: [
-    // Transitive helper that nft misses (see WORKAROUND.md).
-    'tslib*',
-  ],
 })
