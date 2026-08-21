@@ -1,5 +1,5 @@
 import { defineHandler, HTTPError } from 'nitro/h3'
-import { useDrizzle } from '~/server/utils/drizzle.ts'
+import { useDrizzle } from '~/server/utils/drizzle/index.ts'
 import {
   handleStudioProtocol,
   studioCorsHeaders,

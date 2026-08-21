@@ -1,7 +1,7 @@
 import { resolve } from 'node:path'
 import { useRuntimeConfig } from 'nitro/runtime-config'
 import { defineTask } from 'nitro/task'
-import { runMigrations } from '../../utils/db-migrate'
+import { runMigrations } from '../../utils/drizzle/migrate'
 
 export default defineTask({
   meta: {
