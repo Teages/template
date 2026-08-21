@@ -48,11 +48,14 @@ export async function getAuthTestHelpers(): Promise<TestHelpers> {
   return authTestHelpers
 }
 
-export async function signInTestUser(scope: string): Promise<TestAuthSession> {
+export async function signInTestUser(
+  scope: string,
+  options?: { name?: string },
+): Promise<TestAuthSession> {
   const test = await getAuthTestHelpers()
   const user = test.createUser({
     email: uniqueAuthEmail(scope),
-    name: 'Vitest User',
+    name: options?.name ?? 'Vitest User',
   })
   await test.saveUser(user)
   const { headers, user: savedUser } = await test.login({ userId: user.id })

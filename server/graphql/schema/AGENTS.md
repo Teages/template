@@ -13,7 +13,7 @@ server/graphql/schema/
         └── <operation>.ts
 ```
 
-- `<Type>.ts` defines a core Drizzle object and exports its reference.
+- `<Type>.ts` defines a core Drizzle object and exports its reference. Non-Drizzle payload types are `simpleObject`s.
 - `<Type>.<field>.ts` extends a type with one relation or derived field.
 - `operations/<operation>.ts` registers query or mutation root fields.
 
@@ -60,7 +60,7 @@ Do not replace connections with raw arrays or offset pagination.
 
 ## Mutations
 
-Mutations should return a dedicated payload object even when they create one record. A payload can expose the created object and useful mutation metadata without coupling the schema to REST or tRPC response shapes.
+Mutations should return a dedicated payload object even when they create one record. A payload can expose the created object and useful mutation metadata without coupling the schema to flat response shapes.
 
 ```ts
 const RecordCountPayload = builder.simpleObject('RecordCountPayload', {

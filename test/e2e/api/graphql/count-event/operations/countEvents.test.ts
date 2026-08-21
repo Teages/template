@@ -2,12 +2,9 @@ import { serverFetch } from 'nitro/app'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { gazania } from '~/plugins/graphql-schema/runtime/shared/gazania.ts'
 import {
-  cookieHeader,
   createGraphQLTestClient,
-  jsonHeaders,
   resetTestDatabase,
   signInTestUser,
-  uniqueAuthEmail,
 } from '~/test/utils'
 
 describe('query countEvents', () => {
@@ -28,19 +25,8 @@ describe('query countEvents', () => {
         }])),
     )
 
-    const email = uniqueAuthEmail('gql-events-b')
-    const signUpRes = await serverFetch('/api/auth/sign-up/email', {
-      method: 'POST',
-      headers: jsonHeaders,
-      body: JSON.stringify({
-        name: 'Second User',
-        email,
-        password: 'password-8-chars',
-      }),
-    })
-    expect(signUpRes.status).toBe(200)
-    const secondCookie = cookieHeader(signUpRes)
-    const secondClient = createGraphQLTestClient(serverFetch, { cookie: secondCookie })
+    const second = await signInTestUser('gql-events-b', { name: 'Second User' })
+    const secondClient = createGraphQLTestClient(serverFetch, { cookie: second.cookie })
     await secondClient.mutation(
       gazania.mutation('RecordForEventsB')
         .select($ => $.select([{

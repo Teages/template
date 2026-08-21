@@ -90,11 +90,12 @@ run('production build smoke', () => {
   }
 
   async function signUp(): Promise<string> {
+    const email = `smoke-${crypto.randomUUID()}@test.local`
     const res = await fetch(`${baseUrl}/api/auth/sign-up/email`, {
       method: 'POST',
       headers: { 'content-type': 'application/json', 'origin': baseUrl },
       body: JSON.stringify({
-        email: `smoke-${crypto.randomUUID()}@test.local`,
+        email,
         name: 'Smoke User',
         password: 'password-8-chars',
       }),
@@ -112,6 +113,7 @@ run('production build smoke', () => {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
+        'origin': baseUrl,
         ...(cookie ? { cookie } : {}),
       },
       body: JSON.stringify({ query: RECORD_COUNT_MUTATION }),
@@ -142,6 +144,7 @@ run('production build smoke', () => {
         ...process.env,
         BETTER_AUTH_SECRET: 'smoke-better-auth-secret-32chars',
         BETTER_AUTH_URL: baseUrl,
+        BETTER_AUTH_TRUSTED_ORIGINS: baseUrl,
         HOST: '127.0.0.1',
         PORT: String(port),
       },
