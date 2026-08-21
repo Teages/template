@@ -1,6 +1,6 @@
 import type {} from '@vitejs/devtools-kit'
 import type { Nitro } from 'nitro/types'
-import type { Plugin } from 'vite'
+import type { Plugin, ServerOptions } from 'vite'
 import { randomUUID } from 'node:crypto'
 import { env } from 'node:process'
 import { createConsola } from 'consola'
@@ -18,7 +18,6 @@ const STUDIO_AUTH_KEY_REPLACEMENT = 'import.meta.DRIZZLE_STUDIO_KEY'
 const logger = createConsola({}).withTag('drizzle-studio')
 
 interface StudioEnvironment {
-  readonly MOCK_DATABASE?: string
   readonly VITEST?: string
 }
 
@@ -27,7 +26,7 @@ type StudioNitroOptions = Pick<Nitro['options'], 'replace' | 'routes'>
 export function isDrizzleStudioEnabled(
   environment: StudioEnvironment,
 ): boolean {
-  return Boolean(environment.MOCK_DATABASE) && !environment.VITEST
+  return !environment.VITEST
 }
 
 export function configureDrizzleStudioNitro(
@@ -38,6 +37,18 @@ export function configureDrizzleStudioNitro(
   options.routes[NITRO_STUDIO_PATH] = {
     handler: NITRO_STUDIO_HANDLER,
   }
+}
+
+/** The Studio web app that pairs with the loopback proxy port. */
+export function drizzleStudioUrl(port: number): string {
+  return `https://local.drizzle.studio?port=${port}`
+}
+
+export function shouldStartStudioProxy(
+  enabled: boolean,
+  middlewareMode: ServerOptions['middlewareMode'],
+): boolean {
+  return enabled && !middlewareMode
 }
 
 function dockClientSource(studioUrl: string): string {
@@ -99,7 +110,7 @@ export default function DrizzleStudio(): Plugin {
       return dockClientSource(studioUrl)
     },
     configureServer(server) {
-      if (!enabled || !studioAuthKey) {
+      if (!shouldStartStudioProxy(enabled, server.config.server.middlewareMode) || !studioAuthKey) {
         return
       }
       const authKey = studioAuthKey
@@ -114,6 +125,7 @@ export default function DrizzleStudio(): Plugin {
             authKey,
             NITRO_STUDIO_PATH,
           )
+          logger.info(`Drizzle Studio: ${drizzleStudioUrl(port)}`)
         })().catch((error) => {
           logger.error('Failed to start Drizzle Studio proxy', error)
         })
@@ -126,7 +138,7 @@ export default function DrizzleStudio(): Plugin {
         }
 
         const port = await resolvePort()
-        const url = `https://local.drizzle.studio?port=${port}`
+        const url = drizzleStudioUrl(port)
 
         ctx.docks.register({
           id: 'drizzle-studio',

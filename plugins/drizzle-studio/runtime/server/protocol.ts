@@ -1,18 +1,11 @@
-import type { PGlite } from '@electric-sql/pglite'
+import type { StudioDatabase, StudioQueryClient } from './query.ts'
 import { Buffer } from 'node:buffer'
 import { createHash } from 'node:crypto'
-import { types } from '@electric-sql/pglite'
 import { isRecord } from '~/server/utils/predicates.ts'
+import { runStudioQuery, runStudioTransaction } from './query.ts'
 
 const STUDIO_VERSION = '6.3'
-const DB_URL = 'pglite://custom-client'
-
-const parsers = {
-  [types.TIMESTAMP]: (value: string) => value,
-  [types.TIMESTAMPTZ]: (value: string) => value,
-  [types.INTERVAL]: (value: string) => value,
-  [types.DATE]: (value: string) => value,
-}
+const STUDIO_DB_ID = 'drizzle://studio'
 
 export const studioCorsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -93,26 +86,16 @@ function isStudioRequest(value: unknown): value is StudioRequest {
   }
 }
 
-function prepareParams(params: unknown[]): unknown[] {
-  return params.map((param) => {
-    if (
-      param
-      && typeof param === 'object'
-      && 'type' in param
-      && 'value' in param
-      && (param as { type: unknown }).type === 'binary'
-    ) {
-      const value = (param as { value: unknown }).value
-      return typeof value === 'object' ? JSON.stringify(value) : value
-    }
-    return param
-  })
+function assertNever(value: never): never {
+  throw new Error(`Unknown Studio protocol type: ${JSON.stringify(value)}`)
 }
 
 function studioJson(data: unknown): string {
   return JSON.stringify(data, (_key, value: unknown) => {
     if (value instanceof Error)
       return { error: value.message }
+    if (value instanceof Date)
+      return value.toISOString()
     if (isSerializedBuffer(value))
       return Buffer.from(value.data).toString('base64')
     if (value instanceof ArrayBuffer)
@@ -123,39 +106,17 @@ function studioJson(data: unknown): string {
   })
 }
 
-async function runProxy(client: PGlite, data: StudioProxyData): Promise<unknown> {
-  const result = await client.query(
-    data.sql,
-    prepareParams(data.params || []),
-    {
-      rowMode: data.mode ?? 'object',
-      parsers,
+function studioRowsResponse(rows: unknown): Response {
+  return new Response(studioJson(rows), {
+    headers: {
+      ...studioCorsHeaders,
+      'Content-Type': 'application/json',
     },
-  )
-  return result.rows
+  })
 }
 
-async function runTransactionProxy(
-  client: PGlite,
-  queries: Array<{ sql: string }>,
-): Promise<unknown[]> {
-  const results: unknown[] = []
-  try {
-    await client.transaction(async (tx) => {
-      for (const query of queries) {
-        const result = await tx.query(query.sql, undefined, { parsers })
-        results.push(result.rows)
-      }
-    })
-  }
-  catch (error) {
-    results.push(error)
-  }
-  return results
-}
-
-export async function handleStudioProtocol(
-  client: PGlite,
+export async function handleStudioProtocol<TTx extends StudioQueryClient>(
+  db: StudioDatabase<TTx>,
   body: unknown,
 ): Promise<Response> {
   try {
@@ -174,52 +135,35 @@ export async function handleStudioProtocol(
         return Response.json({
           version: STUDIO_VERSION,
           dialect: 'postgresql',
-          driver: 'pglite',
-          packageName: 'pglite',
+          driver: 'drizzle-orm',
+          packageName: 'drizzle-orm',
           schemaFiles: [],
           customDefaults: [],
           relations: [],
-          dbHash: createHash('sha256').update(DB_URL).digest('hex'),
+          dbHash: createHash('sha256').update(STUDIO_DB_ID).digest('hex'),
         }, { headers: studioCorsHeaders })
       }
       case 'proxy': {
-        const rows = await runProxy(client, body.data)
-        return new Response(studioJson(rows), {
-          headers: {
-            ...studioCorsHeaders,
-            'Content-Type': 'application/json',
-          },
-        })
+        return studioRowsResponse(await runStudioQuery(db, body.data))
       }
       case 'tproxy': {
-        const rows = await runTransactionProxy(client, body.data)
-        return new Response(studioJson(rows), {
-          headers: {
-            ...studioCorsHeaders,
-            'Content-Type': 'application/json',
-          },
-        })
+        return studioRowsResponse(await runStudioTransaction(db, body.data))
       }
       case 'bproxy': {
         const repeats = body.data.repeats || 1
         const timings: number[] = []
         for (let i = 0; i < repeats; i++) {
           const start = performance.now()
-          await runProxy(client, body.data.query)
+          await runStudioQuery(db, body.data.query)
           timings.push(performance.now() - start)
         }
-        return new Response(studioJson(timings), {
-          headers: {
-            ...studioCorsHeaders,
-            'Content-Type': 'application/json',
-          },
-        })
+        return studioRowsResponse(timings)
       }
       case 'defaults': {
-        throw new Error('Custom defaults are not configured for the mock database')
+        throw new Error('Custom defaults are not configured')
       }
       default: {
-        throw new Error(`Unknown Studio protocol type: ${(body as { type: string }).type}`)
+        return assertNever(body)
       }
     }
   }
