@@ -1,29 +1,17 @@
+import type {
+  AuthRateLimitStorage,
+} from '~/server/auth/rate-limit'
 import { afterEach, describe, expect, it } from 'vitest'
 import {
   AUTH_RATE_LIMIT_MOUNT,
   authRateLimitEntryCount,
   consumeAuthRateLimit,
-  createMemoryAuthRateLimitStorage,
   resetAuthRateLimits,
 } from '~/server/auth/rate-limit'
 
 describe('auth rate limit mount', () => {
   it('is the Nitro KV memory mount name', () => {
     expect(AUTH_RATE_LIMIT_MOUNT).toBe('better-auth:rate-limit')
-  })
-})
-
-describe('createMemoryAuthRateLimitStorage', () => {
-  it('round-trips timestamps and clears them', async () => {
-    const storage = createMemoryAuthRateLimitStorage()
-    await storage.setItem('op:203.0.113.10', [1_000_000, 1_000_001])
-    expect(await storage.getItem('op:203.0.113.10')).toEqual([1_000_000, 1_000_001])
-    expect(await storage.getKeys()).toEqual(['op:203.0.113.10'])
-    await storage.removeItem('op:203.0.113.10')
-    expect(await storage.getItem('op:203.0.113.10')).toBeNull()
-    await storage.setItem('keep', [1])
-    await storage.clear()
-    expect(await storage.getKeys()).toEqual([])
   })
 })
 
@@ -157,3 +145,25 @@ describe('consumeAuthRateLimit', () => {
     }, tolerant)).toBe(true)
   })
 })
+
+export function createMemoryAuthRateLimitStorage(): AuthRateLimitStorage {
+  /** Timestamp buckets keyed by limit identity. Mutation is the store's purpose. */
+  const hits = new Map<string, readonly number[]>()
+  return {
+    getItem: async (key) => {
+      return hits.get(key) ?? null
+    },
+    setItem: async (key, value) => {
+      hits.set(key, value)
+    },
+    removeItem: async (key) => {
+      hits.delete(key)
+    },
+    getKeys: async () => {
+      return [...hits.keys()]
+    },
+    clear: async () => {
+      hits.clear()
+    },
+  }
+}

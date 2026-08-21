@@ -38,28 +38,6 @@ export interface ConsumeAuthRateLimitInput {
   readonly now?: number
 }
 
-export function createMemoryAuthRateLimitStorage(): AuthRateLimitStorage {
-  /** Timestamp buckets keyed by limit identity. Mutation is the store's purpose. */
-  const hits = new Map<string, readonly number[]>()
-  return {
-    getItem: async (key) => {
-      return hits.get(key) ?? null
-    },
-    setItem: async (key, value) => {
-      hits.set(key, value)
-    },
-    removeItem: async (key) => {
-      hits.delete(key)
-    },
-    getKeys: async () => {
-      return [...hits.keys()]
-    },
-    clear: async () => {
-      hits.clear()
-    },
-  }
-}
-
 export async function resetAuthRateLimits(storage: AuthRateLimitStorage): Promise<void> {
   await storage.clear()
 }
