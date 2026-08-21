@@ -32,7 +32,7 @@ function initDrizzle(): DrizzleDatabase {
       password: connection.password,
       database: connection.db,
     },
-  }) as unknown as DrizzleDatabase
+  })
   return db
 }
 
