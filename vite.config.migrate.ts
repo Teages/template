@@ -1,13 +1,12 @@
-import type { Plugin } from 'vite'
-import { cp } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 
 /**
  * Standalone migration script build: bundles server/scripts/migrate.ts into
- * .output/server/migrate.mjs and copies the SQL migrations next to it, so a
- * slim node image can run migrations without pnpm or dev dependencies.
- * Chained after the main build in the `build` script.
+ * .output/server/migrate.mjs. The SQL migrations are already copied to
+ * .output/server/db/migrations by @teages/nitro-drizzle during the main
+ * build, so a slim node image can run migrations without pnpm or dev
+ * dependencies. Chained after the main build in the `build` script.
  */
 export default defineConfig({
   build: {
@@ -32,18 +31,4 @@ export default defineConfig({
   ssr: {
     noExternal: true,
   },
-  plugins: [copyMigrations()],
 })
-
-function copyMigrations(): Plugin {
-  return {
-    name: 'copy-migrations',
-    closeBundle() {
-      return cp(
-        resolve(import.meta.dirname, 'server/database/migrations'),
-        resolve(import.meta.dirname, '.output/server/database/migrations'),
-        { recursive: true },
-      )
-    },
-  }
-}

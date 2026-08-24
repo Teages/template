@@ -4,9 +4,9 @@ services:
   postgres:
     image: postgres:17-alpine
     environment:
-      POSTGRES_USER: ${NITRO_POSTGRES_USER:-user}
-      POSTGRES_PASSWORD: ${NITRO_POSTGRES_PASSWORD:-passwd}
-      POSTGRES_DB: ${NITRO_POSTGRES_DB:-mydb}
+      POSTGRES_USER: ${NITRO_DRIZZLE_CONNECTION_USER:-user}
+      POSTGRES_PASSWORD: ${NITRO_DRIZZLE_CONNECTION_PASSWORD:-passwd}
+      POSTGRES_DB: ${NITRO_DRIZZLE_CONNECTION_DATABASE:-mydb}
     ports:
       - '5433:5432'
     volumes:

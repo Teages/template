@@ -1,5 +1,5 @@
+import { useDrizzle } from '@teages/nitro-drizzle/runtime'
 import { defineHandler, HTTPError } from 'nitro/h3'
-import { useDrizzle } from '~/server/utils/drizzle'
 import {
   handleStudioProtocol,
   studioCorsHeaders,

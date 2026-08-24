@@ -93,6 +93,8 @@ export function getServerTSConfig(paths: TSConfigPaths): TSConfig {
       pathToBuild('types/nitro-config.d.ts'),
       pathToBuild('types/nitro-imports.d.ts'),
       pathToBuild('types/nitro-routes.d.ts'),
+      // Ambient declarations for the generated `#drizzle` client.
+      pathToBuild('drizzle/**/*.d.ts'),
       pathToRoot('env.d.ts'),
       pathToRoot('.generated/server/**/*.ts'),
       pathToRoot('.generated/shared/**/*.ts'),

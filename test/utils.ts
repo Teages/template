@@ -3,12 +3,15 @@ import { createClient } from '@teages/oh-my-graphql'
 import { serverFetch } from 'nitro/app'
 import { createFetch } from 'ofetch'
 import { useAuth } from '~/server/utils/auth'
-import { resetDatabase } from '~/server/utils/drizzle/dev'
 
 export async function resetTestDatabase(): Promise<void> {
-  // The request hook waits for the asynchronous PGlite plugin initialization.
-  await serverFetch('/api/health')
-  await resetDatabase()
+  // db:reset drops the dev-database schema, re-pushes it, and re-seeds. The
+  // task runs through the request cycle, so it also waits for the module's
+  // initial startup push.
+  const res = await serverFetch('/_nitro/tasks/db:reset', { method: 'POST' })
+  if (!res.ok) {
+    throw new Error(`db:reset task failed with status ${res.status}`)
+  }
 }
 
 export function uniqueAuthEmail(scope: string): string {

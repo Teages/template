@@ -22,6 +22,9 @@ catalogs:
     '@electric-sql/pglite':
       specifier: ^0.5.5
       version: 0.5.5
+    '@teages/nitro-drizzle':
+      specifier: 0.0.1
+      version: 0.0.1
     drizzle-kit:
       specifier: 1.0.0-rc.4
       version: 1.0.0-rc.4
@@ -129,6 +132,7 @@ catalogs:
 
 patchedDependencies:
   '@opentelemetry/semantic-conventions@1.43.0': 93ccf4a65b1e66319b0f89b5c1cb16b968f08c23cfbf271a6afde6037c4d3a76
+  '@teages/nitro-drizzle@0.0.1': c226b7665ef947520a8700c3b8d6ec3a50a739e07fff4d2a7612a7ab47b4f326
 
 importers:
 
@@ -155,6 +159,9 @@ importers:
       '@pothos/plugin-with-input':
         specifier: catalog:graphql
         version: 4.1.5(@pothos/core@4.13.1(graphql@16.14.2))(graphql@16.14.2)
+      '@teages/nitro-drizzle':
+        specifier: catalog:database
+        version: 0.0.1(patch_hash=c226b7665ef947520a8700c3b8d6ec3a50a739e07fff4d2a7612a7ab47b4f326)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(nitro-nightly@3.0.1-20260821-005124-e36e7a60)(vite@8.2.1)
       '@teages/oh-my-graphql':
         specifier: catalog:graphql
         version: 0.1.4(graphql@16.14.2)
@@ -1434,6 +1441,18 @@ packages:
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^9.0.0 || ^10.0.0
+
+  '@teages/nitro-drizzle@0.0.1':
+    resolution: {integrity: sha512-CRySjn3rdsE08aGnj0vvGI2Pul+fiKwBZ8ocrcugNKTHXS4nzsN7Yp1eT9sMPNpCjVCe0FMhfiOV92t6uXjNvg==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    peerDependencies:
+      drizzle-kit: 1.0.0-rc.4
+      drizzle-orm: 1.0.0-rc.4
+      nitro: '>=3.0.260610-beta <4'
+      vite: '>=6'
+    peerDependenciesMeta:
+      vite:
+        optional: true
 
   '@teages/oh-my-graphql@0.1.4':
     resolution: {integrity: sha512-bfJRCKesqq1kV5+TV4PTa3f7Y3VlCPPlHBkWeNtkhRk5CRkqlLxe/Gf9OWbid/WInHW/VB2+lUCFhayPrM41qg==}
@@ -4559,6 +4578,15 @@ snapshots:
       espree: 10.4.0
       estraverse: 5.3.0
       picomatch: 4.0.5
+
+  '@teages/nitro-drizzle@0.0.1(patch_hash=c226b7665ef947520a8700c3b8d6ec3a50a739e07fff4d2a7612a7ab47b4f326)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(nitro-nightly@3.0.1-20260821-005124-e36e7a60)(vite@8.2.1)':
+    dependencies:
+      drizzle-kit: 1.0.0-rc.4
+      drizzle-orm: 1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)
+      nitro: nitro-nightly@3.0.1-20260821-005124-e36e7a60
+      pathe: 2.0.3
+    optionalDependencies:
+      vite: 8.2.1(@types/node@24.13.3)(@vitejs/devtools@0.4.12)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.9.0)
 
   '@teages/oh-my-graphql@0.1.4(graphql@16.14.2)':
     dependencies:

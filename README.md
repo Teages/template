@@ -39,8 +39,8 @@ The count-event model behind the GraphQL schema is a starting point — replace 
 
 | Command | What it does |
 | --- | --- |
-| `pnpm dev` | Dev server with in-memory PGlite (`MOCK_DATABASE=true`) |
-| `pnpm dev:prod` | Dev server against Postgres (`NITRO_POSTGRES_*`) |
+| `pnpm dev` | Dev server with in-memory PGlite dev database |
+| `pnpm dev:prod` | Dev server against Postgres (`NITRO_DRIZZLE_CONNECTION_*`) |
 | `pnpm build` / `pnpm preview` | Build and preview the production bundle |
 | `pnpm typecheck` | Regenerate `.generated/` then run `tsc` |
 | `pnpm lint` | ESLint |

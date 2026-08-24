@@ -1,0 +1,90 @@
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 0615ec6f67e1c00e455c70617e794d49bfaa9fe6..53605a60f004d5c74c3e4eec756c980e30b2406d 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -334,11 +334,11 @@ function generateVirtualClientSource(options) {
+ 		case "d1-http": return d1HttpSource(imports);
+ 		case "postgres-js": return postgresJsSource({
+ 			imports,
+-			variant: config.connection?.hyperdriveId !== void 0 ? "hyperdrive" : "standard"
++			variant: config.connection?.hyperdriveId !== void 0 && config.connection?.hyperdriveId !== "" ? "hyperdrive" : "standard"
+ 		});
+ 		case "mysql2": return mysql2Source({
+ 			imports,
+-			variant: config.connection?.hyperdriveId !== void 0 ? "hyperdrive" : "standard"
++			variant: config.connection?.hyperdriveId !== void 0 && config.connection?.hyperdriveId !== "" ? "hyperdrive" : "standard"
+ 		});
+ 		default: return assertNever(config.driver);
+ 	}
+@@ -615,7 +615,7 @@ async function generateDrizzleArtifacts(options) {
+ 	const directory = join(options.buildDir, "drizzle");
+ 	const artifacts = {
+ 		directory,
+-		schemaTypesFile: join(directory, "schema.d.mts"),
++		schemaTypesFile: join(directory, "schema.d.ts"),
+ 		modulesFile: join(directory, "modules.d.ts"),
+ 		hooksFile: join(directory, "hooks.d.ts")
+ 	};
+@@ -708,7 +708,7 @@ function mutateWranglerBindings(wrangler, config) {
+ 	if (usesD1Binding) upsertD1Binding(wrangler, databaseId);
+ 	const hyperdriveId = config.connection?.hyperdriveId;
+ 	const bindingName = config.driver === "postgres-js" ? "POSTGRES" : config.driver === "mysql2" ? "MYSQL" : void 0;
+-	const usesHyperdrive = hyperdriveId !== void 0 && bindingName !== void 0;
++	const usesHyperdrive = hyperdriveId !== void 0 && hyperdriveId !== "" && bindingName !== void 0;
+ 	if (usesHyperdrive) upsertHyperdriveBinding(wrangler, bindingName, hyperdriveId);
+ 	return {
+ 		d1: usesD1Binding,
+@@ -717,7 +717,7 @@ function mutateWranglerBindings(wrangler, config) {
+ 	};
+ }
+ function requiresRequestContext(config) {
+-	return config.driver === "d1" || (config.driver === "postgres-js" || config.driver === "mysql2") && config.connection?.hyperdriveId !== void 0;
++	return config.driver === "d1" || (config.driver === "postgres-js" || config.driver === "mysql2") && config.connection?.hyperdriveId !== void 0 && config.connection?.hyperdriveId !== "";
+ }
+ function configureCloudflare(nitro, config) {
+ 	const wrangler = {};
+diff --git a/dist/vite.mjs b/dist/vite.mjs
+index c3292fdfa12b6e37ab519e17b77cb42d711f7045..8921d3038bdeaca5f718c03cd9f24d05c9af26a9 100644
+--- a/dist/vite.mjs
++++ b/dist/vite.mjs
+@@ -334,11 +334,11 @@ function generateVirtualClientSource(options) {
+ 		case "d1-http": return d1HttpSource(imports);
+ 		case "postgres-js": return postgresJsSource({
+ 			imports,
+-			variant: config.connection?.hyperdriveId !== void 0 ? "hyperdrive" : "standard"
++			variant: config.connection?.hyperdriveId !== void 0 && config.connection?.hyperdriveId !== "" ? "hyperdrive" : "standard"
+ 		});
+ 		case "mysql2": return mysql2Source({
+ 			imports,
+-			variant: config.connection?.hyperdriveId !== void 0 ? "hyperdrive" : "standard"
++			variant: config.connection?.hyperdriveId !== void 0 && config.connection?.hyperdriveId !== "" ? "hyperdrive" : "standard"
+ 		});
+ 		default: return assertNever(config.driver);
+ 	}
+@@ -615,7 +615,7 @@ async function generateDrizzleArtifacts(options) {
+ 	const directory = join(options.buildDir, "drizzle");
+ 	const artifacts = {
+ 		directory,
+-		schemaTypesFile: join(directory, "schema.d.mts"),
++		schemaTypesFile: join(directory, "schema.d.ts"),
+ 		modulesFile: join(directory, "modules.d.ts"),
+ 		hooksFile: join(directory, "hooks.d.ts")
+ 	};
+@@ -708,7 +708,7 @@ function mutateWranglerBindings(wrangler, config) {
+ 	if (usesD1Binding) upsertD1Binding(wrangler, databaseId);
+ 	const hyperdriveId = config.connection?.hyperdriveId;
+ 	const bindingName = config.driver === "postgres-js" ? "POSTGRES" : config.driver === "mysql2" ? "MYSQL" : void 0;
+-	const usesHyperdrive = hyperdriveId !== void 0 && bindingName !== void 0;
++	const usesHyperdrive = hyperdriveId !== void 0 && hyperdriveId !== "" && bindingName !== void 0;
+ 	if (usesHyperdrive) upsertHyperdriveBinding(wrangler, bindingName, hyperdriveId);
+ 	return {
+ 		d1: usesD1Binding,
+@@ -717,7 +717,7 @@ function mutateWranglerBindings(wrangler, config) {
+ 	};
+ }
+ function requiresRequestContext(config) {
+-	return config.driver === "d1" || (config.driver === "postgres-js" || config.driver === "mysql2") && config.connection?.hyperdriveId !== void 0;
++	return config.driver === "d1" || (config.driver === "postgres-js" || config.driver === "mysql2") && config.connection?.hyperdriveId !== void 0 && config.connection?.hyperdriveId !== "";
+ }
+ function configureCloudflare(nitro, config) {
+ 	const wrangler = {};

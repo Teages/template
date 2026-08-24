@@ -1,8 +1,8 @@
+import { useDrizzle } from '@teages/nitro-drizzle/runtime'
 import { count } from 'drizzle-orm'
-import { schema } from '~/server/database/index'
+import * as schema from '~/server/database/schema'
 import { builder } from '~/server/graphql/builder'
 import { requireAuthSession, UnauthorizedError } from '~/server/graphql/errors'
-import { useDrizzle } from '~/server/utils/drizzle'
 import { CountEvent } from '../CountEvent'
 
 const RecordCountPayload = builder.simpleObject('RecordCountPayload', {

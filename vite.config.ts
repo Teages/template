@@ -26,6 +26,8 @@ export default defineConfig({
   },
   define: {
     'import.meta.vitest': 'undefined',
-    'import.meta.MOCK_DATABASE': env.MOCK_DATABASE || 'undefined',
+    'import.meta.env.NITRO_DRIZZLE_DEV': env.NITRO_DRIZZLE_DEV === 'false'
+      ? 'false'
+      : 'undefined',
   },
 })

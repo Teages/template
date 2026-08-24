@@ -5,10 +5,10 @@ import ErrorsPlugin from '@pothos/plugin-errors'
 import RelayPlugin from '@pothos/plugin-relay'
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
 import WithInputPlugin from '@pothos/plugin-with-input'
+import { useDrizzle } from '@teages/nitro-drizzle/runtime'
 import { getTableConfig } from 'drizzle-orm/pg-core'
 import { relations } from '~/server/database/relations'
 import { UnauthorizedError } from '~/server/graphql/errors'
-import { useDrizzle } from '~/server/utils/drizzle'
 
 export const builder = new SchemaBuilder<{
   Context: { event: H3Event }

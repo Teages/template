@@ -18,7 +18,7 @@ describe('production compose stack', () => {
     expect(compose).toContain('service_completed_successfully')
     expect(compose).toContain('pg_isready')
     expect(compose).not.toMatch(/["']5432:5432["']/)
-    expect(compose).not.toContain('MOCK_DATABASE')
+    expect(compose).not.toContain('NITRO_DRIZZLE_DEV')
   })
 
   it('runs the traced Nitro server and copies the lockfile into the builder', () => {
@@ -26,7 +26,7 @@ describe('production compose stack', () => {
 
     expect(dockerfile).toContain('pnpm-lock.yaml')
     expect(dockerfile).toContain('CMD ["node", ".output/server/index.mjs"]')
-    expect(dockerfile).not.toContain('MOCK_DATABASE')
+    expect(dockerfile).not.toContain('NITRO_DRIZZLE_DEV')
   })
 
   it('runs migrations from a slim node stage instead of the full builder', () => {
@@ -82,11 +82,11 @@ describe('production compose stack', () => {
     const nitro = readRepoFile('nitro.config.ts')
     const compose = readRepoFile('compose.yaml')
 
-    expect(nitro).toContain('postgres:')
+    expect(nitro).toContain('drizzle:')
     expect(nitro).not.toContain('envPrefix:')
     expect(nitro).not.toContain('postgresql://')
-    expect(nitro).not.toContain('{{NITRO_POSTGRES_PASSWORD}}')
-    expect(compose).toContain('NITRO_POSTGRES_HOST')
-    expect(compose).toMatch(/POSTGRES_USER: \$\{NITRO_POSTGRES_USER:-user\}/)
+    expect(nitro).not.toContain('{{NITRO_DRIZZLE_CONNECTION_PASSWORD}}')
+    expect(compose).toContain('NITRO_DRIZZLE_CONNECTION_HOST')
+    expect(compose).toMatch(/POSTGRES_USER: \$\{NITRO_DRIZZLE_CONNECTION_USER:-user\}/)
   })
 })
