@@ -4,17 +4,37 @@ import { drizzle } from 'drizzle-orm/postgres-js'
 import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import { logger } from '../utils/logger'
 
-// Bundled to .output/server/migrate.mjs by vite.config.migrate.ts. The SQL
-// migrations are copied to .output/server/db/migrations by @teages/nitro-drizzle
-// on compile, so a slim node image can run this without pnpm or dev
-// dependencies.
+// Bundled to .output/server/migrate.mjs by vite.config.migrate.ts, which
+// also copies the SQL migrations to .output/server/db/migrations, so a slim
+// node image can run this without pnpm or dev dependencies.
+const CONNECTION_KEYS = [
+  'NITRO_DRIZZLE_CONNECTION_HOST',
+  'NITRO_DRIZZLE_CONNECTION_PORT',
+  'NITRO_DRIZZLE_CONNECTION_USER',
+  'NITRO_DRIZZLE_CONNECTION_PASSWORD',
+  'NITRO_DRIZZLE_CONNECTION_DATABASE',
+] as const
+
+const missing = CONNECTION_KEYS.filter(key => !env[key])
+if (missing.length > 0) {
+  throw new Error(`Missing required environment variables: ${missing.join(', ')}`)
+}
+
+function requireConnectionEnv(key: (typeof CONNECTION_KEYS)[number]): string {
+  const value = env[key]
+  if (value === undefined) {
+    throw new Error(`Missing required environment variable: ${key}`)
+  }
+  return value
+}
+
 const db = drizzle({
   connection: {
-    host: env.NITRO_DRIZZLE_CONNECTION_HOST || 'localhost',
-    port: Number(env.NITRO_DRIZZLE_CONNECTION_PORT) || 5433,
-    user: env.NITRO_DRIZZLE_CONNECTION_USER || 'user',
-    password: env.NITRO_DRIZZLE_CONNECTION_PASSWORD ?? 'passwd',
-    database: env.NITRO_DRIZZLE_CONNECTION_DATABASE || 'mydb',
+    host: requireConnectionEnv('NITRO_DRIZZLE_CONNECTION_HOST'),
+    port: Number(requireConnectionEnv('NITRO_DRIZZLE_CONNECTION_PORT')),
+    user: requireConnectionEnv('NITRO_DRIZZLE_CONNECTION_USER'),
+    password: requireConnectionEnv('NITRO_DRIZZLE_CONNECTION_PASSWORD'),
+    database: requireConnectionEnv('NITRO_DRIZZLE_CONNECTION_DATABASE'),
   },
 })
 try {
