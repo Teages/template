@@ -34,7 +34,7 @@ describe('production compose stack', () => {
     const migrateConfig = readRepoFile('vite.config.migrate.ts')
     const pkg = readRepoFile('package.json')
 
-    expect(dockerfile).toContain('CMD ["node", ".output/server/migrate.mjs"]')
+    expect(dockerfile).toContain('CMD ["node", ".output/migrate/main.mjs"]')
     expect(dockerfile).not.toContain('FROM builder AS migrate')
     // corepack enable is on the deprecation track; use the official installer.
     expect(dockerfile).toContain('npm install -g corepack@latest')
@@ -44,7 +44,7 @@ describe('production compose stack', () => {
     // never wipe the Nitro output directory.
     expect(pkg).toContain('vite.config.migrate.ts')
     expect(migrateConfig).toContain('emptyOutDir: false')
-    expect(migrateConfig).toContain('resolve(import.meta.dirname, \'server/scripts/migrate.ts\')')
+    expect(migrateConfig).toContain('resolve(import.meta.dirname, \'scripts/migrate.ts\')')
   })
 
   it('keeps local Postgres on 5433 with a volume distinct from production', () => {

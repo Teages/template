@@ -22,7 +22,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 const rootDir = resolve(import.meta.dirname, '../..')
 const outputDir = resolve(rootDir, '.output')
 const serverEntry = resolve(outputDir, 'server/index.mjs')
-const migrateEntry = resolve(rootDir, '.output/server/migrate.mjs')
+const migrateEntry = resolve(outputDir, 'migrate/main.mjs')
 
 // The bundle carries `{{NITRO_DRIZZLE_CONNECTION_*}}` templates (env
 // expansion), so every spawned process needs the connection env. CI exports
