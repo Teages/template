@@ -24,6 +24,25 @@ const outputDir = resolve(rootDir, '.output')
 const serverEntry = resolve(outputDir, 'server/index.mjs')
 const migrateEntry = resolve(rootDir, '.output/server/migrate.mjs')
 
+// The bundle carries `{{NITRO_DRIZZLE_CONNECTION_*}}` templates (env
+// expansion), so every spawned process needs the connection env. CI exports
+// them; locally they default to the compose.dev.yaml Postgres.
+function connectionEnv(): NodeJS.ProcessEnv {
+  const fallbacks: Record<string, string> = {
+    NITRO_DRIZZLE_CONNECTION_HOST: 'localhost',
+    NITRO_DRIZZLE_CONNECTION_PORT: '5433',
+    NITRO_DRIZZLE_CONNECTION_USER: 'user',
+    NITRO_DRIZZLE_CONNECTION_PASSWORD: 'passwd',
+    NITRO_DRIZZLE_CONNECTION_DATABASE: 'mydb',
+  }
+  for (const key of Object.keys(fallbacks)) {
+    if (process.env[key] !== undefined) {
+      delete fallbacks[key]
+    }
+  }
+  return fallbacks
+}
+
 const hasBuild = existsSync(serverEntry) && existsSync(migrateEntry)
 if (!hasBuild) {
   console.warn('[smoke] build output not found — run `pnpm test:smoke` (its pre hook builds); skipping')
@@ -72,6 +91,7 @@ run('production build smoke', () => {
         cwd: rootDir,
         env: {
           ...process.env,
+          ...connectionEnv(),
           BETTER_AUTH_SECRET: 'smoke-better-auth-secret-32chars',
           ...env,
         },
@@ -141,6 +161,7 @@ run('production build smoke', () => {
       cwd: rootDir,
       env: {
         ...process.env,
+        ...connectionEnv(),
         BETTER_AUTH_SECRET: 'smoke-better-auth-secret-32chars',
         BETTER_AUTH_URL: baseUrl,
         BETTER_AUTH_TRUSTED_ORIGINS: baseUrl,
