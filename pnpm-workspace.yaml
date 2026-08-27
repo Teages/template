@@ -9,6 +9,4 @@ allowBuilds:
   vue-demi: true
 sharedWorkspaceLockfile: false
 patchedDependencies:
-  '@better-auth/kysely-adapter@1.7.0-rc.1': patches/@better-auth__kysely-adapter@1.7.0-rc.1.patch
-  '@nuxt/icon': patches/@nuxt__icon.patch
-  '@nuxt/test-utils@4.0.3': patches/@nuxt__test-utils@4.0.3.patch
+  '@nuxt/test-utils@4.1.0': patches/@nuxt__test-utils@4.1.0.patch

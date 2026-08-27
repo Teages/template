@@ -1,0 +1,101 @@
+diff --git a/dist/runtime-utils/index.mjs b/dist/runtime-utils/index.mjs
+index e7b4d745f1e460b246dae897ffeda5b43aa2f629..f6f24971ea5b6b6a3ef737b7064a90ed086ed375 100644
+--- a/dist/runtime-utils/index.mjs
++++ b/dist/runtime-utils/index.mjs
+@@ -155,15 +155,15 @@ async function mountSuspended(component, options = {}) {
+ 	const suspendedHelperName = "MountSuspendedHelper";
+ 	const clonedComponentName = "MountSuspendedComponent";
+ 	cleanupAll();
+-	const { wrapper, setProps } = await wrapperSuspended(component, options, {
++	const { wrapper, setProps, __emitted } = await wrapperSuspended(component, options, {
+ 		wrapperFn: mount,
+ 		suspendedHelperName,
+ 		clonedComponentName
+ 	});
+ 	Object.assign(wrapper, { __setProps: setProps });
+-	return wrappedMountedWrapper(wrapper, wrapper.findComponent({ name: clonedComponentName }));
++	return wrappedMountedWrapper(wrapper, wrapper.findComponent({ name: clonedComponentName }), __emitted);
+ }
+-function wrappedMountedWrapper(wrapper, component) {
++function wrappedMountedWrapper(wrapper, component, emittedMap) {
+ 	const wrapperProps = [
+ 		"setProps",
+ 		"emitted",
+@@ -172,6 +172,26 @@ function wrappedMountedWrapper(wrapper, component) {
+ 	];
+ 	return new Proxy(wrapper, { get: (_, prop, receiver) => {
+ 		if (prop === "getCurrentComponent") return getCurrentComponentPatchedProxy;
++		// [nuxt5-patch] prefer directly-captured emits (VTU's devtools-based
++		// capture is unreliable in the Nuxt 5 browser test env). Fall back to
++		// VTU's own recording when our Map is empty for the requested event
++		// (covers emits that bypass the outer setupContext and were captured
++		// normally in non-broken envs).
++		if (prop === "emitted") {
++			return (eventName) => {
++				if (eventName === void 0) {
++					const merged = /* @__PURE__ */ new Map(emittedMap);
++					for (const [k, v] of Object.entries(wrapper.emitted())) {
++						if (!merged.has(k) || !merged.get(k).length) merged.set(k, v);
++					}
++					return Object.fromEntries(merged);
++				}
++				const direct = emittedMap.get(eventName);
++				if (direct && direct.length) return direct;
++				return wrapper.emitted(eventName);
++			};
++		}
++		// [end nuxt5-patch]
+ 		const target = wrapperProps.includes(prop) ? wrapper : Reflect.has(component, prop) ? component : wrapper;
+ 		const value = Reflect.get(target, prop, receiver);
+ 		return typeof value === "function" ? value.bind(target) : value;
+diff --git a/dist/suspended-tgGlfCGz.mjs b/dist/suspended-tgGlfCGz.mjs
+index 36e93a96c4938e4f087f8a807c30298d258ed9e7..5cb1c10d105c19250715db8869f347d088f2e692 100644
+--- a/dist/suspended-tgGlfCGz.mjs
++++ b/dist/suspended-tgGlfCGz.mjs
+@@ -80,6 +80,10 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
+ 	const { props = {}, attrs = {} } = options;
+ 	const { route = "/", scoped = false, ...wrapperFnOptions } = options;
+ 	const vueApp = tryUseNuxtApp()?.vueApp || globalThis.__unctx__.get("nuxt-app").tryUse().vueApp;
++	// [nuxt5-patch] record emits directly. VTU's devtools-based capture breaks
++	// under Nuxt 5 nightly + browser env (the vue runtime the devtools hook is
++	// set on differs from the vue runtime that actually fires emits).
++	const __emitted = /* @__PURE__ */ new Map();
+ 	const { render: componentRender, setup: componentSetup, ...componentRest } = component;
+ 	let wrappedInstance = null;
+ 	let setupContext;
+@@ -128,8 +132,24 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
+ 			__cssModules: componentRest.__cssModules,
+ 			setup: (props, ctx) => {
+ 				patchInstanceAppContext();
++				// [nuxt5-patch] wrap ctx.emit so every emit() call is recorded in
++				// __emitted, then forwarded to the original emit (so onXxx listeners,
++				// v-model, etc still work).
++				setupContext = new Proxy(ctx, {
++					get(target, key, receiver) {
++						if (key === "emit") {
++							return (event, ...args) => {
++								let list = __emitted.get(event);
++								if (!list) __emitted.set(event, list = []);
++								list.push(args);
++								return target.emit(event, ...args);
++							};
++						}
++						const value = Reflect.get(target, key, receiver);
++						return typeof value === "function" ? value.bind(target) : value;
++					}
++				});
+ 				wrappedInstance = getCurrentInstance();
+-				setupContext = ctx;
+ 				const nuxtRootSetupResult = runEffectScope(() => NuxtRoot.setup(props, {
+ 					...ctx,
+ 					expose: () => {}
+@@ -152,6 +172,9 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
+ 				isMountSettled = true;
+ 				wrapper.setupState = setupState;
+ 				resolve({
++					// [nuxt5-patch] expose the captured emits so mountSuspended can
++					// surface them through wrapper.emitted()
++					__emitted,
+ 					wrapper,
+ 					setProps: (props) => {
+ 						Object.assign(setProps, props);
