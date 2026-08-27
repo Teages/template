@@ -1,8 +1,8 @@
-import type { DrizzleDatabase } from '@teages/nitro-drizzle/runtime'
+import type { DrizzleDatabase } from '#drizzle'
 import { drizzleAdapter } from '@better-auth/drizzle-adapter/relations-v2'
-import { useDrizzle } from '@teages/nitro-drizzle/runtime'
 import { betterAuth } from 'better-auth'
 import { testUtils } from 'better-auth/plugins'
+import { useDrizzle } from '#drizzle'
 import * as schema from '../database/schema'
 import { readBetterAuthEnv } from './auth-env'
 

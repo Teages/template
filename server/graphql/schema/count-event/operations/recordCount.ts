@@ -1,5 +1,5 @@
-import { useDrizzle } from '@teages/nitro-drizzle/runtime'
 import { count } from 'drizzle-orm'
+import { useDrizzle } from '#drizzle'
 import * as schema from '~/server/database/schema'
 import { builder } from '~/server/graphql/builder'
 import { requireAuthSession, UnauthorizedError } from '~/server/graphql/errors'

@@ -1,4 +1,4 @@
-import { useDrizzle } from '@teages/nitro-drizzle/runtime'
+import { useDrizzle } from '#drizzle'
 import { builder } from '~/server/graphql/builder'
 import { requireAuthSession, UnauthorizedError } from '~/server/graphql/errors'
 
