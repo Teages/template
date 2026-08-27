@@ -1,7 +1,6 @@
 import { env } from 'node:process'
 import { nitro } from 'nitro/vite'
 import { defineConfig } from 'vite'
-import DrizzleStudio from './plugins/drizzle-studio/index.ts'
 import { graphqlSchemaPlugin } from './plugins/graphql-schema/index.ts'
 import tsconfigPlugin from './plugins/tsconfig/index.ts'
 
@@ -16,7 +15,8 @@ export default defineConfig({
         gazania: '.generated/shared/gazania.d.ts',
       },
     }),
-    DrizzleStudio(),
+    // Drizzle Studio ships built into @teages/nitro-drizzle dev-database
+    // sessions (drizzle.dev) — no local plugin needed.
     nitro(),
   ],
   resolve: {
