@@ -1,6 +1,6 @@
 import { defineHandler, getQuery, HTTPError } from 'nitro/h3'
+import { useDrizzle } from '#drizzle'
 import { decodeCursor, listCountEvents } from '~/server/rest/count-events'
-import { useDrizzle } from '~/server/utils/drizzle'
 import { isUnknownArray } from '~/server/utils/predicates'
 import { useAuthSession } from '~/server/utils/session'
 

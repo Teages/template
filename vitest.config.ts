@@ -65,9 +65,6 @@ export default defineConfig({
             BETTER_AUTH_TRUSTED_ORIGINS: 'http://localhost:20398',
           },
         },
-        define: {
-          'import.meta.MOCK_DATABASE': 'true',
-        },
       })),
     ],
   },

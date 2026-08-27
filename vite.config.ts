@@ -1,10 +1,8 @@
-import { env } from 'node:process'
 import ui from '@nuxt/ui/vite'
 import { nitro } from 'nitro/vite'
 import { defineConfig } from 'vite'
 import { autoImportPlugin } from './plugins/auto-import/index.ts'
 import devToolsPlugin from './plugins/dev-tools/index.ts'
-import DrizzleStudio from './plugins/drizzle-studio/index.ts'
 import { graphqlSchemaPlugin } from './plugins/graphql-schema/index.ts'
 import { moduleRunnerEsmPlugin } from './plugins/module-runner-esm/index.ts'
 import tsconfigPlugin from './plugins/tsconfig/index.ts'
@@ -38,7 +36,8 @@ export default defineConfig({
       },
     }),
     devToolsPlugin(),
-    DrizzleStudio(),
+    // Drizzle Studio ships built into @teages/nitro-drizzle dev-database
+    // sessions (drizzle.dev) — no local plugin needed.
     nitro(),
   ],
   resolve: {
@@ -49,7 +48,6 @@ export default defineConfig({
   },
   define: {
     'import.meta.vitest': 'undefined',
-    'import.meta.MOCK_DATABASE': env.MOCK_DATABASE || 'undefined',
   },
   environments: {
     ssr: {

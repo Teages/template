@@ -101,6 +101,12 @@ export function getAppTSConfig(paths: TSConfigPaths): TSConfig {
     },
     include: [
       pathToBuild('types/nitro-routes.d.ts'),
+      // Ambient declarations for the generated `#drizzle` client — server
+      // code leaks into this program through type-only imports (AppRouter).
+      // Only the client declarations; hooks.d.ts globally redeclares
+      // 'nitro/types' and would shadow it without nitro/tsconfig paths.
+      pathToBuild('drizzle/modules.d.ts'),
+      pathToBuild('drizzle/schema.d.ts'),
       pathToRoot('env.d.ts'),
       pathToRoot('.generated/app/**/*.ts'),
       pathToRoot('.generated/shared/**/*.ts'),
@@ -130,6 +136,8 @@ export function getServerTSConfig(paths: TSConfigPaths): TSConfig {
       pathToBuild('types/nitro-config.d.ts'),
       pathToBuild('types/nitro-imports.d.ts'),
       pathToBuild('types/nitro-routes.d.ts'),
+      // Ambient declarations for the generated `#drizzle` client.
+      pathToBuild('drizzle/**/*.d.ts'),
       pathToRoot('env.d.ts'),
       pathToRoot('.generated/server/**/*.ts'),
       pathToRoot('.generated/shared/**/*.ts'),
@@ -162,6 +170,12 @@ export function getNodeTSConfig(paths: TSConfigPaths): TSConfig {
     },
     include: [
       pathToBuild('types/nitro-config.d.ts'),
+      // Ambient declarations for the generated `#drizzle` client — server
+      // code leaks into this program through plugins/graphql-schema/codegen.ts.
+      // Only the client declarations; hooks.d.ts globally redeclares
+      // 'nitro/types' and would shadow it without nitro/tsconfig paths.
+      pathToBuild('drizzle/modules.d.ts'),
+      pathToBuild('drizzle/schema.d.ts'),
       pathToRoot('env.d.ts'),
       pathToRoot('test/env.ts'),
       pathToRoot('test/global-setup.ts'),

@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm'
 import { defineHandler, getRouterParam, HTTPError } from 'nitro/h3'
+import { useDrizzle } from '#drizzle'
 import { countEvents, users } from '~/server/database/schema'
-import { useDrizzle } from '~/server/utils/drizzle'
 import { useAuthSession } from '~/server/utils/session'
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i

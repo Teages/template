@@ -8,9 +8,8 @@
   },
   "scripts": {
     "prepare": "jiti ./scripts/prepare.ts",
-    "dev": "pnpm dev:mock",
-    "dev:mock": "MOCK_DATABASE=true vite dev",
-    "dev:prod": "vite dev",
+    "dev": "vite dev",
+    "dev:prod": "NITRO_DRIZZLE_DEV=false vite dev",
     "build": "vite build && vite build --config vite.config.migrate.ts",
     "preview": "vite preview",
     "typecheck": "pnpm prepare && vue-tsc --build --noEmit",
@@ -26,8 +25,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "auth:generate": "better-auth generate --config ./server/utils/auth.ts --output ./server/database/auth.ts",
-    "skills:install": "skills experimental_install --agent universal",
-    "task:db:migrate": "curl -sf -X POST 'http://localhost:20398/_nitro/tasks/db:migrate'"
+    "skills:install": "skills experimental_install --agent universal"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "catalog:better-auth",
@@ -39,6 +37,7 @@
     "@pothos/plugin-relay": "catalog:graphql",
     "@pothos/plugin-simple-objects": "catalog:graphql",
     "@pothos/plugin-with-input": "catalog:graphql",
+    "@teages/nitro-drizzle": "catalog:database",
     "@teages/oh-my-graphql": "catalog:graphql",
     "@trpc/client": "catalog:trpc",
     "@trpc/server": "catalog:trpc",

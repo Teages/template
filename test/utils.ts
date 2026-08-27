@@ -2,15 +2,22 @@ import type { TestHelpers } from 'better-auth/plugins'
 import type { AppRouter } from '~/server/trpc/root'
 import { createClient } from '@teages/oh-my-graphql'
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
+import { pushSchema } from 'drizzle-kit/api-postgres'
+import { sql } from 'drizzle-orm'
 import { serverFetch } from 'nitro/app'
 import { createFetch } from 'ofetch'
+import { useDrizzle } from '#drizzle'
 import { useAuth } from '~/server/utils/auth'
-import { resetDatabase } from '~/server/utils/drizzle/dev'
 
 export async function resetTestDatabase(): Promise<void> {
-  // The request hook waits for the asynchronous PGlite plugin initialization.
+  // Any request waits for the dev database's initial schema push, so ping
+  // health first; then rebuild the schema from scratch for test isolation.
   await serverFetch('/api/health')
-  await resetDatabase()
+  const { db, schema } = useDrizzle()
+  await db.execute(sql`DROP SCHEMA public CASCADE`)
+  await db.execute(sql`CREATE SCHEMA public`)
+  const { apply } = await pushSchema(schema, db)
+  await apply()
 }
 
 export function uniqueAuthEmail(scope: string): string {

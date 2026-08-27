@@ -1,4 +1,4 @@
-import type { DrizzleDatabase } from '~/server/utils/drizzle'
+import type { DrizzleDatabase } from '#drizzle'
 import { Buffer } from 'node:buffer'
 import { and, count, desc, eq, lt, or } from 'drizzle-orm'
 import { countEvents, users } from '~/server/database/schema'

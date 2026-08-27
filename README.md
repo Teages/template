@@ -40,8 +40,8 @@ All three operate on the same count-event business model. A real project keeps t
 
 | Command | What it does |
 | --- | --- |
-| `pnpm dev` | Dev server with in-memory PGlite (`MOCK_DATABASE=true`) |
-| `pnpm dev:prod` | Dev server against Postgres (`NITRO_POSTGRES_*`) |
+| `pnpm dev` | Dev server with an in-memory PGlite dev database |
+| `pnpm dev:prod` | Dev server against Postgres (`NITRO_DRIZZLE_CONNECTION_*`) |
 | `pnpm build` / `pnpm preview` | Build and preview the production bundle |
 | `pnpm typecheck` | Regenerate `.generated/` then run `vue-tsc` |
 | `pnpm lint` | ESLint |

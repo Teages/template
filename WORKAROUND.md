@@ -73,32 +73,36 @@ its runtime, with real database).
   ESM-first server defaults, and revisit the remaps as upstream packages ship
   env-runner-compatible ESM entrypoints.
 
-### Nitro trace omits tslib, crashing graphql-yoga in production
-- reason: `graphql-yoga` and its `@whatwg-node/*` chain (`node-fetch`,
-  `disposablestack`, …) ship as TypeScript-compiled CJS that
-  `require("tslib")` for tsc's `__importStar`/`__exportStar` helpers. Nitro's
-  nft trace copies those packages into `.output/server/node_modules/` but does
-  not follow the transitive `tslib` dependency, so at runtime the first
-  request to `/api/graphql` throws
-  `Cannot find module '.../node_modules/tslib/tslib.js'` and returns 500.
-  Only the bundled production server is affected: `dev` pre-bundles deps via
-  Vite, and `test` runs Nitro in-process, so neither hits the trace output.
+### Rolldown helper sharing deadlocks production ESM evaluation
+- reason: Nitro's Rolldown `codeSplitting.groups` puts each `node_modules`
+  package in its own `_libs/*` chunk. Shared runtime helpers
+  (`__exportAll`, `__toESM`, `__require`, `__commonJSMin`) then land in an
+  app chunk (`_chunks/drizzle.mjs`) because that file also uses
+  `import * as schema`. The app chunk imports `@pothos/plugin-drizzle`,
+  which imports `@better-auth/drizzle-adapter`, which calls
+  `__exportAll` at module top-level from the still-evaluating app chunk.
+  Node links the live binding as `undefined`, so the first GraphQL/server
+  boot throws `TypeError: __exportAll is not a function`. Dev and
+  in-process e2e never hit this: they run through Vite's ModuleRunner, not
+  the split production graph.
 - affected: build
-- patched: `nitro.config.ts` `traceDeps` includes `'tslib*'`, expanding the
-  nft allowlist so `tslib` is bundled alongside `graphql-yoga*` and the rest.
-- follow up: Remove once Nitro's nft tracer follows transitive runtime deps
-  like `tslib` automatically. Track the Nitro release that fixes it.
+- patched: `nitro.config.ts` sets `inlineDynamicImports: true`, which Nitro
+  turns into Rolldown `codeSplitting: false` so helpers stay local to the
+  single server file. `test/smoke/server-eval.test.ts` boots
+  `.output/server/index.mjs` without Postgres and asserts the process
+  answers `/api/health`.
+- follow up: Remove once Rolldown places shared helpers in a leaf chunk
+  that participates in no import cycle, or Nitro stops grouping
+  `node_modules` in a way that re-exports drizzle-orm through Pothos and
+  Better Auth adapter chunks. Track rolldown and nitro releases.
 
-  Note: an earlier commit (the one introducing this `traceDeps` fix) blamed
-  `@whatwg-node/fetch`'s CJS `main` as a *prod* problem, dropped the
-  `dist/esm-ponyfill.js` remap from `plugins/module-runner-esm/index.ts`, and
-  rewrote the WORKAROUND to call it a misdiagnosis. That was itself the
-  misdiagnosis: the prod path is fine and was fixed by `traceDeps`, but the
-  remap also fixes the *dev/test* ModuleRunner path where
-  `ReferenceError: require is not defined` reappeared after the remap was
-  dropped (once nitro 3.0.260606-beta stopped masking it via SSR-warmup
-  timeouts). Both fixes are needed — the remap for dev/test, `traceDeps` for
-  prod. Do not remove the remap again based on "prod is fine".
+  Note: this entry supersedes the former "Nitro trace omits tslib" fix
+  (`traceDeps: ['tslib*']`). Inlining the server bundle also bundles the
+  `graphql-yoga` CJS chain — Rolldown rewrites its `require("tslib")` — so
+  no traced copy needs a transitive `tslib` follow anymore. The
+  `plugins/module-runner-esm` remap above is unaffected: it fixes the
+  *dev/test* ModuleRunner path, and history says do not remove it again
+  based on "prod is fine" (see the note under that entry).
 
 ### @vitejs/plugin-vue transforms ?assets queries
 - reason: `plugins/vue-ssr/runtime/app/entry-server.ts` imports page modules

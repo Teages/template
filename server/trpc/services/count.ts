@@ -1,4 +1,4 @@
-import type { DrizzleDatabase } from '~/server/utils/drizzle'
+import type { DrizzleDatabase } from '#drizzle'
 import { TRPCError } from '@trpc/server'
 import { and, count, desc, eq, lt, or } from 'drizzle-orm'
 import { countEvents, users } from '~/server/database/schema'

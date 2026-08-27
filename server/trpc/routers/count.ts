@@ -1,7 +1,7 @@
 import { z } from 'zod'
+import { useDrizzle } from '#drizzle'
 import { protectedProcedure, router } from '~/server/trpc/init'
 import { createCountEvent, listCountEvents } from '~/server/trpc/services/count'
-import { useDrizzle } from '~/server/utils/drizzle'
 
 /**
  * Count router exposes the same count-event business capabilities as the REST

@@ -1,14 +1,13 @@
-import type { DrizzleDatabase } from './drizzle'
+import type { DrizzleDatabase } from '#drizzle'
 import { drizzleAdapter } from '@better-auth/drizzle-adapter/relations-v2'
 import { betterAuth } from 'better-auth'
 import { testUtils } from 'better-auth/plugins'
-import { schema } from '../database/index'
+import { useDrizzle } from '#drizzle'
+import * as schema from '../database/schema'
 import { readBetterAuthEnv } from './auth-env'
-import { useDrizzle } from './drizzle'
 
 function initAuth(db: DrizzleDatabase) {
   const authEnv = readBetterAuthEnv()
-  const isTest = import.meta.env.NODE_ENV === 'test' || !!import.meta.env.VITEST
 
   return betterAuth({
     appName: 'Count App',
@@ -25,9 +24,9 @@ function initAuth(db: DrizzleDatabase) {
       schema,
       usePlural: true,
     }),
-    // testUtils serves local dev/test debugging; a MOCK production build
-    // (import.meta.dev false, e.g. smoke artifacts) must not expose it.
-    plugins: import.meta.MOCK_DATABASE && (import.meta.dev || isTest)
+    // testUtils serves local dev/test debugging against the disposable dev
+    // database; a production build (import.meta.dev false) must not expose it.
+    plugins: import.meta.dev && import.meta.env.NITRO_DRIZZLE_DEV !== false
       ? [testUtils()]
       : [],
   })

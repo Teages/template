@@ -8,6 +8,10 @@ import { runnerImport } from 'vite'
 const logger = createConsola({}).withTag('graphql')
 const CODEGEN_ENTRY = 'plugins/graphql-schema/codegen.ts'
 const SCHEMA_ENTRY_ID = 'virtual:graphql-schema-entry'
+const DRIZZLE_STUB = resolve(
+  import.meta.dirname,
+  'stubs/drizzle.ts',
+)
 
 export interface GraphqlSchemaPluginOptions {
   /** Module path to the GraphQL schema entry (relative to Vite root). */
@@ -64,11 +68,20 @@ async function printGraphqlSchema(
       alias: {
         '~': root,
         [SCHEMA_ENTRY_ID]: schemaPath,
+        // Bare imports bypass the runner's plugin container and externalize
+        // straight to Node, where `#drizzle` cannot resolve — alias the
+        // virtual client to the throwing stub instead.
+        '#drizzle': DRIZZLE_STUB,
       },
     },
     define: {
       'import.meta.vitest': 'undefined',
-      'import.meta.MOCK_DATABASE': env.MOCK_DATABASE || 'undefined',
+      // The schema runner executes outside the Nitro dev pipeline, so mirror
+      // its import.meta.dev and the dev-database gate for any code it loads.
+      'import.meta.dev': 'true',
+      'import.meta.env.NITRO_DRIZZLE_DEV': env.NITRO_DRIZZLE_DEV === 'false'
+        ? 'false'
+        : 'undefined',
       '__GRAPHQL_SCHEMA_EXPORT__': JSON.stringify(options.schemaExport),
     },
   })

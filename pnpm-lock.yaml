@@ -22,6 +22,9 @@ catalogs:
     '@electric-sql/pglite':
       specifier: ^0.5.5
       version: 0.5.5
+    '@teages/nitro-drizzle':
+      specifier: 0.1.0
+      version: 0.1.0
     drizzle-kit:
       specifier: 1.0.0-rc.4
       version: 1.0.0-rc.4
@@ -221,6 +224,9 @@ importers:
       '@pothos/plugin-with-input':
         specifier: catalog:graphql
         version: 4.1.5(@pothos/core@4.13.1(graphql@16.14.2))(graphql@16.14.2)
+      '@teages/nitro-drizzle':
+        specifier: catalog:database
+        version: 0.1.0(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(nitro-nightly@3.0.1-20260821-005124-e36e7a60)
       '@teages/oh-my-graphql':
         specifier: catalog:graphql
         version: 0.1.4(graphql@16.14.2)
@@ -1805,6 +1811,17 @@ packages:
     resolution: {integrity: sha512-lOfSPvgPdlaH6Qy+CyIc3XpycitaSQ9GECndGpTuDiu+uDA1am+90yWXwzDSd/20ZM196ggWJLS+Qb6WjVd/OA==}
     peerDependencies:
       vue: ^2.7.0 || ^3.0.0
+
+  '@teages/nitro-drizzle@0.1.0':
+    resolution: {integrity: sha512-KtpbTQE+WSGxdsqEWDX96mBqXj8kD/3OEG4y6O1Iaba0+Q4UoDbYp2Y97oq2CcqOaL4zYnA9ZIU0LrIf0mnwsw==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    peerDependencies:
+      drizzle-kit: 1.0.0-rc.4
+      drizzle-orm: 1.0.0-rc.4
+      nitro: '>=3.0.260610-beta <4'
+    peerDependenciesMeta:
+      nitro:
+        optional: true
 
   '@teages/oh-my-graphql@0.1.4':
     resolution: {integrity: sha512-bfJRCKesqq1kV5+TV4PTa3f7Y3VlCPPlHBkWeNtkhRk5CRkqlLxe/Gf9OWbid/WInHW/VB2+lUCFhayPrM41qg==}
@@ -6417,6 +6434,16 @@ snapshots:
       '@tanstack/virtual-core': 3.17.7
       vue: 3.5.41(typescript@5.9.3)
 
+  '@teages/nitro-drizzle@0.1.0(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3))(nitro-nightly@3.0.1-20260821-005124-e36e7a60)':
+    dependencies:
+      drizzle-kit: 1.0.0-rc.4
+      drizzle-orm: 1.0.0-rc.4(@electric-sql/pglite@0.5.5)(@types/pg@8.20.4)(postgres@3.4.9)(valibot@1.4.2(typescript@5.9.3))(zod@4.4.3)
+      pathe: 2.0.3
+      scule: 1.3.0
+      srvx: 0.11.22
+    optionalDependencies:
+      nitro: nitro-nightly@3.0.1-20260821-005124-e36e7a60
+
   '@teages/oh-my-graphql@0.1.4(graphql@16.14.2)':
     dependencies:
       '@0no-co/graphql.web': 1.3.3(graphql@16.14.2)
@@ -8140,7 +8167,7 @@ snapshots:
   h3@2.0.1-rc.26(crossws@0.4.10(srvx@0.12.5)):
     dependencies:
       rou3: 0.9.1
-      srvx: 0.12.5
+      srvx: 0.12.7
     optionalDependencies:
       crossws: 0.4.10(srvx@0.12.5)
 

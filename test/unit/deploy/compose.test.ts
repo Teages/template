@@ -18,7 +18,7 @@ describe('production compose stack', () => {
     expect(compose).toContain('service_completed_successfully')
     expect(compose).toContain('pg_isready')
     expect(compose).not.toMatch(/["']5432:5432["']/)
-    expect(compose).not.toContain('MOCK_DATABASE')
+    expect(compose).not.toContain('NITRO_DRIZZLE_DEV')
   })
 
   it('runs the traced Nitro server and copies the lockfile into the builder', () => {
@@ -26,7 +26,7 @@ describe('production compose stack', () => {
 
     expect(dockerfile).toContain('pnpm-lock.yaml')
     expect(dockerfile).toContain('CMD ["node", ".output/server/index.mjs"]')
-    expect(dockerfile).not.toContain('MOCK_DATABASE')
+    expect(dockerfile).not.toContain('NITRO_DRIZZLE_DEV')
   })
 
   it('runs migrations from a slim node stage instead of the full builder', () => {
@@ -34,7 +34,7 @@ describe('production compose stack', () => {
     const migrateConfig = readRepoFile('vite.config.migrate.ts')
     const pkg = readRepoFile('package.json')
 
-    expect(dockerfile).toContain('CMD ["node", ".output/server/migrate.mjs"]')
+    expect(dockerfile).toContain('CMD ["node", ".output/migrate/main.mjs"]')
     expect(dockerfile).not.toContain('FROM builder AS migrate')
     // corepack enable is on the deprecation track; use the official installer.
     expect(dockerfile).toContain('npm install -g corepack@latest')
@@ -44,7 +44,7 @@ describe('production compose stack', () => {
     // never wipe the Nitro output directory.
     expect(pkg).toContain('vite.config.migrate.ts')
     expect(migrateConfig).toContain('emptyOutDir: false')
-    expect(migrateConfig).toContain('resolve(import.meta.dirname, \'server/scripts/migrate.ts\')')
+    expect(migrateConfig).toContain('resolve(import.meta.dirname, \'scripts/migrate.ts\')')
   })
 
   it('keeps local Postgres on 5433 with a volume distinct from production', () => {
@@ -78,15 +78,23 @@ describe('production compose stack', () => {
     expect(nitro).not.toContain('@electric-sql/pglite')
   })
 
-  it('does not concatenate a postgres URI in nitro runtimeConfig', () => {
+  it('expands the postgres connection from env templates, not literals', () => {
     const nitro = readRepoFile('nitro.config.ts')
     const compose = readRepoFile('compose.yaml')
 
-    expect(nitro).toContain('postgres:')
+    expect(nitro).toContain('drizzle:')
+    expect(nitro).toContain('envExpansion: true')
     expect(nitro).not.toContain('envPrefix:')
     expect(nitro).not.toContain('postgresql://')
-    expect(nitro).not.toContain('{{NITRO_POSTGRES_PASSWORD}}')
-    expect(compose).toContain('NITRO_POSTGRES_HOST')
-    expect(compose).toMatch(/POSTGRES_USER: \$\{NITRO_POSTGRES_USER:-user\}/)
+    // All credential-bearing keys are templates; port is the typed static
+    // default (number) that NITRO_DRIZZLE_CONNECTION_PORT overrides.
+    for (const key of ['HOST', 'USER', 'PASSWORD', 'DATABASE']) {
+      expect(nitro).toContain(`{{NITRO_DRIZZLE_CONNECTION_${key}}}`)
+    }
+    // No credentials may live in the config file.
+    expect(nitro).not.toContain('\'passwd\'')
+    expect(nitro).not.toContain('localhost')
+    expect(compose).toContain('NITRO_DRIZZLE_CONNECTION_HOST')
+    expect(compose).toMatch(/POSTGRES_USER: \$\{NITRO_DRIZZLE_CONNECTION_USER:-user\}/)
   })
 })

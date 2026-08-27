@@ -1,6 +1,6 @@
+import { useDrizzle } from '#drizzle'
 import { builder } from '~/server/graphql/builder'
 import { requireAuthSession, UnauthorizedError } from '~/server/graphql/errors'
-import { useDrizzle } from '~/server/utils/drizzle'
 
 builder.queryFields(t => ({
   countEvents: t.drizzleConnection({
