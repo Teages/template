@@ -8,9 +8,9 @@ import { runnerImport } from 'vite'
 const logger = createConsola({}).withTag('graphql')
 const CODEGEN_ENTRY = 'plugins/graphql-schema/codegen.ts'
 const SCHEMA_ENTRY_ID = 'virtual:graphql-schema-entry'
-const DRIZZLE_RUNTIME_STUB = resolve(
+const DRIZZLE_STUB = resolve(
   import.meta.dirname,
-  'stubs/nitro-drizzle-runtime.ts',
+  'stubs/drizzle.ts',
 )
 
 export interface GraphqlSchemaPluginOptions {
@@ -70,8 +70,8 @@ async function printGraphqlSchema(
         [SCHEMA_ENTRY_ID]: schemaPath,
         // Bare imports bypass the runner's plugin container and externalize
         // straight to Node, where `#drizzle` cannot resolve — alias the
-        // runtime to the throwing stub instead.
-        '@teages/nitro-drizzle/runtime': DRIZZLE_RUNTIME_STUB,
+        // virtual client to the throwing stub instead.
+        '#drizzle': DRIZZLE_STUB,
       },
     },
     define: {
