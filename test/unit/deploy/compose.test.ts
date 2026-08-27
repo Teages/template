@@ -78,14 +78,22 @@ describe('production compose stack', () => {
     expect(nitro).not.toContain('@electric-sql/pglite')
   })
 
-  it('does not concatenate a postgres URI in nitro runtimeConfig', () => {
+  it('expands the postgres connection from env templates, not literals', () => {
     const nitro = readRepoFile('nitro.config.ts')
     const compose = readRepoFile('compose.yaml')
 
     expect(nitro).toContain('drizzle:')
+    expect(nitro).toContain('envExpansion: true')
     expect(nitro).not.toContain('envPrefix:')
     expect(nitro).not.toContain('postgresql://')
-    expect(nitro).not.toContain('{{NITRO_DRIZZLE_CONNECTION_PASSWORD}}')
+    // All credential-bearing keys are templates; port is the typed static
+    // default (number) that NITRO_DRIZZLE_CONNECTION_PORT overrides.
+    for (const key of ['HOST', 'USER', 'PASSWORD', 'DATABASE']) {
+      expect(nitro).toContain(`{{NITRO_DRIZZLE_CONNECTION_${key}}}`)
+    }
+    // No credentials may live in the config file.
+    expect(nitro).not.toContain('\'passwd\'')
+    expect(nitro).not.toContain('localhost')
     expect(compose).toContain('NITRO_DRIZZLE_CONNECTION_HOST')
     expect(compose).toMatch(/POSTGRES_USER: \$\{NITRO_DRIZZLE_CONNECTION_USER:-user\}/)
   })
