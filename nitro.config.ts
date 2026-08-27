@@ -1,14 +1,6 @@
 import NitroDrizzle from '@teages/nitro-drizzle'
 import { defineConfig } from 'nitro/config'
 
-const drizzle = {
-  dialect: 'postgresql',
-  driver: 'postgres-js',
-  schemaPath: './server/database/index.ts',
-  migrationsDir: './server/database/migrations',
-  dev: true,
-} as const
-
 export default defineConfig({
   serverDir: './server',
   modules: [NitroDrizzle],
@@ -18,32 +10,28 @@ export default defineConfig({
   experimental: {
     tasks: true,
     asyncContext: true,
+    envExpansion: true,
   },
-  drizzle,
-  runtimeConfig: {
-    // The module rewrites runtimeConfig.drizzle at setup with the resolved
-    // runtime shape (dialect, driver, migrationsDir, dev, and a connection
-    // with every key present), so the generated runtime-config types require
-    // that full shape here. Keys other than the Postgres credentials below
-    // are module-managed and only spelled out to satisfy the types.
-    drizzle: {
-      ...drizzle,
-      connection: {
-        host: 'localhost',
-        port: 5433,
-        user: 'user',
-        password: 'passwd',
-        database: 'mydb',
-        url: '',
-        uri: '',
-        authToken: '',
-        connectionString: '',
-        accountId: '',
-        apiToken: '',
-        databaseId: '',
-        hyperdriveId: '',
-        dataDir: '',
-      },
+  drizzle: {
+    dialect: 'postgresql',
+    driver: 'postgres-js',
+    schemaPath: './server/database/index.ts',
+    migrationsDir: './server/database/migrations',
+    dev: true,
+    // No credentials live in this file: `{{NITRO_DRIZZLE_CONNECTION_*}}`
+    // templates expand at runtime from the environment (enabled by
+    // experimental.envExpansion above) — the same names compose.yaml,
+    // .env.example, and drizzle-kit (via drizzle.config.ts) provide. Never
+    // a concatenated URI; missing variables keep their literal template.
+    // `port` stays a static default because the module types it as number
+    // (no template strings) — NITRO_DRIZZLE_CONNECTION_PORT overrides it
+    // through the regular env-override channel instead.
+    connection: {
+      host: '{{NITRO_DRIZZLE_CONNECTION_HOST}}',
+      port: 5433,
+      user: '{{NITRO_DRIZZLE_CONNECTION_USER}}',
+      password: '{{NITRO_DRIZZLE_CONNECTION_PASSWORD}}',
+      database: '{{NITRO_DRIZZLE_CONNECTION_DATABASE}}',
     },
   },
 })
