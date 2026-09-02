@@ -2,16 +2,21 @@
 
 ## Setup commands
 - Install deps: `pnpm install` (from repo root or this package)
-- Start dev server: `pnpm dev` from repo root (port **20397**; proxies API to backend **20398**)
-- Run tests: `pnpm test:unit`, `pnpm test:nuxt`, `pnpm test:browser` (E2E starts backend `dev:mock` with PGlite + Nuxt preview)
+- Start dev server: `pnpm dev` from repo root (port **20397**, serves the app, `/graphql`, and auth API from one origin; runs on an in-memory PGlite dev database by default)
+- Run tests: `pnpm test:unit`, `pnpm test:api`, `pnpm test:e2e`, `pnpm test:nuxt`, `pnpm test:browser`.
+  - `unit` (test/unit): pure Node, no Vite/Nitro plugins.
+  - `api` (test/api): server tests running in-process inside the nitro vite environment — `serverFetch` from `nitro/app` hits the real app, `useDrizzle()` from `#drizzle` shares the app's PGlite database directly (no tasks needed). Only this project may touch the database this way.
+  - `e2e` (test/e2e, `*.e2e.spec.ts`): standard `@nuxt/test-utils/e2e` against a real dev server on the PGlite dev database, shared context via test/e2e/global-setup.ts. Playwright ignores this glob (browser tests use `*.spec.ts`).
+  - `browser` (test:browser): Playwright UI tests.
 
 ## Frameworks / Libraries
-- Nuxt 4
+- Nuxt 5 (nightly)
 - Nitro
 - Nuxt UI 4
 - Tailwind CSS
 - VueUse
-- Gazania + GraphQL (`useApiClient`, proxied `/graphql` → `http://localhost:20398/graphql`)
+- Drizzle ORM via `@teages/nitro-drizzle` (`useDrizzle()` from `#drizzle`; `db:*` scripts run drizzle-kit against `POSTGRES_*` env vars)
+- Gazania + GraphQL (`useApiClient`, same-origin `/graphql`)
 - Better Auth (`better-auth/vue`): `authClient` in `app/utils/auth-client.ts`.
 
 ## Frontend architecture (hub-frontend style)
@@ -19,7 +24,7 @@
 - **Queries/mutations:** `gazania.query(...)` / `gazania.mutation(...)` in pages, executed via `useApiClient().request()`.
 - **Data loading:** `useAsyncData` per route; call `refresh()` after mutations.
 - **UI:** feature components under `app/components/<domain>/`; page orchestrates data + events.
-- **Schema types:** `modules/gazania` codegen from `../backend/server/graphql/schema.graphql`.
+- **Schema types:** `modules/gazania` codegen from `./server/graphql/schema.graphql`.
 
 ## Code style
 - use strict TypeScript, avoid `any`

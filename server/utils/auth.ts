@@ -1,10 +1,10 @@
-import type { DrizzleDatabase } from '#server/utils/drizzle'
+import type { DrizzleDatabase } from '#drizzle'
 import { env } from 'node:process'
 import { drizzleAdapter } from '@better-auth/drizzle-adapter/relations-v2'
 import { betterAuth } from 'better-auth'
 import { testUtils } from 'better-auth/plugins'
-import { useDrizzle } from '#server/utils/drizzle'
-import { schema } from '../database'
+import { useDrizzle } from '#drizzle'
+import * as schema from '../database/schema'
 
 type Auth = ReturnType<typeof initAuth>
 
@@ -41,7 +41,7 @@ function initAuth(db: DrizzleDatabase) {
     }),
     plugins: [
       // keep non-mock enticement safe
-      ...(process.env.MOCK_DATABASE ? [testUtils()] : []) as [ReturnType<typeof testUtils>],
+      ...(import.meta.dev ? [testUtils()] : []) as [ReturnType<typeof testUtils>],
     ],
   })
 }

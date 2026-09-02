@@ -10,17 +10,23 @@ FROM base AS deps
 COPY . .
 RUN pnpm install --frozen-lockfile
 
-FROM deps AS build-frontend
-RUN pnpm --filter ./frontend build
+FROM deps AS build
+RUN pnpm build
 
-FROM deps AS migrator
-CMD ["pnpm", "--filter", "./frontend", "db:migrate"]
-
-FROM node:24-alpine AS frontend
+# Production artifacts on the slim base: the migrator and app stages share
+# this one .output layer instead of each copying it from the builder.
+FROM node:24-alpine AS output
 WORKDIR /app
 ENV NODE_ENV=production
+COPY --from=build /app/.output ./.output
+
+# One-shot migration runner: plain node plus the bundled script and SQL,
+# no pnpm or dev dependencies.
+FROM output AS migrator
+CMD ["node", ".output/migrate/main.mjs"]
+
+FROM output AS app
 ENV NITRO_HOST=0.0.0.0
 ENV NITRO_PORT=20397
-COPY --from=build-frontend /app/frontend/.output ./.output
 EXPOSE 20397
 CMD ["node", ".output/server/index.mjs"]

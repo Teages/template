@@ -1,53 +1,46 @@
-import { defineVitestProject } from '@nuxt/test-utils/config'
-import { playwright } from '@vitest/browser-playwright'
+import { argv } from 'node:process'
 import { defineConfig } from 'vitest/config'
+import { api } from './test/projects/api.ts'
+import { e2e } from './test/projects/e2e.ts'
+import { nuxt } from './test/projects/nuxt.ts'
+import { unit } from './test/projects/unit.ts'
 
 const rootDir = import.meta.dirname
 
 export default defineConfig({
   test: {
-    projects: [
-      {
-        resolve: {
-          alias: {
-            '~': `${rootDir}/app`,
-            '~~': rootDir,
-            '#shared': `${rootDir}/shared`,
-          },
-        },
-        test: {
-          name: 'unit',
-          include: ['test/unit/**/*.{test,spec}.ts'],
-          environment: 'node',
-        },
-      },
-      () =>
-        defineVitestProject({
-          test: {
-            name: 'nuxt',
-            include: ['test/nuxt/**/*.{test,spec}.ts'],
-            environment: 'nuxt',
-            environmentOptions: {
-              nuxt: {
-                rootDir,
-                overrides: {
-                  vue: {
-                    runtimeCompiler: true,
-                  },
-                },
-              },
-            },
-            browser: {
-              enabled: true,
-              provider: playwright(),
-              instances: [{ browser: 'chromium', headless: true }],
-            },
-          },
-        }),
-    ],
     coverage: {
       provider: 'v8',
       exclude: ['**/node_modules/**', '**/.nuxt/**', 'test/**'],
     },
+    projects: [
+      // The api project spawns Nitro while its config is derived, so it is
+      // only evaluated when actually selected; everything else is cheap.
+      ...isProjectSelected('api') ? [api(rootDir)] : [],
+      e2e(),
+      nuxt(rootDir),
+      unit(rootDir),
+    ],
   },
 })
+
+function isProjectSelected(name?: string) {
+  const isSelectedProject = argv.some(arg => arg.includes('--project'))
+  if (!isSelectedProject) {
+    return true
+  }
+
+  const isSelectedApiViaEq = argv.includes(`--project=${name}`)
+  if (isSelectedApiViaEq) {
+    return true
+  }
+
+  const isSelectedApiViaSpace = argv.some(
+    (arg, index) => arg === '--project' && argv[index + 1] === name,
+  )
+  if (isSelectedApiViaSpace) {
+    return true
+  }
+
+  return false
+}

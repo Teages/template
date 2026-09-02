@@ -5,16 +5,14 @@ export default defineNuxtConfig({
   experimental: {
     typescriptPlugin: true,
     typedPages: true,
-  },
-
-  runtimeConfig: {
-    databaseUrl: '',
+    nitroViteEnvironment: true,
   },
 
   nitro: {
     experimental: {
       tasks: true,
       asyncContext: true,
+      envExpansion: true,
     },
   },
 
@@ -31,22 +29,11 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: ['gazania', 'graphql', 'better-auth/vue'],
     },
-    define: {
-      'import.meta.vitest': 'undefined',
-    },
   },
 
   typescript: {
-    tsConfig: {
-      include: ['../test/unit/**/*.ts', '../test/nuxt/**/*.ts'],
-    },
-    nodeTsConfig: {
-      include: ['../*.ts', '../test/e2e/**/*.ts', '../playwright.config.ts'],
-    },
-  },
-
-  devServer: {
-    port: 20397,
+    serverTsConfig: { include: ['../test/api/**/*.ts'] },
+    nodeTsConfig: { include: ['../modules/*/index.ts'] },
   },
 
   modules: [
@@ -54,7 +41,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui',
     '@vueuse/nuxt',
-    './modules/gazania',
+    '@teages/nitro-drizzle/nuxt',
   ],
 
   $test: {
@@ -66,6 +53,27 @@ export default defineNuxtConfig({
       // @nuxt/test-utils clones while building the Vitest project.
       debugModuleMutation: false,
     },
+  },
+
+  drizzle: {
+    dialect: 'postgresql',
+    driver: 'postgres-js',
+    schemaPath: './server/database/index.ts',
+    migrationsDir: './server/database/migrations',
+    devMock: {
+      studio: true,
+    },
+    connection: {
+      host: '{{POSTGRES_HOST}}',
+      port: '{{POSTGRES_PORT}}',
+      user: '{{POSTGRES_USER}}',
+      password: '{{POSTGRES_PASSWORD}}',
+      database: '{{POSTGRES_DB}}',
+    },
+  },
+
+  migration: {
+    migrationsDir: './server/database/migrations',
   },
 
   gazania: {

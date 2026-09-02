@@ -1,17 +1,19 @@
+import { sql } from 'drizzle-orm'
 import { defineTask } from 'nitro/task'
-import { useDrizzle } from '#server/utils/drizzle'
-import { assertMockDatabase, clearDatabase } from '#server/utils/pglite-db'
+import { useDrizzle } from '#drizzle'
 
 export default defineTask({
   meta: {
     name: 'db:reset',
-    description: 'Reset database tables (MOCK_DATABASE only)',
+    description: 'Reset database tables (development only)',
   },
   async run() {
-    assertMockDatabase('task db:reset')
+    if (!import.meta.dev) {
+      throw new Error('task db:reset is only allowed in development mode')
+    }
 
-    const { db } = useDrizzle()
-    await clearDatabase(db)
+    const { db, schema } = useDrizzle()
+    await db.execute(sql`TRUNCATE TABLE ${schema.todos} RESTART IDENTITY`)
 
     return { result: { ok: true } }
   },

@@ -1,11 +1,12 @@
 import type { Environment } from 'vitest/runtime'
 
-export default <Environment>{
+export default {
   name: 'nitro',
   viteEnvironment: 'nitro',
   async setup() {
     return {
-      teardown() {},
+      teardown() {
+      },
     }
   },
-}
+} satisfies Environment

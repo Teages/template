@@ -52,59 +52,15 @@ Each loaded file calls `builder.drizzleObjectFields(...)` or `builder.queryField
 | `server/graphql/schema.ts` | Builds the final schema via `builder.toSchema()`. Dev-only: writes `schema.graphql` on change for inspection. |
 | `server/routes/graphql.ts` | GraphQL Yoga HTTP handler at `/graphql`, wires Yoga into Nitro's H3 event system. |
 | `server/plugins/graphql-hmr.ts` | Dev-only Nitro plugin: on HMR, imports `graphql/schema.ts` so `schema.graphql` / `gazania.ts` stay in sync. |
-| `server/utils/drizzle.ts` | `useDrizzle()` factory (call per-request). Test mock replaces this with a PGlite in-memory db. |
+| `#drizzle` (virtual module) | `useDrizzle()` from `@teages/nitro-drizzle`; returns `{ db, schema, relations }` (lazily created client). |
 
-## In-Source Testing
+## Testing
 
-Tests live alongside their source code inside `if (import.meta.vitest)` blocks. The test infrastructure is provided by `test/setup.ts` (auto-loaded by vitest), which mocks `useDrizzle()` with a PGlite in-memory database seeded with deterministic data.
-
-**RULES**:
-- Only one `describe()` block per file, named after the query, type or type field being tested (e.g. `query post` or `User type` or `User.posts`).
-- Use dynamic imports to load external modules which only used in tests. Dynamic imports should be inside the `describe()` block.
-
-### Where Tests Go
-
-| Location | Tests for |
-|---|---|
-| `operations/<query>.ts` | Happy path, null/empty cases, pagination, and relation fields accessed via that query |
-| `<Type>.ts` (core type file) | Computed fields (custom `resolve:` logic that isn't a simple `exposeX`) |
-
-Relation extension files (`<Type>.<field>.ts`) have no tests of their own — relations are covered by tests in the operation files that query them.
-
-### Test Setup
-
-```ts
-if (import.meta.vitest) {
-  const { it, describe, expect } = import.meta.vitest
-
-  describe('query <name>', async () => {
-    const { createGraphQLTestClient } = await import('~/test/utils')
-    const { serverFetch } = await import('nitro/app')
-    const client = createGraphQLTestClient(serverFetch)
-
-    it('...', async () => { /* ... */ })
-  })
-}
-```
-
-- `client.query(gql, variables)` returns `data` directly (errors throw).
-- `useDrizzle()` called inside test blocks returns the mocked PGlite db — use it to fetch known seed values for assertions.
-- `serverFetch` is the Nitro in-process fetch, so no real HTTP server is needed.
-
-### What to Test
-
-**Operations (queries):**
-- **Scalar fields**: query a known record by id, assert `id` + key fields match db values.
-- **Nullable query**: request a non-existent id (e.g. `00000000-0000-0000-0000-000000000000`), assert result is `null` with `toMatchInlineSnapshot`.
-- **Relation fields**: include nested objects/lists in the query; assert shape matches the db row fetched with `with: { relation: true }`.
-- **Pagination** (connection queries): assert default page size via `first`, cursor-based forward pagination via `after`, and that `hasNextPage` / `endCursor` behave correctly. Compare edges against consecutive slices from a direct db query.
-
-**Computed fields (custom resolvers on types):**
-- Query the field on a known record and assert the derived value matches the expected computation (e.g. `fullName === \`${firstName} ${lastName}\``).
+The previous in-source vitest suites (`if (import.meta.vitest)` blocks driving `serverFetch` against a mocked database) have been removed — running a second Nitro instance inside vitest proved too invasive. GraphQL behavior is currently covered by the Playwright E2E suite (`test/e2e`); a dedicated server test architecture is pending redesign.
 
 ### Critical Convention
 
-Always use `useDrizzle()` inside resolvers — **never** a module-level `db` default import. The test mock only replaces `useDrizzle`; a module-level singleton would bypass the mock and hit the real database (or be `undefined` in test environments).
+Always use `useDrizzle()` inside resolvers — **never** a module-level `db` default import. The `#drizzle` client is created lazily from the resolved connection (dev database in dev, configured Postgres in production); a module-level singleton would bypass that and bind to the wrong database.
 
 ## GraphQL Naming Conventions
 

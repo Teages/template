@@ -9,4 +9,4 @@ allowBuilds:
   vue-demi: true
 sharedWorkspaceLockfile: false
 patchedDependencies:
-  '@nuxt/test-utils@4.1.0': patches/@nuxt__test-utils@4.1.0.patch
+  '@nuxt/test-utils@4.2.0': patches/@nuxt__test-utils@4.2.0.patch

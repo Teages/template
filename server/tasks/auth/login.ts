@@ -1,15 +1,16 @@
 import type { AuthSessionInput } from '#server/utils/auth-test'
 import { defineTask } from 'nitro/task'
 import { createAuthSession } from '#server/utils/auth-test'
-import { assertMockDatabase } from '#server/utils/pglite-db'
 
 export default defineTask({
   meta: {
     name: 'auth:login',
-    description: 'Create a test user session via Better Auth testUtils (MOCK_DATABASE only)',
+    description: 'Create a test user session via Better Auth testUtils (development only)',
   },
   async run(event) {
-    assertMockDatabase('task auth:login')
+    if (!import.meta.dev) {
+      throw new Error('task auth:login is only allowed in development mode')
+    }
 
     const payload = (event.payload ?? {}) as AuthSessionInput
     const session = await createAuthSession(payload)

@@ -1,6 +1,5 @@
 import type { ResultOf, TypedDocumentNode, VariablesOf } from 'gazania'
 import type { GraphQLFetch, RequestOptions } from '~/utils/graphql-client'
-import { GRAPHQL_PATH } from '#shared/utils/graphql-path'
 import { request } from '~/utils/graphql-client'
 
 export interface ApiClient {
@@ -11,7 +10,7 @@ export interface ApiClient {
 }
 
 function createApiClient(fetch: GraphQLFetch): ApiClient {
-  const baseOptions: RequestOptions = { url: GRAPHQL_PATH, fetch }
+  const baseOptions: RequestOptions = { url: '/graphql', fetch }
   return {
     request: (document, variables) => request(document, variables, baseOptions),
   }

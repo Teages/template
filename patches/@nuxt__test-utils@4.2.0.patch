@@ -1,5 +1,5 @@
 diff --git a/dist/runtime-utils/index.mjs b/dist/runtime-utils/index.mjs
-index e7b4d745f1e460b246dae897ffeda5b43aa2f629..f6f24971ea5b6b6a3ef737b7064a90ed086ed375 100644
+index 5ce73f4..e26777c 100644
 --- a/dist/runtime-utils/index.mjs
 +++ b/dist/runtime-utils/index.mjs
 @@ -155,15 +155,15 @@ async function mountSuspended(component, options = {}) {
@@ -12,7 +12,7 @@ index e7b4d745f1e460b246dae897ffeda5b43aa2f629..f6f24971ea5b6b6a3ef737b7064a90ed
  		suspendedHelperName,
  		clonedComponentName
  	});
- 	Object.assign(wrapper, { __setProps: setProps });
+ 	patchWrapperSetProps(wrapper, setProps);
 -	return wrappedMountedWrapper(wrapper, wrapper.findComponent({ name: clonedComponentName }));
 +	return wrappedMountedWrapper(wrapper, wrapper.findComponent({ name: clonedComponentName }), __emitted);
  }
@@ -48,22 +48,22 @@ index e7b4d745f1e460b246dae897ffeda5b43aa2f629..f6f24971ea5b6b6a3ef737b7064a90ed
  		const target = wrapperProps.includes(prop) ? wrapper : Reflect.has(component, prop) ? component : wrapper;
  		const value = Reflect.get(target, prop, receiver);
  		return typeof value === "function" ? value.bind(target) : value;
-diff --git a/dist/suspended-tgGlfCGz.mjs b/dist/suspended-tgGlfCGz.mjs
-index 36e93a96c4938e4f087f8a807c30298d258ed9e7..5cb1c10d105c19250715db8869f347d088f2e692 100644
---- a/dist/suspended-tgGlfCGz.mjs
-+++ b/dist/suspended-tgGlfCGz.mjs
-@@ -80,6 +80,10 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
- 	const { props = {}, attrs = {} } = options;
- 	const { route = "/", scoped = false, ...wrapperFnOptions } = options;
- 	const vueApp = tryUseNuxtApp()?.vueApp || globalThis.__unctx__.get("nuxt-app").tryUse().vueApp;
+diff --git a/dist/suspended-DDMM5DdJ.mjs b/dist/suspended-DDMM5DdJ.mjs
+index 68bc7a2..750b989 100644
+--- a/dist/suspended-DDMM5DdJ.mjs
++++ b/dist/suspended-DDMM5DdJ.mjs
+@@ -110,6 +110,10 @@ function runEffectScope(fn, register) {
+ }
+ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn) => fn, suspendedHelperName, clonedComponentName, stubRouterLink = true }) {
+ 	const vueApp = resolveVueApp();
 +	// [nuxt5-patch] record emits directly. VTU's devtools-based capture breaks
 +	// under Nuxt 5 nightly + browser env (the vue runtime the devtools hook is
 +	// set on differs from the vue runtime that actually fires emits).
 +	const __emitted = /* @__PURE__ */ new Map();
- 	const { render: componentRender, setup: componentSetup, ...componentRest } = component;
- 	let wrappedInstance = null;
- 	let setupContext;
-@@ -128,8 +132,24 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
+ 	const ownCleanups = [];
+ 	function registerCleanup(fn) {
+ 		ownCleanups.push(fn);
+@@ -174,8 +178,24 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
  			__cssModules: componentRest.__cssModules,
  			setup: (props, ctx) => {
  				patchInstanceAppContext();
@@ -72,7 +72,7 @@ index 36e93a96c4938e4f087f8a807c30298d258ed9e7..5cb1c10d105c19250715db8869f347d0
 +				// v-model, etc still work).
 +				setupContext = new Proxy(ctx, {
 +					get(target, key, receiver) {
-+						if (key === "emit") {
++						if (key === 'emit') {
 +							return (event, ...args) => {
 +								let list = __emitted.get(event);
 +								if (!list) __emitted.set(event, list = []);
@@ -81,7 +81,7 @@ index 36e93a96c4938e4f087f8a807c30298d258ed9e7..5cb1c10d105c19250715db8869f347d0
 +							};
 +						}
 +						const value = Reflect.get(target, key, receiver);
-+						return typeof value === "function" ? value.bind(target) : value;
++						return typeof value === 'function' ? value.bind(target) : value;
 +					}
 +				});
  				wrappedInstance = getCurrentInstance();
@@ -89,7 +89,7 @@ index 36e93a96c4938e4f087f8a807c30298d258ed9e7..5cb1c10d105c19250715db8869f347d0
  				const nuxtRootSetupResult = runEffectScope(() => NuxtRoot.setup(props, {
  					...ctx,
  					expose: () => {}
-@@ -152,6 +172,9 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
+@@ -198,6 +218,9 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
  				isMountSettled = true;
  				wrapper.setupState = setupState;
  				resolve({
