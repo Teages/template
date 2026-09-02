@@ -32,7 +32,17 @@ export default defineNuxtConfig({
   },
 
   typescript: {
-    serverTsConfig: { include: ['../test/api/**/*.ts'] },
+    appTsConfig: {
+      include: [
+        '../test/unit/app/**/*.ts',
+      ],
+    },
+    serverTsConfig: {
+      include: [
+        '../test/api/**/*.ts',
+        '../test/unit/server/**/*.ts',
+      ],
+    },
     nodeTsConfig: { include: ['../modules/*/index.ts'] },
   },
 
