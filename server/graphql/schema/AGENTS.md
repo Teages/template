@@ -56,7 +56,7 @@ Each loaded file calls `builder.drizzleObjectFields(...)` or `builder.queryField
 
 ## Testing
 
-The previous in-source vitest suites (`if (import.meta.vitest)` blocks driving `serverFetch` against a mocked database) have been removed — running a second Nitro instance inside vitest proved too invasive. GraphQL behavior is currently covered by the Playwright E2E suite (`test/e2e`); a dedicated server test architecture is pending redesign.
+The previous in-source vitest suites (`if (import.meta.vitest)` blocks driving `serverFetch` against a mocked database) have been removed — running a second Nitro instance inside vitest proved too invasive. GraphQL behavior is currently covered by the Playwright e2e suite (`test/e2e`); a dedicated server test architecture is pending redesign.
 
 ### Critical Convention
 

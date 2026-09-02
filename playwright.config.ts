@@ -9,8 +9,6 @@ const baseURL = 'http://localhost:5678'
 
 export default defineConfig<ConfigOptions>({
   testDir: './test/e2e',
-  // `*.e2e.spec.ts` files belong to the vitest e2e project
-  testIgnore: ['**/*.e2e.spec.ts'],
   fullyParallel: true,
   workers: 1,
   forbidOnly: !!process.env.CI,
@@ -21,8 +19,9 @@ export default defineConfig<ConfigOptions>({
   timeout: 120_000,
   webServer: {
     // Dev server on the in-memory PGlite dev database (@teages/nitro-drizzle
-    // devMock): dev-only tasks (auth:login, auth:seed-e2e-user, db:reset)
-    // and Better Auth testUtils are available there.
+    // devMock): tests provision their own users through the real Better Auth
+    // API (see test/e2e/utils/auth.ts), so no test-only server tasks are
+    // needed.
     command: 'pnpm dev --port 5678',
     cwd: rootDir,
     url: baseURL,

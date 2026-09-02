@@ -3,11 +3,10 @@
 ## Setup commands
 - Install deps: `pnpm install` (from repo root or this package)
 - Start dev server: `pnpm dev` from repo root (port **20397**, serves the app, `/graphql`, and auth API from one origin; runs on an in-memory PGlite dev database by default)
-- Run tests: `pnpm test:unit`, `pnpm test:api`, `pnpm test:e2e`, `pnpm test:nuxt`, `pnpm test:browser`.
+- Run tests: `pnpm test:unit`, `pnpm test:api`, `pnpm test:e2e`, `pnpm test:nuxt`.
   - `unit` (test/unit): pure Node, no Vite/Nitro plugins.
   - `api` (test/api): server tests running in-process inside the nitro vite environment — `serverFetch` from `nitro/app` hits the real app, `useDrizzle()` from `#drizzle` shares the app's PGlite database directly (no tasks needed). Only this project may touch the database this way.
-  - `e2e` (test/e2e, `*.e2e.spec.ts`): standard `@nuxt/test-utils/e2e` against a real dev server on the PGlite dev database, shared context via test/e2e/global-setup.ts. Playwright ignores this glob (browser tests use `*.spec.ts`).
-  - `browser` (test:browser): Playwright UI tests.
+  - `e2e` (test/e2e, `*.spec.ts`): Playwright browser tests against a real dev server on the PGlite dev database; shared fixtures in test/e2e/test-utils.ts, auth state provisioned via the typed Better Auth client in test/e2e/utils/auth.ts.
 
 ## Frameworks / Libraries
 - Nuxt 5 (nightly)
