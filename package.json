@@ -17,8 +17,6 @@
     "db:migrate": "drizzle-kit migrate",
     "auth:generate": "better-auth generate --config ./server/utils/auth.ts --output ./server/database/auth.ts",
     "schema:update": "pnpm exec nuxt prepare",
-    "task:db:reset": "curl -sf -X POST 'http://localhost:20397/_nitro/tasks/db:reset'",
-    "validate:schema": "node --input-type=module -e \"import { readFileSync } from 'node:fs'; import { parse } from 'graphql'; parse(readFileSync(new URL('./server/graphql/schema.graphql', import.meta.url), 'utf8'))\"",
     "test": "vitest run",
     "test:unit": "vitest run --project unit",
     "test:api": "vitest run --project api",
