@@ -10,7 +10,7 @@ if (import.meta.dev && process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
   async function updateFile(path: string, content: string) {
     const { resolve } = await import('node:path')
     const { readFile, writeFile } = await import('node:fs/promises')
-    const resolvedPath = resolve(import.meta.dirname, path)
+    const resolvedPath = resolve(import.meta.dirname, '../../shared', path)
     const existing = await readFile(resolvedPath, 'utf-8').catch(() => null)
     if (existing !== content) {
       await writeFile(resolvedPath, content)
@@ -28,14 +28,18 @@ if (import.meta.dev && process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
     let updated = false
 
     const sdl = printGraphQLSchema(schema)
-    updated ||= await updateFile('./schema.graphql', sdl)
+    if (await updateFile('./schema.graphql', sdl)) {
+      updated = true
+    }
 
     const types = generate({
       source: sdl,
       scalars: {},
       url: 'http://localhost',
     })
-    updated ||= await updateFile('./gazania.ts', types)
+    if (await updateFile('./gazania.ts', types)) {
+      updated = true
+    }
 
     if (updated) {
       logger.info('Schema updated.')

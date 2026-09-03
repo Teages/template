@@ -104,11 +104,6 @@ export default defineNuxtConfig({
     migrationsDir: './server/database/migrations',
   },
 
-  gazania: {
-    schema: './server/graphql/schema.graphql',
-    scalars: {},
-  },
-
   ui: {
     fonts: false,
   },
