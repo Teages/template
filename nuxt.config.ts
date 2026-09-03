@@ -55,6 +55,13 @@ export default defineNuxtConfig({
   ],
 
   $test: {
+    // Browser-mode component tests are served by a bare Vite dev server
+    // without the nitro `/api/_nuxt_icon` route, so `icon.provider: 'server'`
+    // would 404 per icon. Bundle the icons used in app code client-side
+    // instead, so they resolve without any request.
+    icon: {
+      clientBundle: { scan: true },
+    },
     debug: {
       hydration: true,
     },
