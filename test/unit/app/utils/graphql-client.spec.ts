@@ -28,7 +28,7 @@ describe('graphql-client request', () => {
     expect(result).toEqual({ __typename: 'Query' })
     expect(fetch).toHaveBeenCalledWith('/graphql', expect.objectContaining({
       method: 'GET',
-      params: expect.objectContaining({
+      query: expect.objectContaining({
         query: expect.stringContaining('query Hello'),
       }),
     }))

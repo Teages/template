@@ -87,7 +87,7 @@ export async function request<TDocument extends TypedDocumentNode<any, any>>(
     : await fetcher<GraphQLResponse>(url, {
         method: 'GET',
         headers: options?.headers,
-        params: {
+        query: {
           query: queryString,
           ...(variables && Object.keys(variables).length > 0 && {
             variables: JSON.stringify(variables),
