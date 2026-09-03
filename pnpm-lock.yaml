@@ -105,6 +105,9 @@ importers:
       '@nuxt/icon':
         specifier: ^2.5.1
         version: 2.5.1(magic-string@1.2.3)(magicast@0.5.4)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2))(vite@8.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@nuxt/nitro-server':
+        specifier: npm:@nuxt/nitro-server-nightly@5.0.0-29801588.e458891d
+        version: '@nuxt/nitro-server-nightly@5.0.0-29801588.e458891d(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@electric-sql/pglite@0.5.8)(@oxc-project/types@0.147.0)(@vitejs/devtools-kit@0.4.2(cac@7.0.0)(srvx@0.11.22)(typescript@6.0.3)(vite@8.2.2))(chokidar@5.0.0)(confbox@0.2.4)(db0@0.3.4(@electric-sql/pglite@0.5.8)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4)))(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(esbuild@0.27.7)(giget@3.3.1)(jiti@2.7.0)(lightningcss@1.33.0)(mlly@1.8.2)(nuxt-nightly@5.0.0-29801588.e458891d)(ofetch@1.5.1)(oxc-parser@0.140.0)(rolldown@1.2.6)(typescript@6.0.3)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2))(vite@8.2.2)'
       '@nuxt/test-utils':
         specifier: ^4.2.0
         version: 4.2.0(patch_hash=11bf8e38212d571896651dd6023aa507de41249d2baee83ec55dd9e923648ec0)(@playwright/test@1.62.1)(@vue/test-utils@2.5.0(@vue/compiler-dom@3.5.42)(@vue/server-renderer@3.5.42)(vue@3.5.42(typescript@6.0.3)))(esbuild@0.27.7)(h3@2.0.1-rc.29(crossws@0.4.10(srvx@0.11.22)))(happy-dom@20.12.2)(magicast@0.5.4)(playwright-core@1.62.1)(rolldown@1.2.6)(typescript@6.0.3)(vite@8.2.2)(vitest@4.1.11)
@@ -7634,6 +7637,98 @@ snapshots:
       - rolldown
       - unplugin
 
+  '@nuxt/nitro-server-nightly@5.0.0-29801588.e458891d(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@electric-sql/pglite@0.5.8)(@oxc-project/types@0.147.0)(@vitejs/devtools-kit@0.4.2(cac@7.0.0)(srvx@0.11.22)(typescript@6.0.3)(vite@8.2.2))(chokidar@5.0.0)(confbox@0.2.4)(db0@0.3.4(@electric-sql/pglite@0.5.8)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4)))(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(esbuild@0.27.7)(giget@3.3.1)(jiti@2.7.0)(lightningcss@1.33.0)(mlly@1.8.2)(nuxt-nightly@5.0.0-29801588.e458891d)(ofetch@1.5.1)(oxc-parser@0.140.0)(rolldown@1.2.6)(typescript@6.0.3)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2))(vite@8.2.2)':
+    dependencies:
+      '@ampproject/remapping': 2.3.0
+      '@nuxt/kit': '@nuxt/kit-nightly@5.0.0-29801588.e458891d(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.2.3)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2))'
+      '@unhead/vue': 3.4.0(@oxc-project/types@0.147.0)(@vitejs/devtools-kit@0.4.2(cac@7.0.0)(srvx@0.11.22)(typescript@6.0.3)(vite@8.2.2))(esbuild@0.27.7)(lightningcss@1.33.0)(oxc-parser@0.140.0)(rolldown@1.2.6)(vite@8.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@vue/shared': 3.5.42
+      consola: 3.4.2
+      defu: 6.1.7
+      destr: 2.0.5
+      devalue: 5.9.2
+      errx: 0.1.2
+      escape-string-regexp: 5.0.0
+      exsolve: 1.1.1
+      impound: 1.2.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2)
+      klona: 2.0.6
+      lru-cache: 11.5.2
+      magic-string: 1.2.3
+      mocked-exports: 0.1.1
+      nitro: 3.0.260610-beta(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2)
+      nostics: 1.2.0
+      nuxt: nuxt-nightly@5.0.0-29801588.e458891d(450b08e1e6d9aef89d66b86a2f1cb06e)
+      ohash: 2.0.12
+      pathe: 2.0.3
+      rou3: 0.9.2
+      srvx: 0.11.22
+      std-env: 4.2.0
+      ufo: 1.6.4
+      unctx: 3.0.1(magic-string@1.2.3)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2))
+      unrouting: 0.2.3
+      unstorage: 2.0.0-alpha.7(chokidar@5.0.0)(db0@0.3.4(@electric-sql/pglite@0.5.8)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4)))(lru-cache@11.5.2)(ofetch@1.5.1)
+      vue: 3.5.42(typescript@6.0.3)
+      vue-bundle-renderer: 2.3.2
+      vue-devtools-stub: 0.1.0
+    optionalDependencies:
+      '@babel/plugin-syntax-typescript': 7.29.7(@babel/core@7.29.7)
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@deno/kv'
+      - '@electric-sql/pglite'
+      - '@farmfe/core'
+      - '@libsql/client'
+      - '@netlify/blobs'
+      - '@netlify/runtime'
+      - '@oxc-project/types'
+      - '@planetscale/database'
+      - '@rspack/core'
+      - '@unhead/cli'
+      - '@upstash/redis'
+      - '@vercel/blob'
+      - '@vercel/functions'
+      - '@vercel/kv'
+      - '@vercel/queue'
+      - '@vitejs/devtools-kit'
+      - aws4fetch
+      - better-sqlite3
+      - bun-types-no-globals
+      - chokidar
+      - confbox
+      - db0
+      - dotenv
+      - drizzle-orm
+      - esbuild
+      - giget
+      - idb-keyval
+      - ioredis
+      - jiti
+      - lightningcss
+      - miniflare
+      - mlly
+      - mongodb
+      - mysql2
+      - ofetch
+      - oxc-parser
+      - rolldown
+      - rollup
+      - sqlite3
+      - typescript
+      - unloader
+      - unplugin
+      - uploadthing
+      - vite
+      - webpack
+      - wrangler
+      - xml2js
+      - zephyr-agent
+
   '@nuxt/nitro-server-nightly@5.0.0-29801588.e458891d(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@electric-sql/pglite@0.5.8)(@oxc-project/types@0.147.0)(@vitejs/devtools-kit@0.4.2(cac@7.0.0)(srvx@0.11.22)(typescript@6.0.3)(vite@8.2.2))(chokidar@5.0.0)(confbox@0.2.4)(db0@0.3.4(@electric-sql/pglite@0.5.8)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4)))(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(esbuild@0.27.7)(giget@3.3.1)(jiti@2.7.0)(lightningcss@1.33.0)(mlly@1.8.2)(nuxt-nightly@5.0.0-29801588.e458891d)(ofetch@2.0.0-alpha.3)(oxc-parser@0.140.0)(rolldown@1.2.6)(typescript@6.0.3)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2))(vite@8.2.2)':
     dependencies:
       '@ampproject/remapping': 2.3.0
@@ -12375,6 +12470,13 @@ snapshots:
       ufo: 1.6.4
     optionalDependencies:
       db0: 0.3.4(@electric-sql/pglite@0.5.8)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))
+
+  unstorage@2.0.0-alpha.7(chokidar@5.0.0)(db0@0.3.4(@electric-sql/pglite@0.5.8)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4)))(lru-cache@11.5.2)(ofetch@1.5.1):
+    optionalDependencies:
+      chokidar: 5.0.0
+      db0: 0.3.4(@electric-sql/pglite@0.5.8)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))
+      lru-cache: 11.5.2
+      ofetch: 1.5.1
 
   unstorage@2.0.0-alpha.7(chokidar@5.0.0)(db0@0.3.4(@electric-sql/pglite@0.5.8)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4)))(lru-cache@11.5.2)(ofetch@2.0.0-alpha.3):
     optionalDependencies:

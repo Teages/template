@@ -1,3 +1,5 @@
+/// <reference types="@nuxt/nitro-server" />
+
 import { createServer } from 'node:http'
 import { fileURLToPath } from 'node:url'
 import { chromium } from '@playwright/test'
@@ -53,8 +55,17 @@ async function startDevServer(): Promise<{ close: () => Promise<void> }> {
     cwd: rootDir,
     dev: true,
     ready: false,
-    // keep the vitest output clean; boot failures surface as thrown errors
-    overrides: { logLevel: 'silent' },
+    overrides: {
+      // keep the vitest output clean; boot failures surface as thrown errors
+      logLevel: 'silent',
+
+      nitro: {
+        handlers: [{
+          route: '/_test/db',
+          handler: fileURLToPath(new URL('./utils/db/handler.ts', import.meta.url)),
+        }],
+      },
+    },
   })
 
   let handler: NuxtDevServer['handler']

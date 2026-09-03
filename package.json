@@ -60,6 +60,7 @@
     "@iconify-json/simple-icons": "^1.2.94",
     "@nuxt/eslint": "1.17.0",
     "@nuxt/icon": "^2.5.1",
+    "@nuxt/nitro-server": "npm:@nuxt/nitro-server-nightly@5.0.0-29801588.e458891d",
     "@nuxt/test-utils": "^4.2.0",
     "@nuxt/ui": "4.11.0",
     "@playwright/test": "^1.62.1",
