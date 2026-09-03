@@ -1,0 +1,25 @@
+diff --git a/dist/runtime/internal/vite/dev-worker.mjs b/dist/runtime/internal/vite/dev-worker.mjs
+index bfc182bce14a25194c85538439ca9e7f7d55e25b..2ced9cda7d3513faf8bc03765e5db87e53e35ada 100644
+--- a/dist/runtime/internal/vite/dev-worker.mjs
++++ b/dist/runtime/internal/vite/dev-worker.mjs
+@@ -48,6 +48,7 @@ class ViteEnvRunner {
+       : new ESModulesEvaluator();
+     const debug =
+       typeof process !== "undefined" && process.env?.NITRO_DEBUG ? console.debug : undefined;
++    this.debug = debug;
+     this.runner = new ModuleRunner({ transport }, evaluator, debug);
+ 
+     this.reload();
+@@ -58,7 +59,11 @@ class ViteEnvRunner {
+       this.entry = await this.runner.import(this.entryPath);
+       this.entryError = undefined;
+     } catch (error) {
+-      console.error(error);
++      // [nitro-patch] The eager first import can fail on not-yet-optimized
++      // CJS deps (e.g. `vue/index.mjs` re-exporting raw CJS `index.js`) and
++      // self-heals on the next reload, so don't print it as an error.
++      // entryError still propagates via fetch() if the env is really broken.
++      this.debug?.("[ViteEnvRunner] entry import failed:", error);
+       this.entryError = error;
+     }
+   }

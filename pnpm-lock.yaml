@@ -6,6 +6,7 @@ settings:
 
 patchedDependencies:
   '@nuxt/test-utils@4.2.0': 11bf8e38212d571896651dd6023aa507de41249d2baee83ec55dd9e923648ec0
+  nitro@3.0.260610-beta: ac3898f9d46156f926816f07f950f6803ce92509c06383945958b0b8c5aada54
 
 importers:
 
@@ -61,7 +62,7 @@ importers:
         version: 5.22.0(graphql@16.14.2)
       nuxt:
         specifier: npm:nuxt-nightly@5.0.0-29806258.d070492f
-        version: nuxt-nightly@5.0.0-29806258.d070492f(33cba57e6acc959d6765260f14b13c95)
+        version: nuxt-nightly@5.0.0-29806258.d070492f(14fd541cbf3d53e6b0d567343b4f300a)
       ofetch:
         specifier: ^1.5.1
         version: 1.5.1
@@ -119,7 +120,7 @@ importers:
         version: 1.62.1
       '@teages/nitro-drizzle':
         specifier: ^0.3.1
-        version: 0.3.1(confbox@0.2.4)(dotenv@17.4.2)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(magic-string@1.2.3)(mlly@1.8.2)(nitro@3.0.260610-beta(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2))(nuxt-nightly@5.0.0-29806258.d070492f)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2))(vite@8.2.2)
+        version: 0.3.1(confbox@0.2.4)(dotenv@17.4.2)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(magic-string@1.2.3)(mlly@1.8.2)(nitro@3.0.260610-beta(patch_hash=ac3898f9d46156f926816f07f950f6803ce92509c06383945958b0b8c5aada54)(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2))(nuxt-nightly@5.0.0-29806258.d070492f)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2))(vite@8.2.2)
       '@types/node':
         specifier: ^25.9.1
         version: 25.9.5
@@ -158,7 +159,7 @@ importers:
         version: 2.7.0
       nitro:
         specifier: 3.0.260610-beta
-        version: 3.0.260610-beta(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2)
+        version: 3.0.260610-beta(patch_hash=ac3898f9d46156f926816f07f950f6803ce92509c06383945958b0b8c5aada54)(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2)
       skills:
         specifier: ^1.5.23
         version: 1.5.23
@@ -7365,21 +7366,21 @@ snapshots:
       - rolldown
       - unplugin
 
-  '@nuxt/devtools-kit@4.0.0-alpha.15(@nuxt/kit-nightly@5.0.0-29806258.d070492f(@nuxt/schema-nightly@5.0.0-29806258.d070492f)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.2.3)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2)))(nitro@3.0.260610-beta(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2))(vite@8.2.2)':
+  '@nuxt/devtools-kit@4.0.0-alpha.15(@nuxt/kit-nightly@5.0.0-29806258.d070492f(@nuxt/schema-nightly@5.0.0-29806258.d070492f)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.2.3)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2)))(nitro@3.0.260610-beta(patch_hash=ac3898f9d46156f926816f07f950f6803ce92509c06383945958b0b8c5aada54)(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2))(vite@8.2.2)':
     dependencies:
       '@nuxt/kit': '@nuxt/kit-nightly@5.0.0-29806258.d070492f(@nuxt/schema-nightly@5.0.0-29806258.d070492f)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.2.3)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2))'
       nostics: 1.2.0
       tinyexec: 1.3.0
       vite: 8.2.2(@types/node@25.9.5)(@vitejs/devtools@0.5.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.9.0)
     optionalDependencies:
-      nitro: 3.0.260610-beta(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2)
+      nitro: 3.0.260610-beta(patch_hash=ac3898f9d46156f926816f07f950f6803ce92509c06383945958b0b8c5aada54)(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2)
 
-  '@nuxt/devtools@4.0.0-alpha.15(befcb3ae86ad2366b13e381d38b3ee83)':
+  '@nuxt/devtools@4.0.0-alpha.15(3e9a369c5aea1d94225724ace21d4636)':
     dependencies:
       '@devframes/hub': 0.9.7(crossws@0.4.10(srvx@0.11.22))(devframe@0.9.6(cac@7.0.0)(srvx@0.11.22))
       '@devframes/plugin-code-server': 0.9.7(@devframes/hub-ui@0.9.7(@devframes/hub@0.9.7(crossws@0.4.10(srvx@0.11.22))(devframe@0.9.6(cac@7.0.0)(srvx@0.11.22)))(@devframes/json-render@0.9.7(@devframes/hub@0.9.7(crossws@0.4.10(srvx@0.11.22))(devframe@0.9.6(cac@7.0.0)(srvx@0.11.22)))(devframe@0.9.6(cac@7.0.0)(srvx@0.11.22)))(devframe@0.9.6(cac@7.0.0)(srvx@0.11.22)))(@devframes/hub@0.9.7(crossws@0.4.10(srvx@0.11.22))(devframe@0.9.6(cac@7.0.0)(srvx@0.11.22)))(devframe@0.9.6(cac@7.0.0)(srvx@0.11.22))(vite@8.2.2)
       '@devframes/plugin-data-inspector': 0.9.7(devframe@0.9.6(cac@7.0.0)(srvx@0.11.22))(vite@8.2.2)
-      '@nuxt/devtools-kit': 4.0.0-alpha.15(@nuxt/kit-nightly@5.0.0-29806258.d070492f(@nuxt/schema-nightly@5.0.0-29806258.d070492f)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.2.3)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2)))(nitro@3.0.260610-beta(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2))(vite@8.2.2)
+      '@nuxt/devtools-kit': 4.0.0-alpha.15(@nuxt/kit-nightly@5.0.0-29806258.d070492f(@nuxt/schema-nightly@5.0.0-29806258.d070492f)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.2.3)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2)))(nitro@3.0.260610-beta(patch_hash=ac3898f9d46156f926816f07f950f6803ce92509c06383945958b0b8c5aada54)(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2))(vite@8.2.2)
       '@nuxt/kit': '@nuxt/kit-nightly@5.0.0-29806258.d070492f(@nuxt/schema-nightly@5.0.0-29806258.d070492f)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.2.3)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2))'
       '@vitejs/devtools': 0.5.2(@devframes/json-render@0.9.7(@devframes/hub@0.9.7(crossws@0.4.10(srvx@0.11.22))(devframe@0.9.6(cac@7.0.0)(srvx@0.11.22)))(devframe@0.9.6(cac@7.0.0)(srvx@0.11.22)))(crossws@0.4.10(srvx@0.11.22))(srvx@0.11.22)(vite@8.2.2)
       '@vitejs/devtools-kit': 0.5.2(cac@7.0.0)(crossws@0.4.10(srvx@0.11.22))(srvx@0.11.22)(vite@8.2.2)
@@ -7401,7 +7402,7 @@ snapshots:
       vite: 8.2.2(@types/node@25.9.5)(@vitejs/devtools@0.5.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.9.0)
       vite-plugin-vue-tracer: 1.5.0(vite@8.2.2)(vue@3.5.42(typescript@6.0.3))
     optionalDependencies:
-      nitro: 3.0.260610-beta(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2)
+      nitro: 3.0.260610-beta(patch_hash=ac3898f9d46156f926816f07f950f6803ce92509c06383945958b0b8c5aada54)(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2)
       vite-plugin-inspect: 12.0.2(@nuxt/kit-nightly@5.0.0-29806258.d070492f(@nuxt/schema-nightly@5.0.0-29806258.d070492f)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.2.3)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2)))(cac@7.0.0)(srvx@0.11.22)(typescript@6.0.3)(vite@8.2.2)
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -7735,9 +7736,9 @@ snapshots:
       lru-cache: 11.5.2
       magic-string: 1.2.3
       mocked-exports: 0.1.1
-      nitro: 3.0.260610-beta(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2)
+      nitro: 3.0.260610-beta(patch_hash=ac3898f9d46156f926816f07f950f6803ce92509c06383945958b0b8c5aada54)(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2)
       nostics: 1.2.0
-      nuxt: nuxt-nightly@5.0.0-29806258.d070492f(33cba57e6acc959d6765260f14b13c95)
+      nuxt: nuxt-nightly@5.0.0-29806258.d070492f(14fd541cbf3d53e6b0d567343b4f300a)
       ohash: 2.0.12
       pathe: 2.0.3
       rou3: 0.9.2
@@ -7828,9 +7829,9 @@ snapshots:
       lru-cache: 11.5.2
       magic-string: 1.2.3
       mocked-exports: 0.1.1
-      nitro: 3.0.260610-beta(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2)
+      nitro: 3.0.260610-beta(patch_hash=ac3898f9d46156f926816f07f950f6803ce92509c06383945958b0b8c5aada54)(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2)
       nostics: 1.2.0
-      nuxt: nuxt-nightly@5.0.0-29806258.d070492f(33cba57e6acc959d6765260f14b13c95)
+      nuxt: nuxt-nightly@5.0.0-29806258.d070492f(14fd541cbf3d53e6b0d567343b4f300a)
       ohash: 2.0.12
       pathe: 2.0.3
       rou3: 0.9.2
@@ -8166,7 +8167,7 @@ snapshots:
       js-tokens: 10.0.0
       knitwork: 1.3.0
       mocked-exports: 0.1.1
-      nuxt: nuxt-nightly@5.0.0-29806258.d070492f(33cba57e6acc959d6765260f14b13c95)
+      nuxt: nuxt-nightly@5.0.0-29806258.d070492f(14fd541cbf3d53e6b0d567343b4f300a)
       pathe: 2.0.3
       pkg-types: 2.3.1
       rolldown-string: 0.3.1(rolldown@1.2.6)
@@ -8219,7 +8220,7 @@ snapshots:
       defu: 6.1.7
       exsolve: 1.1.1
       mocked-exports: 0.1.1
-      nuxt: nuxt-nightly@5.0.0-29806258.d070492f(33cba57e6acc959d6765260f14b13c95)
+      nuxt: nuxt-nightly@5.0.0-29806258.d070492f(14fd541cbf3d53e6b0d567343b4f300a)
       pathe: 2.0.3
       srvx: 0.11.22
       ufo: 1.6.4
@@ -8563,14 +8564,14 @@ snapshots:
       '@tanstack/virtual-core': 3.17.8
       vue: 3.5.42(typescript@6.0.3)
 
-  '@teages/nitro-drizzle@0.3.1(confbox@0.2.4)(dotenv@17.4.2)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(magic-string@1.2.3)(mlly@1.8.2)(nitro@3.0.260610-beta(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2))(nuxt-nightly@5.0.0-29806258.d070492f)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2))(vite@8.2.2)':
+  '@teages/nitro-drizzle@0.3.1(confbox@0.2.4)(dotenv@17.4.2)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(magic-string@1.2.3)(mlly@1.8.2)(nitro@3.0.260610-beta(patch_hash=ac3898f9d46156f926816f07f950f6803ce92509c06383945958b0b8c5aada54)(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2))(nuxt-nightly@5.0.0-29806258.d070492f)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2))(vite@8.2.2)':
     dependencies:
       '@nuxt/kit': '@nuxt/kit-nightly@5.0.0-29801588.e458891d(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.2.3)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2))'
       drizzle-kit: 1.0.0-rc.4
       drizzle-orm: 1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4)
     optionalDependencies:
-      nitro: 3.0.260610-beta(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2)
-      nuxt: nuxt-nightly@5.0.0-29806258.d070492f(33cba57e6acc959d6765260f14b13c95)
+      nitro: 3.0.260610-beta(patch_hash=ac3898f9d46156f926816f07f950f6803ce92509c06383945958b0b8c5aada54)(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2)
+      nuxt: nuxt-nightly@5.0.0-29806258.d070492f(14fd541cbf3d53e6b0d567343b4f300a)
       vite: 8.2.2(@types/node@25.9.5)(@vitejs/devtools@0.5.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.9.0)
     transitivePeerDependencies:
       - confbox
@@ -9488,7 +9489,7 @@ snapshots:
       '@vueuse/core': 14.4.0(vue@3.5.42(typescript@6.0.3))
       '@vueuse/metadata': 14.4.0
       local-pkg: 1.2.1
-      nuxt: nuxt-nightly@5.0.0-29806258.d070492f(33cba57e6acc959d6765260f14b13c95)
+      nuxt: nuxt-nightly@5.0.0-29806258.d070492f(14fd541cbf3d53e6b0d567343b4f300a)
       vue: 3.5.42(typescript@6.0.3)
     transitivePeerDependencies:
       - magic-string
@@ -11480,7 +11481,7 @@ snapshots:
 
   nf3@0.3.22: {}
 
-  nitro@3.0.260610-beta(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2):
+  nitro@3.0.260610-beta(patch_hash=ac3898f9d46156f926816f07f950f6803ce92509c06383945958b0b8c5aada54)(@electric-sql/pglite@0.5.8)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(giget@3.3.1)(jiti@2.7.0)(lru-cache@11.5.2)(vite@8.2.2):
     dependencies:
       consola: 3.4.2
       crossws: 0.4.10(srvx@0.11.22)
@@ -11560,11 +11561,11 @@ snapshots:
     dependencies:
       boolbase: 1.0.0
 
-  nuxt-nightly@5.0.0-29806258.d070492f(33cba57e6acc959d6765260f14b13c95):
+  nuxt-nightly@5.0.0-29806258.d070492f(14fd541cbf3d53e6b0d567343b4f300a):
     dependencies:
       '@dxup/nuxt': 0.5.10(esbuild@0.27.7)(magicast@0.5.4)(oxc-parser@0.140.0)(rolldown@1.2.6)(vite@8.2.2)
       '@nuxt/cli': '@nuxt/cli-nightly@4.0.0-20260902-074550-8bcf1bc(@nuxt/schema-nightly@5.0.0-29806258.d070492f)(jiti@2.7.0)(oxc-parser@0.140.0)(rolldown@1.2.6)'
-      '@nuxt/devtools': 4.0.0-alpha.15(befcb3ae86ad2366b13e381d38b3ee83)
+      '@nuxt/devtools': 4.0.0-alpha.15(3e9a369c5aea1d94225724ace21d4636)
       '@nuxt/kit': '@nuxt/kit-nightly@5.0.0-29806258.d070492f(@nuxt/schema-nightly@5.0.0-29806258.d070492f)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.2.3)(mlly@1.8.2)(oxc-parser@0.140.0)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2))'
       '@nuxt/nitro-server': '@nuxt/nitro-server-nightly@5.0.0-29806258.d070492f(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@electric-sql/pglite@0.5.8)(@nuxt/schema-nightly@5.0.0-29806258.d070492f)(@oxc-project/types@0.147.0)(@vitejs/devtools-kit@0.4.2(cac@7.0.0)(srvx@0.11.22)(typescript@6.0.3)(vite@8.2.2))(chokidar@5.0.0)(confbox@0.2.4)(db0@0.3.4(@electric-sql/pglite@0.5.8)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4)))(dotenv@17.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(@types/pg@8.23.1)(pg@8.23.0)(postgres@3.4.9)(valibot@1.4.2(typescript@6.0.3))(zod@4.5.4))(esbuild@0.27.7)(giget@3.3.1)(jiti@2.7.0)(lightningcss@1.33.0)(mlly@1.8.2)(nuxt-nightly@5.0.0-29806258.d070492f)(ofetch@2.0.0-alpha.3)(oxc-parser@0.140.0)(rolldown@1.2.6)(typescript@6.0.3)(unplugin@3.3.0(esbuild@0.27.7)(rolldown@1.2.6)(vite@8.2.2))(vite@8.2.2)'
       '@nuxt/schema': '@nuxt/schema-nightly@5.0.0-29806258.d070492f'
