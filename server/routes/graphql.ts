@@ -17,6 +17,6 @@ export default defineLazyEventHandler(() => {
   return defineEventHandler(async (event) => {
     const ctx = { event }
     // See server/api/auth/[...all].ts: same h3 v1/v2 type mismatch.
-    return yoga.handleRequest(event.req as unknown as Request, ctx as never)
+    return await yoga.handleRequest(event.req, ctx)
   })
 })

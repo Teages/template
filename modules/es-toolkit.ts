@@ -26,7 +26,7 @@ export default defineNuxtModule({
 })
 
 async function listAvaliableImports(pkg: string, seen: Set<string>) {
-  const imports = await import(pkg)
+  const imports = await import(pkg) as Record<string, unknown>
   const names = Object.keys(imports).filter(key => !key.startsWith('_') && !seen.has(key))
   for (const name of names)
     seen.add(name)

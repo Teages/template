@@ -30,20 +30,23 @@ if (import.meta.dev && process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
     const sdl = printGraphQLSchema(schema)
     updated ||= await updateFile('./schema.graphql', sdl)
 
-    const types = (await generate({
+    const types = generate({
       source: sdl,
       scalars: {},
       url: 'http://localhost',
-    })).replace('/* eslint-disable */\n', '')
+    })
     updated ||= await updateFile('./gazania.ts', types)
 
     if (updated) {
       logger.info('Schema updated.')
     }
+    // eslint-disable-next-line ts/no-unsafe-member-access
     else if (!import.meta.hot?.data?.graphqlSchemaPrintInit) {
       logger.info('Schema is up to date.')
     }
+
     if (import.meta.hot) {
+      // eslint-disable-next-line ts/no-unsafe-member-access
       import.meta.hot.data.graphqlSchemaPrintInit = true
     }
   }

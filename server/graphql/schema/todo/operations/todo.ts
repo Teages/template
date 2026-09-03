@@ -12,7 +12,7 @@ builder.queryFields(t => ({
     resolve: async (query, _root, args, { event }) => {
       const authSession = useAuthSession(event, 'required')
       const { db } = useDrizzle()
-      return db.query.todos.findFirst(
+      return await db.query.todos.findFirst(
         query({ where: { id: args.id, userId: authSession.user.id } }),
       )
     },

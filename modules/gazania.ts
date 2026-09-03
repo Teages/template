@@ -123,7 +123,7 @@ export default defineNuxtModule<ModuleOptions>({
       }
 
       if (typeof source === 'string') {
-        return resolveString(source)
+        return await resolveString(source)
       }
 
       if (source instanceof GraphQLSchemaClass) {
@@ -167,7 +167,7 @@ export default defineNuxtModule<ModuleOptions>({
       }
 
       if (ext === '.ts' || ext === '.js' || ext === '.mts' || ext === '.mjs' || ext === '.cts' || ext === '.cjs') {
-        return loadFromModule(value)
+        return await loadFromModule(value)
       }
 
       if (ext || value.includes('/') || value.includes('\\')) {
@@ -208,7 +208,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     async function loadFromModule(filePath: string): Promise<{ sdl: string, url?: string }> {
       const url = pathToFileURL(filePath).href
-      const mod = await import(url)
+      const mod = await import(url) as Record<string, unknown>
       const schema = mod.schema ?? mod.default
 
       if (schema == null) {
@@ -217,7 +217,7 @@ export default defineNuxtModule<ModuleOptions>({
         )
       }
 
-      return loadSchema(schema as ModuleSchemaSource)
+      return await loadSchema(schema as ModuleSchemaSource)
     }
 
     async function introspectFromUrl(

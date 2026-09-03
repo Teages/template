@@ -19,7 +19,7 @@ function createApiClient(fetch: GraphQLFetch): ApiClient {
 let sharedClient: ApiClient | null = null
 
 export function useApiClient(): ApiClient {
-  const requestFetch = useRequestFetch() as GraphQLFetch
+  const requestFetch = useRequestFetch()
 
   if (import.meta.client) {
     sharedClient ??= createApiClient(requestFetch)

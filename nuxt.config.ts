@@ -43,7 +43,18 @@ export default defineNuxtConfig({
         '../test/unit/server/**/*.ts',
       ],
     },
-    nodeTsConfig: { include: ['../modules/*/index.ts'] },
+    nodeTsConfig: {
+      include: [
+        '../*.ts',
+        '../modules/*/index.ts',
+        '../test/projects/*.ts',
+      ],
+    },
+    sharedTsConfig: {
+      include: [
+        '../test/e2e/**/*.ts',
+      ],
+    },
   },
 
   modules: [
