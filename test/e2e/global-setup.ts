@@ -9,7 +9,6 @@ import { E2E_BASE_URL, E2E_BROWSER_WS } from './constants'
 const rootDir = fileURLToPath(new URL('../..', import.meta.url))
 const port = Number(new URL(E2E_BASE_URL).port)
 const hostname = new URL(E2E_BASE_URL).hostname
-const readyTimeout = 120_000
 
 /** `nuxt.server` in dev: untyped on the schema, so narrowed here. */
 interface NuxtDevServer {
@@ -46,7 +45,7 @@ export default async function () {
  * attach to our server, then `buildNuxt()` and serve `nuxt.server.handler`.
  */
 async function startDevServer(): Promise<{ close: () => Promise<void> }> {
-  if (await isReady()) {
+  if (await isServing()) {
     // someone else is already serving (e.g. a running `pnpm dev`) — use it
     return { close: async () => {} }
   }
@@ -90,7 +89,9 @@ async function startDevServer(): Promise<{ close: () => Promise<void> }> {
     throw new Error('Nuxt dev build finished without a server handler')
   }
 
-  await waitForReady()
+  // No readiness polling: like `nuxt dev`, serving starts as soon as the
+  // build resolves. Lazy compilation and the dev-database schema push are
+  // absorbed by the first request (tests have a 120s timeout).
 
   return {
     close: async () => {
@@ -103,21 +104,11 @@ async function startDevServer(): Promise<{ close: () => Promise<void> }> {
   }
 }
 
-async function waitForReady() {
-  const deadline = Date.now() + readyTimeout
-  while (Date.now() < deadline) {
-    if (await isReady()) {
-      return
-    }
-    await new Promise(resolve => setTimeout(resolve, 500))
-  }
-  throw new Error(`Dev server did not become ready at ${E2E_BASE_URL} within ${readyTimeout}ms`)
-}
-
-async function isReady() {
+/** Any HTTP response means something is already serving on the e2e port. */
+async function isServing() {
   try {
-    const response = await fetch(new URL('/hello', E2E_BASE_URL), { signal: AbortSignal.timeout(2_000) })
-    return response.ok
+    await fetch(E2E_BASE_URL, { signal: AbortSignal.timeout(2_000) })
+    return true
   }
   catch {
     return false
