@@ -25,5 +25,3 @@ logs
 
 # Test results
 /coverage
-/playwright-report
-/test-results

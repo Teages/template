@@ -6,7 +6,7 @@
 - Run tests: `pnpm test:unit`, `pnpm test:api`, `pnpm test:e2e`, `pnpm test:nuxt`.
   - `unit` (test/unit): pure Node, no Vite/Nitro plugins.
   - `api` (test/api): server tests running in-process inside the nitro vite environment — `serverFetch` from `nitro/app` hits the real app, `useDrizzle()` from `#drizzle` shares the app's PGlite database directly (no tasks needed). Only this project may touch the database this way.
-  - `e2e` (test/e2e, `*.spec.ts`): Playwright browser tests against a real dev server on the PGlite dev database; shared fixtures in test/e2e/test-utils.ts, auth state provisioned via the typed Better Auth client in test/e2e/utils/auth.ts.
+  - `e2e` (test/e2e, `*.spec.ts`): Playwright-driven browser e2e inside vitest — global-setup boots a dev server (PGlite, port 20398) and a shared chromium `launchServer`; fixtures in test/e2e/test-utils.ts, auth state provisioned via the typed Better Auth client in test/e2e/utils/auth.ts.
 
 ## Frameworks / Libraries
 - Nuxt 5 (nightly)

@@ -21,8 +21,7 @@
     "test:unit": "vitest run --project unit",
     "test:api": "vitest run --project api",
     "test:nuxt": "vitest run --project nuxt",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
+    "test:e2e": "vitest run --project e2e",
     "skills:install": "skills experimental_install --agent universal",
     "docker:up": "docker compose -f docker-compose.dev.yml up -d",
     "docker:down": "docker compose -f docker-compose.dev.yml down"
