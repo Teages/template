@@ -1,208 +1,89 @@
-# GraphQL Schema Architecture
+# GraphQL Schema Guide
 
-Code-first GraphQL using **Pothos** (`@pothos/core`) with the **Drizzle plugin** (`@pothos/plugin-drizzle`), served via **GraphQL Yoga** over Nitro's H3 HTTP framework. The `schema.graphql` file is auto-generated for development reference only — TypeScript files are the source of truth.
+This subtree defines the code-first GraphQL schema with Pothos, the Drizzle plugin, Relay, and GraphQL Yoga. TypeScript schema files are the source of truth. `shared/schema.graphql` and `shared/gazania.ts` are generated outputs.
 
-## Directory Layout
+## Structure
 
-```
-server/graphql/
-├── builder.ts              # Singleton SchemaBuilder with DrizzlePlugin (context: { event: H3Event })
-├── schema.ts               # Gathers schema files via import.meta.glob, builds & exports schema
-├── schema.graphql          # Auto-generated SDL (dev artifact, DO NOT EDIT)
-└── schema/
-    └── <domain>/
-        ├── <Type>.ts                  # Core type: drizzleObject + base fields, export the ref
-        ├── <Type>.<field>.ts          # Extension: single relation field via drizzleObjectFields
-        └── operations/
-            └── <query>.ts             # Query or mutation root field via t.drizzleField
+```text
+server/graphql/schema/
+└── <domain>/
+    ├── <Type>.ts
+    ├── <Type>.<field>.ts
+    └── operations/
+        └── <operation>.ts
 ```
 
-Each `<domain>/` directory is a self-contained module for one business entity.
+- `<Type>.ts` defines a core Drizzle object and exports its reference. Non-Drizzle payload types are `simpleObject`s.
+- `<Type>.<field>.ts` extends a type with one relation or derived field.
+- `operations/<operation>.ts` registers query or mutation root fields.
 
-## File Naming Conventions
+`server/graphql/schema.ts` eagerly imports operation and extension files with `import.meta.glob`. New files that follow this layout require no central registration change.
 
-| Pattern | Purpose |
-|---|---|
-| `<Type>.ts` | Core type definition — calls `builder.drizzleObject('table', ...)`, defines base scalar fields, exports the ref for use by other files |
-| `<Type>.<field>.ts` | Extension file — calls `builder.drizzleObjectFields(ref, t => ...)` to add a single relation field using `t.relation('relationName')` |
-| `operations/<name>.ts` | Query or mutation root field definition using `t.drizzleField` with `db.query.*` |
+## Resolver Rules
 
-## Registration via Side Effects
+- Call `useDrizzle()` inside every resolver. Never capture the database at module scope.
+- Enforce protected operations with `requireAuthSession(event)` from `server/graphql/errors.ts`, and declare `UnauthorizedError` in the field's `errors` option.
+- Keep database ordering deterministic. Add a unique tie-breaker after non-unique columns.
+- Use Drizzle-aware Pothos fields and relations so selection sets control database loading.
+- Return domain-safe errors as data. Do not expose database or internal implementation details.
 
-`schema.ts` uses two `import.meta.glob` patterns to eagerly load files:
+## Errors as Data
 
-- `./schema/*/operations/*.ts` — all operation files
-- `./schema/*/*.*.ts` — all extension files (two-dot pattern excludes core `<Type>.ts` files)
+Domain failures are typed members of the schema, not masked GraphQL errors (errors plugin in `builder.ts`):
 
-Each loaded file calls `builder.drizzleObjectFields(...)` or `builder.queryFields(...)` directly on the shared builder. Core type files are imported explicitly in extension files (their refs are needed for `drizzleObjectFields`).
+- Define error classes in `server/graphql/errors.ts` as `Error` subclasses and register them against the shared `Error` interface in `builder.ts`.
+- Fields opt in via `errors: { types: [...] }`. Object-typed fields should add `directResult: true` so the Result union contains the payload itself; scalar fields use the generated `<Parent><Field>Success` wrapper with a `data` field.
+- Clients and tests select `__typename` and match inline fragments (`... on UnauthorizedError { message }`) instead of parsing error messages.
+- Undeclared errors stay on the GraphQL error path and are masked by Yoga's `maskedErrors` in production.
 
-**No changes to `schema.ts` are needed when adding new files** — glob imports pick them up automatically.
+## Schema Conventions
 
-## Adding a New Domain
-
-1. Create `schema/<domain>/<Type>.ts` — call `builder.drizzleObject('table', { name: 'PascalCaseName', ... })` with singular PascalCase `name`, define base fields, export the ref.
-2. Create `schema/<domain>/<Type>.<field>.ts` — for each relation, use `builder.drizzleObjectFields(ref, t => ({ field: t.relatedConnection('relationName') }))` for list relations or `t.relation('relationName')` for single relations.
-3. Create `schema/<domain>/operations/<query>.ts` — for list queries use `t.drizzleConnection` with Relay pagination; for single-record queries use `t.drizzleField` + `db.query.<table>.findFirst`.
-
-## Key Files Outside schema/
-
-| File | Role |
-|---|---|
-| `server/graphql/builder.ts` | Singleton `SchemaBuilder` with DrizzlePlugin configured. Context: `{ event: H3Event }`. DrizzleRelations type from `~/server/database/relations`. |
-| `server/graphql/schema.ts` | Builds the final schema via `builder.toSchema()`. Dev-only: writes `schema.graphql` on change for inspection. |
-| `server/routes/graphql.ts` | GraphQL Yoga HTTP handler at `/graphql`, wires Yoga into Nitro's H3 event system. |
-| `server/plugins/graphql-hmr.ts` | Dev-only Nitro plugin: on HMR, imports `graphql/schema.ts` so `schema.graphql` / `gazania.ts` stay in sync. |
-| `#drizzle` (virtual module) | `useDrizzle()` from `@teages/nitro-drizzle`; returns `{ db, schema, relations }` (lazily created client). |
-
-## Testing
-
-The previous in-source vitest suites (`if (import.meta.vitest)` blocks driving `serverFetch` against a mocked database) have been removed — running a second Nitro instance inside vitest proved too invasive. GraphQL behavior is currently covered by the Playwright e2e suite (`test/e2e`); a dedicated server test architecture is pending redesign.
-
-### Critical Convention
-
-Always use `useDrizzle()` inside resolvers — **never** a module-level `db` default import. The `#drizzle` client is created lazily from the resolved connection (dev database in dev, configured Postgres in production); a module-level singleton would bypass that and bind to the wrong database.
-
-## GraphQL Naming Conventions
-
-**Reference**: [Apollo GraphQL Naming Conventions](https://www.apollographql.com/docs/graphos/schema-design/guides/naming-conventions)
-
-All GraphQL names MUST follow Apollo conventions:
-
-### Type Names (PascalCase, singular)
-
-`drizzleObject` defaults to using the Drizzle table name. **Always** override with singular PascalCase via the `name` option:
-
-```typescript
-// ❌ Wrong — uses table name directly
-builder.drizzleObject('users', { fields() { /* ... */ } })
-// Produces: type users { ... }
-
-// ✅ Correct — singular PascalCase
-builder.drizzleObject('users', { name: 'User', fields() { /* ... */ } })
-// Produces: type User { ... }
-```
-
-**Mapping table:**
-
-| Drizzle Table | GraphQL Type Name |
-|---|---|
-| `users` | `User` |
-| `emails` | `Email` |
-| `files` | `File` |
-| `userProfiles` | `UserProfile` |
-| `userSessions` | `UserSession` |
-| `oauthAccounts` | `OAuthAccount` |
-| `levels` | `Level` |
-| `charts` | `Chart` |
-| `records` | `Record` |
-| `todos` | `Todo` |
-
-### Field Names (camelCase)
-
-All field names and argument names must be `camelCase`. This is the default for Pothos `expose*` methods — no action needed unless defining custom fields.
-
-### Enum Values (SCREAMING_SNAKE_CASE)
-
-All PostgreSQL enum values must be `SCREAMING_SNAKE_CASE`. Define enums in `server/database/schema.ts` with uppercase values:
-
-```typescript
-// ❌ Wrong
-export const resourceState = pgEnum('resource_state', ['public', 'private', 'unlisted'])
-
-// ✅ Correct
-export const resourceState = pgEnum('resource_state', ['PUBLIC', 'PRIVATE', 'UNLISTED'])
-```
-
-**Note**: Changing enum values requires a database migration (ALTER TYPE ... RENAME VALUE).
-
-### Mutation Names (camelCase, verb prefix)
-
-Mutations must start with a verb: `createLevel`, `updateLevel`, `deleteLevel`, `submitRecord`, `publishLevel`, etc.
-
-### Query Names (camelCase, no `get`/`list` prefix)
-
-Queries must NOT use verb prefixes like `get` or `list`:
-- ✅ `levels`, `level`, `user`, `me`, `record`
-- ❌ `getLevels`, `listRecords`, `findUser`
-
-### Input Types (suffixed with `Input`)
-
-Input types must end with `Input`: `RecordDetailsInput`, `CreateLevelInput`, etc.
-
-### Payload Types (suffixed with `Payload`)
-
-Mutation return types must end with `Payload`: `AuthPayload`, `DeleteLevelPayload`, etc.
+- Use singular PascalCase object names, such as `CountEvent` and `User`.
+- Use camelCase field and argument names.
+- Use verb-prefixed mutation names, such as `recordCount`.
+- Do not prefix queries with `get` or `list`.
+- Suffix input object names with `Input`.
+- Suffix mutation result objects with `Payload`.
+- Keep fields non-null unless absence is a real domain state. The builder defaults to non-null fields.
+- Use SCREAMING_SNAKE_CASE for GraphQL enum values.
 
 ## Relay Pagination
 
-All list fields MUST use Relay-style cursor pagination (Connection / Edge / Node). Use the Pothos Drizzle plugin's built-in Relay integration.
+Every list field must use Relay cursor pagination.
 
-**Reference**: [Pothos Drizzle Relay Integration](https://pothos-graphql.dev/docs/plugins/drizzle#relay-integration)
+- Use `t.drizzleConnection` for root Drizzle lists.
+- Use `t.relatedConnection` for list relations.
+- Include stable ordering with a unique tie-breaker.
+- Expose and test `pageInfo`, forward pagination with `first` and `after`, and empty/final pages.
 
-### Root-level list queries
+Do not replace connections with raw arrays or offset pagination.
 
-Use `t.drizzleConnection` instead of `t.field` returning an array:
+## Mutations
 
-```typescript
-// ❌ Wrong — raw array with take/cursor
-builder.queryFields(t => ({
-  levels: t.field({
-    type: [levelRef],
-    args: { take: t.arg.int(), cursor: t.arg.int() },
-    resolve: async (_root, args) => { /* ... */ }
-  })
-}))
+Mutations should return a dedicated payload object even when they create one record. A payload can expose the created object and useful mutation metadata without coupling the schema to flat response shapes.
 
-// ✅ Correct — Relay connection
-builder.queryFields(t => ({
-  levels: t.drizzleConnection({
-    type: 'levels',
-    name: 'LevelConnection',
-    resolve: (query, _root, args, ctx) =>
-      useDrizzle().db.query.levels.findMany(
-        query({ where: { state: 'public' } })
-      )
-  })
-}))
-```
-
-### Nested relation list fields
-
-Use `t.relatedConnection` for Drizzle relations:
-
-```typescript
-// ❌ Wrong — raw array
-builder.drizzleObjectFields(levelRef, t => ({
-  charts: t.relation('charts', { query: { limit: 20 } })
-}))
-
-// ✅ Correct — Relay connection
-builder.drizzleObjectFields(levelRef, t => ({
-  charts: t.relatedConnection('charts', {
-    query: () => ({ orderBy: { id: 'asc' } })
-  })
-}))
-```
-
-### For relations not directly in Drizzle schema
-
-Use `drizzleConnectionHelpers` for indirect connections:
-
-```typescript
-import { drizzleConnectionHelpers } from '@pothos/plugin-drizzle'
-
-const helpers = drizzleConnectionHelpers(builder, 'records', {
-  select: nestedSelection => ({ /* ... */ }),
-  resolveNode: row => row,
+```ts
+const RecordCountPayload = builder.simpleObject('RecordCountPayload', {
+  fields: t => ({
+    countEvent: t.field({ type: CountEvent }),
+    totalCount: t.int(),
+  }),
 })
 ```
 
-### Schema Regeneration
+## Tests
 
-After any schema change, run:
+Check `test/api/graphql/AGENTS.md`
+
+## Generation and Verification
+
+Run these commands after schema changes:
 
 ```bash
 pnpm schema:update
+pnpm typecheck
+pnpm test:e2e
+pnpm lint
 ```
 
-This boots dev briefly; `server/plugins/graphql-hmr.ts` and `graphql/schema.ts` print `schema.graphql` and `gazania.ts`.
+Review and commit `schema.graphql`. Do not edit generated declarations or schema files.

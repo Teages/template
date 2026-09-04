@@ -6,6 +6,24 @@ import.meta.glob('./schema/*/*.*.ts', { eager: true })
 
 export const schema = builder.toSchema()
 
+// this function should not be bundled in production
+export async function generateSchemaFile() {
+  const { generate } = await import('gazania/codegen')
+  const { printSchema: printGraphQLSchema } = await import('graphql')
+
+  const sdl = printGraphQLSchema(schema)
+  const type = generate({
+    source: sdl,
+    scalars: {
+      Date: 'string',
+      UUID: 'string',
+    },
+    url: 'http://localhost',
+  })
+
+  return { sdl, type }
+}
+
 if (import.meta.dev && process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
   async function updateFile(path: string, content: string) {
     const { resolve } = await import('node:path')
@@ -20,24 +38,17 @@ if (import.meta.dev && process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
   }
 
   async function printSchema() {
-    const { generate } = await import('gazania/codegen')
-    const { printSchema: printGraphQLSchema } = await import('graphql')
     const { logger: serverLogger } = await import('#server/utils/logger.ts')
     const logger = serverLogger.withTag('graphql')
 
     let updated = false
 
-    const sdl = printGraphQLSchema(schema)
+    const { sdl, type } = await generateSchemaFile()
+
     if (await updateFile('./schema.graphql', sdl)) {
       updated = true
     }
-
-    const types = generate({
-      source: sdl,
-      scalars: {},
-      url: 'http://localhost',
-    })
-    if (await updateFile('./gazania.ts', types)) {
+    if (await updateFile('./gazania.ts', type)) {
       updated = true
     }
 

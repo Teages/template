@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TodoListItem } from '~/components/todo/TodoList.vue'
-import { GraphQLRequestError } from '~/utils/graphql-client'
+import { GraphQLRequestError } from '#shared/graphql-client'
 
 definePageMeta({
   middleware: 'auth',

@@ -1,7 +1,7 @@
 import type { DefineSchema, Field, Input, InputObjectType, ObjectType, ScalarType } from 'gazania'
 
-type Scalar_Date = ScalarType<'Date', unknown, unknown>
-type Scalar_UUID = ScalarType<'UUID', unknown, unknown>
+type Scalar_Date = ScalarType<'Date', string, string>
+type Scalar_UUID = ScalarType<'UUID', string, string>
 type Scalar_Int = ScalarType<'Int', number, number>
 type Scalar_Float = ScalarType<'Float', number, number>
 type Scalar_String = ScalarType<'String', string, string>

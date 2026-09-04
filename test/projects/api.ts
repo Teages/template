@@ -24,6 +24,7 @@ export function api(rootDir: string): TestProjectConfiguration {
       name: 'api',
       include: ['test/api/**/*.{test,spec}.ts'],
       environment: 'test/api/env.ts',
+      setupFiles: ['test/api/setup.ts'],
       isolate: false,
       maxWorkers: 1,
       sequence: { groupOrder: 1 },

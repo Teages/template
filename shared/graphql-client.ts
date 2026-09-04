@@ -1,12 +1,7 @@
 import type { ResultOf, TypedDocumentNode, VariablesOf } from 'gazania'
 import type { OperationDefinitionNode } from 'graphql'
 import { print } from 'graphql'
-
-export type GraphQLFetch = typeof $fetch
-
-function resolveFetch(options?: RequestOptions): GraphQLFetch {
-  return options?.fetch ?? $fetch
-}
+import { createFetch } from 'ofetch'
 
 export interface GraphQLError {
   message: string
@@ -28,7 +23,7 @@ export class GraphQLRequestError extends Error {
 export interface RequestOptions {
   url?: string
   headers?: Record<string, string>
-  fetch?: GraphQLFetch
+  fetch?: typeof globalThis.fetch
 }
 
 type IsEmptyRecord<T> = keyof T extends never ? true : T extends Record<string, never> ? true : false
@@ -46,6 +41,14 @@ function getOperationDefinition(
   )
 }
 
+const fetcherCache = new WeakMap<typeof globalThis.fetch, ReturnType<typeof createFetch>>()
+function createFetcher(fetch: typeof globalThis.fetch): ReturnType<typeof createFetch> {
+  if (!fetcherCache.has(fetch)) {
+    fetcherCache.set(fetch, createFetch({ fetch }))
+  }
+  return fetcherCache.get(fetch)!
+}
+
 export async function request<TDocument extends TypedDocumentNode<any, any>>(
   document: TDocument,
   ...args: RequestArgs<TDocument>
@@ -56,7 +59,7 @@ export async function request<TDocument extends TypedDocumentNode<any, any>>(
   ]
 
   const url = options?.url ?? '/graphql'
-  const fetcher = resolveFetch(options)
+  const fetcher = createFetcher(options?.fetch ?? globalThis.fetch)
   const queryString = print(document)
   const definition = getOperationDefinition(document)
   const operationName = definition?.name?.value

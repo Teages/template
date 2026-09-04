@@ -1,34 +1,36 @@
 # AGENTS.md
 
-## Setup commands
-- Install deps: `pnpm install` (from repo root or this package)
-- Start dev server: `pnpm dev` from repo root (port **20397**, serves the app, `/graphql`, and auth API from one origin; runs on an in-memory PGlite dev database by default)
-- Run tests: `pnpm test:unit`, `pnpm test:api`, `pnpm test:e2e`, `pnpm test:nuxt`.
-  - `unit` (test/unit): pure Node, no Vite/Nitro plugins.
-  - `api` (test/api): server tests running in-process inside the nitro vite environment — `serverFetch` from `nitro/app` hits the real app, `useDrizzle()` from `#drizzle` shares the app's PGlite database directly (no tasks needed). Only this project may touch the database this way.
-  - `e2e` (test/e2e, `*.spec.ts`): Playwright-driven browser e2e inside vitest — global-setup boots a dev server (PGlite, port 20398) and a shared chromium `launchServer`; fixtures in test/e2e/test-utils.ts, auth state provisioned via the typed Better Auth client in test/e2e/utils/auth.ts.
-
 ## Frameworks / Libraries
-- Nuxt 5 (nightly)
-- Nitro
-- Nuxt UI 4
-- Tailwind CSS
-- VueUse
-- Drizzle ORM via `@teages/nitro-drizzle` (`useDrizzle()` from `#drizzle`; `db:*` scripts run drizzle-kit against `POSTGRES_*` env vars)
-- Gazania + GraphQL (`useApiClient`, same-origin `/graphql`)
-- Better Auth (`better-auth/vue`): `authClient` in `app/utils/auth-client.ts`.
+- Nuxt 5 (nightly) & Nitro 3
+- GraphQL, check `shared/schema.graphql`
+- Better Auth
 
-## Frontend architecture (hub-frontend style)
+## Structure
 
-- **Queries/mutations:** `gazania.query(...)` / `gazania.mutation(...)` in pages, executed via `useApiClient().request()`.
-- **Data loading:** `useAsyncData` per route; call `refresh()` after mutations.
-- **UI:** feature components under `app/components/<domain>/`; page orchestrates data + events.
-- **Schema types:** `modules/gazania` codegen from `./server/graphql/schema.graphql`.
+```
+app/
+modules/
+public/
+server/
+shared/
+tests/
+```
+
+If a deeper AGENTS.md exists in a subdirectory, follow the deeper file for files in that subtree.
+
+## Commands
+- pnpm install
+- pnpm dev
+- pnpm test
+- pnpm typecheck
+- pnpm lint
+- pnpm lint:fix
+- pnpm db:generate
 
 ## Code style
-- use strict TypeScript, avoid `any`
+- use strict TypeScript, avoid `any` and `as unknown as X`
 - Single quotes, no semicolons
-- Linting with ESLint, will auto-fix on save in VSCode, the agents **SHOULD NOT** do this manually
+- Linting with ESLint, try `pnpm lint` to check for issues, then `pnpm lint:fix` to auto-fix
 
 ## Agents Guidelines
 - Write clear, concise, and well-documented code

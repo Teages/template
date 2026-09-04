@@ -46,11 +46,6 @@ function initAuth(db: DrizzleDatabase) {
   })
 }
 
-/** Creates a Better Auth instance bound to a specific database (E2E seed, isolated tests). */
-export function createAuthForDatabase(db: DrizzleDatabase): Auth {
-  return initAuth(db)
-}
-
 let authInstance: Auth | null = null
 /** Lazily creates Better Auth with the live Drizzle connection. */
 export function useAuth(): Auth {
