@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
+import { createTestUser } from '../../../utils/auth'
 import { gazania, requestGraphQL } from '../../../utils/graphql'
-import { createSessionUser, expectUnauthorizedError, seedTodo } from '../../test-utils'
+import { expectUnauthorizedError, seedTodo } from '../../test-utils'
 
 const UpdateTodoMutation = gazania.mutation('UpdateTodoTest')
   .vars({ input: 'UpdateTodoInput!' })
@@ -16,13 +17,12 @@ const TodoQuery = gazania.query('UpdateTodoProbe')
 
 describe('updateTodo mutation', () => {
   it('updates the title and keeps the other fields', async () => {
-    const user = await createSessionUser('update-todo-title')
+    const user = await createTestUser()
     const seeded = await seedTodo({ userId: user.userId, title: 'before' })
 
-    const { updateTodo } = await requestGraphQL(
+    const { updateTodo } = await user.api(
       UpdateTodoMutation,
       { input: { id: seeded.id, title: '  after  ' } },
-      { cookie: user.cookie },
     )
 
     expect(updateTodo?.id).toBe(seeded.id)
@@ -31,13 +31,12 @@ describe('updateTodo mutation', () => {
   })
 
   it('updates completed without touching the title', async () => {
-    const user = await createSessionUser('update-todo-completed')
+    const user = await createTestUser()
     const seeded = await seedTodo({ userId: user.userId, title: 'keep title' })
 
-    const { updateTodo } = await requestGraphQL(
+    const { updateTodo } = await user.api(
       UpdateTodoMutation,
       { input: { id: seeded.id, completed: true } },
-      { cookie: user.cookie },
     )
 
     expect(updateTodo?.id).toBe(seeded.id)
@@ -46,48 +45,42 @@ describe('updateTodo mutation', () => {
   })
 
   it('returns null when no field is given to update', async () => {
-    const user = await createSessionUser('update-todo-noop')
+    const user = await createTestUser()
     const seeded = await seedTodo({ userId: user.userId, title: 'unchanged' })
 
-    const { updateTodo } = await requestGraphQL(
-      UpdateTodoMutation,
-      { input: { id: seeded.id } },
-      { cookie: user.cookie },
-    )
+    const { updateTodo } = await user.api(UpdateTodoMutation, { input: { id: seeded.id } })
 
     expect(updateTodo).toBeNull()
   })
 
   it('returns null for a todo that does not exist', async () => {
-    const user = await createSessionUser('update-todo-missing')
+    const user = await createTestUser()
 
-    const { updateTodo } = await requestGraphQL(
+    const { updateTodo } = await user.api(
       UpdateTodoMutation,
       { input: { id: crypto.randomUUID(), title: 'ghost' } },
-      { cookie: user.cookie },
     )
 
     expect(updateTodo).toBeNull()
   })
 
   it('cannot update another user\'s todo', async () => {
-    const owner = await createSessionUser('update-todo-owner')
-    const other = await createSessionUser('update-todo-other')
+    const owner = await createTestUser()
+    const other = await createTestUser()
     const seeded = await seedTodo({ userId: owner.userId, title: 'original' })
 
-    const { updateTodo } = await requestGraphQL(
+    const { updateTodo } = await other.api(
       UpdateTodoMutation,
       { input: { id: seeded.id, title: 'hijacked' } },
-      { cookie: other.cookie },
     )
     expect(updateTodo).toBeNull()
 
-    const { todo } = await requestGraphQL(TodoQuery, { id: seeded.id }, { cookie: owner.cookie })
+    const { todo } = await owner.api(TodoQuery, { id: seeded.id })
     expect(todo?.title).toBe('original')
   })
 
   it('rejects without a session', async () => {
-    const owner = await createSessionUser('update-todo-unauth')
+    const owner = await createTestUser()
     const seeded = await seedTodo({ userId: owner.userId, title: 'hidden' })
 
     await expectUnauthorizedError(requestGraphQL(

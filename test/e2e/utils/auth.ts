@@ -68,7 +68,7 @@ export async function signUpViaApi(baseURL: string, credentials: TestUserCredent
 
 function toPlaywrightCookies(setCookieHeaders: string[], baseURL: string) {
   return setCookieHeaders.map((header) => {
-    const [pair] = header.split(';')
+    const [pair] = header.split(';') as [string, ...string[]]
     const separator = pair.indexOf('=')
     return {
       name: pair.slice(0, separator),

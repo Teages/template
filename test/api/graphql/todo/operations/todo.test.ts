@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
+import { createTestUser } from '../../../utils/auth'
 import { gazania, requestGraphQL } from '../../../utils/graphql'
-import { createSessionUser, expectUnauthorizedError, seedTodo } from '../../test-utils'
+import { expectUnauthorizedError, seedTodo } from '../../test-utils'
 
 const TodoQuery = gazania.query('TodoByIdTest')
   .vars({ id: 'ID!' })
@@ -10,10 +11,10 @@ const TodoQuery = gazania.query('TodoByIdTest')
 
 describe('todo query', () => {
   it('returns the session user\'s todo by id', async () => {
-    const user = await createSessionUser('todo-query')
+    const user = await createTestUser()
     const seeded = await seedTodo({ userId: user.userId, title: 'read by id' })
 
-    const { todo } = await requestGraphQL(TodoQuery, { id: seeded.id }, { cookie: user.cookie })
+    const { todo } = await user.api(TodoQuery, { id: seeded.id })
 
     expect(todo?.id).toBe(seeded.id)
     expect(todo?.title).toBe('read by id')
@@ -21,29 +22,25 @@ describe('todo query', () => {
   })
 
   it('returns null for a todo that does not exist', async () => {
-    const user = await createSessionUser('todo-query-missing')
+    const user = await createTestUser()
 
-    const { todo } = await requestGraphQL(
-      TodoQuery,
-      { id: crypto.randomUUID() },
-      { cookie: user.cookie },
-    )
+    const { todo } = await user.api(TodoQuery, { id: crypto.randomUUID() })
 
     expect(todo).toBeNull()
   })
 
   it('returns null for another user\'s todo', async () => {
-    const owner = await createSessionUser('todo-query-owner')
-    const other = await createSessionUser('todo-query-other')
+    const owner = await createTestUser()
+    const other = await createTestUser()
     const seeded = await seedTodo({ userId: owner.userId, title: 'not yours' })
 
-    const { todo } = await requestGraphQL(TodoQuery, { id: seeded.id }, { cookie: other.cookie })
+    const { todo } = await other.api(TodoQuery, { id: seeded.id })
 
     expect(todo).toBeNull()
   })
 
   it('rejects without a session', async () => {
-    const owner = await createSessionUser('todo-query-unauth')
+    const owner = await createTestUser()
     const seeded = await seedTodo({ userId: owner.userId, title: 'hidden' })
 
     await expectUnauthorizedError(requestGraphQL(TodoQuery, { id: seeded.id }))

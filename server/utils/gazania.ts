@@ -1,4 +1,4 @@
-import type { } from '../graphql/gazania'
+import type { Schema } from '#shared/gazania'
 import { createGazania } from 'gazania'
 
-export const gazania = createGazania('http://localhost')
+export const gazania = createGazania({} as Schema)
