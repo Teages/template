@@ -16,6 +16,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "auth:generate": "better-auth generate -y --config ./server/utils/auth.ts --output ./server/database/auth.ts && eslint --fix ./server/database/auth.ts",
+    "schema:update": "node ./scripts/schema-update.ts",
     "test": "vitest run",
     "test:unit": "vitest run --project unit",
     "test:api": "vitest run --project api",

@@ -54,5 +54,9 @@ if (import.meta.dev && process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
       import.meta.hot.data.graphqlSchemaPrintInit = true
     }
   }
-  void printSchema()
+  const promise = printSchema()
+  if (import.meta.env.UPDATE_SCHEMA) {
+    // eslint-disable-next-line antfu/no-top-level-await
+    await promise
+  }
 }

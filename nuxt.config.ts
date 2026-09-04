@@ -26,6 +26,9 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    define: {
+      'import.meta.env.UPDATE_SCHEMA': false,
+    },
     optimizeDeps: {
       include: ['gazania', 'graphql', 'better-auth/vue'],
     },
@@ -45,6 +48,7 @@ export default defineNuxtConfig({
     },
     nodeTsConfig: {
       include: [
+        '../scripts/**/*.ts',
         '../*.ts',
         '../modules/*/index.ts',
         '../test/projects/*.ts',
