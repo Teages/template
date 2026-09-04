@@ -57,7 +57,7 @@ async function startDevServer(): Promise<{ close: () => Promise<void> }> {
     overrides: {
       // keep the vitest output clean; boot failures surface as thrown errors
       logLevel: 'silent',
-
+      devtools: false,
       nitro: {
         handlers: [{
           route: '/_test/db',
