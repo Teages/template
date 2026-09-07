@@ -7,7 +7,7 @@ import { schema } from '#server/graphql/schema'
 export default defineLazyEventHandler(() => {
   const isTest = process.env.NODE_ENV === 'test' || !!process.env.VITEST
 
-  const yoga = createYoga<{ event: H3Event }>({
+  const yoga = createYoga<{ event: H3Event<any> }>({
     schema,
     fetchAPI: { Response },
     graphqlEndpoint: '/graphql',
