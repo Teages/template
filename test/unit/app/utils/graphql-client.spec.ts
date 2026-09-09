@@ -1,4 +1,5 @@
 import type { TypedDocumentNode } from 'gazania'
+import type { FetchOptions, FetchRequest, FetchResponse } from 'ofetch'
 import { parse } from 'graphql'
 import { describe, expect, it, vi } from 'vitest'
 import { GraphQLRequestError, request } from '#shared/graphql-client'
@@ -17,42 +18,43 @@ const CreateMutation = parse(`
   }
 `) as TypedDocumentNode<{ createTodo: { id: string } }, Record<string, never>>
 
-function jsonResponse(payload: unknown): Response {
-  return new Response(JSON.stringify(payload), {
-    status: 200,
-    headers: { 'content-type': 'application/json' },
-  })
+/** ofetch instance reduced to `raw`, resolving `_data` to the given GraphQL payload. */
+function mockOFetch(payload: unknown) {
+  return {
+    raw: vi.fn(async (_request: FetchRequest, _options?: FetchOptions<any>): Promise<FetchResponse<any>> =>
+      Object.assign(new Response(JSON.stringify(payload)), { _data: payload })),
+  }
 }
 
 describe('graphql-client request', () => {
-  it('returns data for a successful query via GET', async () => {
-    const fetch = vi.fn(async (_input: RequestInfo | URL) => jsonResponse({ data: { __typename: 'Query' } }))
+  it('queries via GET with the printed query in the query params', async () => {
+    const ofetch = mockOFetch({ data: { __typename: 'Query' } })
 
-    const result = await request(HelloQuery, undefined, { fetch })
+    const result = await request(HelloQuery, undefined, { ofetch })
 
     expect(result).toEqual({ __typename: 'Query' })
-    const [url] = fetch.mock.calls[0] ?? []
-    expect(String(url)).toMatch(/^\/api\/graphql\?/)
-    expect(decodeURIComponent(String(url).replaceAll('+', '%20'))).toContain('query Hello')
+    const [url, options] = ofetch.raw.mock.calls[0] ?? []
+    expect(url).toBe('/api/graphql')
+    expect(String(options?.query?.query)).toContain('query Hello')
   })
 
   it('posts mutations with a JSON body', async () => {
-    const fetch = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => jsonResponse({ data: { createTodo: { id: '1' } } }))
+    const ofetch = mockOFetch({ data: { createTodo: { id: '1' } } })
 
-    await request(CreateMutation, undefined, { fetch })
+    await request(CreateMutation, undefined, { ofetch })
 
-    const [url, options] = fetch.mock.calls[0] ?? []
+    const [url, options] = ofetch.raw.mock.calls[0] ?? []
     expect(url).toBe('/api/graphql')
     expect(options?.method).toBe('POST')
-    expect(JSON.parse(String(options?.body))).toEqual(expect.objectContaining({
+    expect(options?.body).toEqual(expect.objectContaining({
       query: expect.stringContaining('mutation Create'),
     }))
   })
 
   it('throws GraphQLRequestError when the API returns errors', async () => {
-    const fetch = vi.fn(async () => jsonResponse({ errors: [{ message: 'nope' }], data: null }))
+    const ofetch = mockOFetch({ errors: [{ message: 'nope' }], data: null })
 
-    const promise = request(HelloQuery, undefined, { fetch })
+    const promise = request(HelloQuery, undefined, { ofetch })
 
     await expect(promise).rejects.toBeInstanceOf(GraphQLRequestError)
     const cause: unknown = await promise.then(() => undefined, (error: unknown) => error)

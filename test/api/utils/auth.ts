@@ -1,5 +1,6 @@
 import type { ResultOf, TypedDocumentNode, VariablesOf } from 'gazania'
 import { serverFetch } from 'nitro/app'
+import { createFetch } from 'ofetch'
 import { request } from '#shared/graphql-client'
 
 export async function createTestUser() {
@@ -29,7 +30,7 @@ export async function createTestUser() {
     },
   ): Promise<ResultOf<TDocument>> => {
     return request(document, variables, {
-      fetch: serverFetch,
+      ofetch: createFetch({ fetch: serverFetch }),
       headers: {
         cookie,
         ...options?.headers,

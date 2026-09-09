@@ -1,6 +1,5 @@
 import type { ResultOf, TypedDocumentNode, VariablesOf } from 'gazania'
-import type { $Fetch } from 'ofetch'
-import type { RequestOptions } from '#shared/graphql-client'
+import type { GraphQL$Fetch, RequestOptions } from '#shared/graphql-client'
 import { request } from '#shared/graphql-client'
 
 export interface ApiClient {
@@ -10,8 +9,8 @@ export interface ApiClient {
   ) => Promise<ResultOf<TDocument>>
 }
 
-function createApiClient(fetch: typeof globalThis.fetch): ApiClient {
-  const baseOptions: RequestOptions = { url: '/api/graphql', fetch }
+function createApiClient(ofetch: GraphQL$Fetch): ApiClient {
+  const baseOptions: RequestOptions = { url: '/api/graphql', ofetch }
   return {
     request: (document, variables) => request(document, variables, baseOptions),
   }
@@ -20,7 +19,7 @@ function createApiClient(fetch: typeof globalThis.fetch): ApiClient {
 let sharedClient: ApiClient | null = null
 
 export function useApiClient(): ApiClient {
-  const requestFetch = (useRequestFetch() as $Fetch).native
+  const requestFetch = useRequestFetch()
 
   if (import.meta.client) {
     sharedClient ??= createApiClient(requestFetch)

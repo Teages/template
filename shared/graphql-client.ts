@@ -1,7 +1,10 @@
 import type { ResultOf, TypedDocumentNode, VariablesOf } from 'gazania'
 import type { OperationDefinitionNode } from 'graphql'
+import type { $Fetch } from 'ofetch'
 import { print } from 'graphql'
-import { createFetch } from 'ofetch'
+import { $fetch } from 'ofetch'
+
+export type GraphQL$Fetch = Pick<$Fetch, 'raw'>
 
 export interface GraphQLError {
   message: string
@@ -23,7 +26,7 @@ export class GraphQLRequestError extends Error {
 export interface RequestOptions {
   url?: string
   headers?: Record<string, string>
-  fetch?: typeof globalThis.fetch
+  ofetch?: GraphQL$Fetch
 }
 
 type IsEmptyRecord<T> = keyof T extends never ? true : T extends Record<string, never> ? true : false
@@ -41,14 +44,6 @@ function getOperationDefinition(
   )
 }
 
-const fetcherCache = new WeakMap<typeof globalThis.fetch, ReturnType<typeof createFetch>>()
-function createFetcher(fetch: typeof globalThis.fetch): ReturnType<typeof createFetch> {
-  if (!fetcherCache.has(fetch)) {
-    fetcherCache.set(fetch, createFetch({ fetch }))
-  }
-  return fetcherCache.get(fetch)!
-}
-
 export async function request<TDocument extends TypedDocumentNode<any, any>>(
   document: TDocument,
   ...args: RequestArgs<TDocument>
@@ -59,7 +54,7 @@ export async function request<TDocument extends TypedDocumentNode<any, any>>(
   ]
 
   const url = options?.url ?? '/api/graphql'
-  const fetcher = createFetcher(options?.fetch ?? globalThis.fetch)
+  const ofetch = options?.ofetch ?? $fetch
   const queryString = print(document)
   const definition = getOperationDefinition(document)
   const operationName = definition?.name?.value
@@ -79,16 +74,18 @@ export async function request<TDocument extends TypedDocumentNode<any, any>>(
   }
 
   const response = isMutation
-    ? await fetcher<GraphQLResponse>(url, {
+    ? await ofetch.raw<GraphQLResponse>(url, {
         method: 'POST',
+        responseType: 'json',
         headers: {
           'Content-Type': 'application/json',
           ...options?.headers,
         },
         body: postBody,
       })
-    : await fetcher<GraphQLResponse>(url, {
+    : await ofetch.raw<GraphQLResponse>(url, {
         method: 'GET',
+        responseType: 'json',
         headers: options?.headers,
         query: {
           query: queryString,
@@ -99,9 +96,18 @@ export async function request<TDocument extends TypedDocumentNode<any, any>>(
         },
       })
 
-  if (response.errors && response.errors.length > 0) {
-    throw new GraphQLRequestError(response.errors, response.data)
+  if (!response.ok) {
+    throw new Error(`Network error: ${response.status} ${response.statusText}`)
   }
 
-  return response.data as ResultOf<TDocument>
+  const result = response._data
+  if (!result) {
+    throw new Error('No response data received')
+  }
+
+  if (result.errors && result.errors.length > 0) {
+    throw new GraphQLRequestError(result.errors, result.data)
+  }
+
+  return result.data as ResultOf<TDocument>
 }

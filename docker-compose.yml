@@ -20,7 +20,7 @@ services:
     build:
       context: .
       target: migrator
-    restart: 'no'
+    restart: no
     depends_on:
       postgres:
         condition: service_healthy
