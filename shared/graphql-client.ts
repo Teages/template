@@ -58,7 +58,7 @@ export async function request<TDocument extends TypedDocumentNode<any, any>>(
     RequestOptions | undefined,
   ]
 
-  const url = options?.url ?? '/graphql'
+  const url = options?.url ?? '/api/graphql'
   const fetcher = createFetcher(options?.fetch ?? globalThis.fetch)
   const queryString = print(document)
   const definition = getOperationDefinition(document)

@@ -10,7 +10,7 @@ const rootDir = fileURLToPath(new URL('..', import.meta.url))
 
 /**
  * Regenerates `shared/schema.graphql` and `shared/gazania.ts` by booting the
- * app in dev mode and requesting `/graphql` once, which loads the GraphQL
+ * app in dev mode and requesting `/api/graphql` once, which loads the GraphQL
  * schema module (`server/graphql/schema.ts`) whose dev-mode side effect
  * prints the schema.
  */
@@ -54,7 +54,7 @@ async function main() {
       throw new Error('Nuxt dev build finished without a server handler')
     }
 
-    const res = await fetch(`http://127.0.0.1:${port}/graphql`, {
+    const res = await fetch(`http://127.0.0.1:${port}/api/graphql`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ query: '{ __typename }' }),

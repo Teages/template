@@ -10,7 +10,7 @@ export default defineLazyEventHandler(() => {
   const yoga = createYoga<{ event: H3Event<any> }>({
     schema,
     fetchAPI: { Response },
-    graphqlEndpoint: '/graphql',
+    graphqlEndpoint: '/api/graphql',
     maskedErrors: !(import.meta.dev || isTest),
   })
 

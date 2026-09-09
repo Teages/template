@@ -15,7 +15,7 @@ export function requestGraphQL<
   headers?: Record<string, string>,
 ): Promise<ResultOf<TDocument>> {
   return request(document, variables, {
-    url: '/graphql',
+    url: '/api/graphql',
     fetch: serverFetch,
     headers,
   })

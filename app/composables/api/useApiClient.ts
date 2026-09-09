@@ -11,7 +11,7 @@ export interface ApiClient {
 }
 
 function createApiClient(fetch: typeof globalThis.fetch): ApiClient {
-  const baseOptions: RequestOptions = { url: '/graphql', fetch }
+  const baseOptions: RequestOptions = { url: '/api/graphql', fetch }
   return {
     request: (document, variables) => request(document, variables, baseOptions),
   }

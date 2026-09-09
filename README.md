@@ -6,7 +6,7 @@ npx giget@latest gh:teages/template#fullstack package-name
 
 # Fullstack App
 
-Single Nuxt app: the Nitro server serves the UI, `/graphql`, and `/api/auth/**` from one origin. Database access is managed by [`@teages/nitro-drizzle`](https://www.npmjs.com/package/@teages/nitro-drizzle) — `pnpm dev` runs on an in-memory PGlite dev database (with Drizzle Studio link) and needs no Postgres.
+Single Nuxt app: the Nitro server serves the UI, `/api/graphql`, and `/api/auth/**` from one origin. Database access is managed by [`@teages/nitro-drizzle`](https://www.npmjs.com/package/@teages/nitro-drizzle) — `pnpm dev` runs on an in-memory PGlite dev database (with Drizzle Studio link) and needs no Postgres.
 
 ## Database
 

@@ -32,7 +32,7 @@ describe('graphql-client request', () => {
 
     expect(result).toEqual({ __typename: 'Query' })
     const [url] = fetch.mock.calls[0] ?? []
-    expect(String(url)).toMatch(/^\/graphql\?/)
+    expect(String(url)).toMatch(/^\/api\/graphql\?/)
     expect(decodeURIComponent(String(url).replaceAll('+', '%20'))).toContain('query Hello')
   })
 
@@ -42,7 +42,7 @@ describe('graphql-client request', () => {
     await request(CreateMutation, undefined, { fetch })
 
     const [url, options] = fetch.mock.calls[0] ?? []
-    expect(url).toBe('/graphql')
+    expect(url).toBe('/api/graphql')
     expect(options?.method).toBe('POST')
     expect(JSON.parse(String(options?.body))).toEqual(expect.objectContaining({
       query: expect.stringContaining('mutation Create'),
