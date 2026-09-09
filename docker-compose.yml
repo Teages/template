@@ -20,7 +20,7 @@ services:
     build:
       context: .
       target: migrator
-    profiles: [migrate]
+    restart: 'no'
     depends_on:
       postgres:
         condition: service_healthy
@@ -39,6 +39,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: '5432'
@@ -49,8 +51,16 @@ services:
       BETTER_AUTH_URL: ${APP_ORIGIN:-http://localhost:20397}
       BETTER_AUTH_TRUSTED_ORIGINS: ${APP_ORIGIN:-http://localhost:20397}
       BETTER_AUTH_ALLOWED_HOSTS: ${BETTER_AUTH_ALLOWED_HOSTS:-localhost,localhost:*,app,app:20397}
-    ports:
-      - '${APP_PORT:-20397}:20397'
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - -qO-
+        - http://127.0.0.1:20397/api/health
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
 
 volumes:
   postgres_data:
