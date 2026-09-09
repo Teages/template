@@ -5,144 +5,125 @@
       "source": "better-auth/skills",
       "sourceType": "github",
       "skillPath": "better-auth/best-practices/SKILL.md",
-      "computedHash": "a4c830509e85557b59339d8d93a4e243e9e59c686e7678854d39230e12c2a6dc"
+      "computedHash": "0c30be0e118c2b7a0c4c57bd9e63bf110c7e420a79ec6ce7997153f3b1e066ee"
     },
     "better-auth-security-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
       "skillPath": "security/SKILL.md",
-      "computedHash": "5717187bba9c22030c7174c74012f01c359f21e2ce87e0eb80e24244d8b8c915"
+      "computedHash": "7a230edf3a24ce18162cb4379f59b6a19b8d24ca04db530609d0f15cede556dc"
     },
-    "create-auth-skill": {
-      "source": "better-auth/skills",
-      "sourceType": "github",
-      "skillPath": "better-auth/create-auth/SKILL.md",
-      "computedHash": "31c027d02dbf1faa37f58191f574b9443143042fb2b684fe32df53ab0270487c"
+    "drizzle": {
+      "source": "drizzle-kit",
+      "sourceType": "node_modules",
+      "computedHash": "1cbae732ee979cebb27a27154e923c1a669a22897c9b01669e2011bfeb8aa804"
     },
-    "document-writer": {
-      "source": "onmax/nuxt-skills",
-      "sourceType": "github",
-      "skillPath": "skills/document-writer/SKILL.md",
-      "computedHash": "7a2b9799ece651b94b288a6b7d799da7ed603f24384897a370c1bfc6e75d74bb"
+    "drizzle-generate": {
+      "source": "drizzle-kit",
+      "sourceType": "node_modules",
+      "computedHash": "3d520b8d77221aa72bc7e34dc13cd133ffcd569c32135793ec43add27f42ebec"
+    },
+    "drizzle-hints": {
+      "source": "drizzle-kit",
+      "sourceType": "node_modules",
+      "computedHash": "dc9bc7ed9a0d21f63e540a8702cb4cb34b51c585493507cec86fd21d9c255166"
+    },
+    "drizzle-migrations": {
+      "source": "drizzle-kit",
+      "sourceType": "node_modules",
+      "computedHash": "aa30ca0f9e0a66e4feaa50a08e80b2908c8bb720433d1159107739f3aa2fbb86"
+    },
+    "drizzle-output-modes": {
+      "source": "drizzle-kit",
+      "sourceType": "node_modules",
+      "computedHash": "5ad547aeb18630af024dd026b96364bce0df6274660f1d59ae11f259916b63c2"
+    },
+    "drizzle-pull": {
+      "source": "drizzle-kit",
+      "sourceType": "node_modules",
+      "computedHash": "7be6f2a67aa5a4713352c23284d6cdacdc277e9d2ad8a159899257416327254c"
+    },
+    "drizzle-push": {
+      "source": "drizzle-kit",
+      "sourceType": "node_modules",
+      "computedHash": "ff167ed20bdc051f9f8679a109d7dd065f91605adc1bd6c6af5c1c4d9ce0c7a4"
+    },
+    "drizzle-responses-and-errors": {
+      "source": "drizzle-kit",
+      "sourceType": "node_modules",
+      "computedHash": "fbc0b0d5aa071cf06eee711b5de52ad821a0d1e5bc0c703f0c59b429697331d3"
     },
     "email-and-password-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
       "skillPath": "better-auth/emailAndPassword/SKILL.md",
-      "computedHash": "747d7f73bd9e2ec5317b8ef88dc70f97df716d00e3d02de4051feebaa48b062d"
-    },
-    "find-skills": {
-      "source": "vercel-labs/skills",
-      "sourceType": "github",
-      "computedHash": "9e1c8b3103f92fa8092568a44fe64858de7c5c9dc65ce4bea8f168080e889cfd"
+      "computedHash": "863886759f729081e265941f4f72c503835d55a1f34f6d63cebe6571159fff4a"
     },
     "gazania": {
       "source": "Teages/gazania",
       "sourceType": "github",
+      "skillPath": "skills/gazania/SKILL.md",
       "computedHash": "2f43fdc9c7cdbba56bbdf9e56a10ebfb34edd302b7ae08d89b9add725be17282"
-    },
-    "motion": {
-      "source": "onmax/nuxt-skills",
-      "sourceType": "github",
-      "skillPath": "skills/motion/SKILL.md",
-      "computedHash": "45d0803ea76f82fa40af91858472fb4528a8ce4c2a9a710b785e796cd5b3fe98"
     },
     "nuxt": {
       "source": "antfu/skills",
       "sourceType": "github",
-      "computedHash": "9e8237ec92083db9a6f4c77d5e5bf4b1d9873d670671235bc75455ee1ca39c74"
-    },
-    "nuxt-modules": {
-      "source": "onmax/nuxt-skills",
-      "sourceType": "github",
-      "skillPath": "skills/nuxt-modules/SKILL.md",
-      "computedHash": "628065a8cf5cab196853ff5ef5538d3a7ff553293dde146380ec1b57f33def48"
-    },
-    "nuxt-seo": {
-      "source": "onmax/nuxt-skills",
-      "sourceType": "github",
-      "skillPath": "skills/nuxt-seo/SKILL.md",
-      "computedHash": "bffc66809f3a21055d2fd39d0bfa32eefdc681d2e93f4613fc3360addb3d3677"
+      "skillPath": "skills/nuxt/SKILL.md",
+      "computedHash": "96dbdbfc06bf7045aeb9a463b972d5c0b5679d6dadf196d8ef6b98dc6defed2d"
     },
     "nuxt-ui": {
-      "source": "onmax/nuxt-skills",
+      "source": "nuxt/ui",
       "sourceType": "github",
       "skillPath": "skills/nuxt-ui/SKILL.md",
-      "computedHash": "c793a5cefc7a23a1e2e9fb637372ab5c4f9d1c26f04a7abba91ffa51c9726485"
+      "computedHash": "f6235ff66b930f4fe3809a55167096c9626ebb806f767fe363f19384e0d84c87"
     },
     "organization-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
       "skillPath": "better-auth/organization/SKILL.md",
-      "computedHash": "79a5a85b43d10e9fe37582b3506b051a33a991817b938f349099baa5ddba21aa"
+      "computedHash": "8c85e683dabef4532f1e8b67bbed5c453d39e0e3d5aeedd69d16b568f6e6d44f"
     },
     "pinia": {
       "source": "antfu/skills",
       "sourceType": "github",
+      "skillPath": "skills/pinia/SKILL.md",
       "computedHash": "897b6b0982956f41f5cc85128ca638b625e1b3c8bc619e303cd1e7661c95b7de"
     },
     "pnpm": {
       "source": "antfu/skills",
       "sourceType": "github",
-      "computedHash": "318f9fca2441a3e06fedc336e195dd18be5dbe901064e4fa71b76b40b096ab3a"
-    },
-    "reka-ui": {
-      "source": "onmax/nuxt-skills",
-      "sourceType": "github",
-      "skillPath": "skills/reka-ui/SKILL.md",
-      "computedHash": "c4de68cf105e52e41f068f406cf4846884d6116742e175a02f16b1a5536eb77e"
+      "skillPath": "skills/pnpm/SKILL.md",
+      "computedHash": "2ec08c851c6f901d4ed72c21b826416ed074a487db65662b36249418afd728bf"
     },
     "two-factor-authentication-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
       "skillPath": "better-auth/twoFactor/SKILL.md",
-      "computedHash": "7e297aaf887e11fdc03e52bdbf44974e161e8f7c393170ced7dc66cace4f6d46"
+      "computedHash": "5bc3051aef5060db013f0b3cbe812c40dbae5c22d6ba3ddde4b941158362a197"
     },
     "vite": {
       "source": "antfu/skills",
       "sourceType": "github",
+      "skillPath": "skills/vite/SKILL.md",
       "computedHash": "867ff66238f3152e9c494339ad08dc432dd0df5bcf5cc7a00b61a72b580eb908"
     },
     "vitest": {
       "source": "antfu/skills",
       "sourceType": "github",
-      "computedHash": "669c7275f7e1379b06b2bcfa593603aead4c983b951c7e8edbc09640aa38d0a1"
+      "skillPath": "skills/vitest/SKILL.md",
+      "computedHash": "943d436114c677802426741980146c07560bf375297666b03062444f4b98a785"
     },
     "vue": {
       "source": "antfu/skills",
       "sourceType": "github",
+      "skillPath": "skills/vue/SKILL.md",
       "computedHash": "9c241141e07e836e4f0537c63e8f929fba3767c2997250be38e699f19b75e3f2"
-    },
-    "vue-best-practices": {
-      "source": "antfu/skills",
-      "sourceType": "github",
-      "computedHash": "d7d22c8cb343583c3904692c4d1d7b50382945e433e4f6e053f4aabb9846cbc3"
-    },
-    "vue-router-best-practices": {
-      "source": "antfu/skills",
-      "sourceType": "github",
-      "computedHash": "e27384f4e6c8c70a612e76b74e4387efb8e291a6a1e3aa14a69102a4ce4b4654"
-    },
-    "vue-testing-best-practices": {
-      "source": "antfu/skills",
-      "sourceType": "github",
-      "computedHash": "18c7d8f42f350f927e37de055e34c97b8cfb9f79c12cf942f7f3d2a0821057b5"
     },
     "vueuse-functions": {
       "source": "vueuse/skills",
       "sourceType": "github",
-      "computedHash": "9b6b0afdbc577317e8c29e6ac0ee6890a2ec95d5ad7c8ce66247c1a62b95621d"
-    },
-    "web-design-guidelines": {
-      "source": "antfu/skills",
-      "sourceType": "github",
-      "computedHash": "65a2e7d85753383ae0f88df15475d58b9e39723e9c4bb6891421d6144a85f79c"
-    },
-    "writing-web-documentation": {
-      "source": "onmax/nuxt-skills",
-      "sourceType": "github",
-      "skillPath": "skills/writing-web-documentation/SKILL.md",
-      "computedHash": "78d28a486868c980c3962f459ddd18e9444cad0d8941b88778ee47489059c099"
+      "skillPath": "skills/vueuse-functions/SKILL.md",
+      "computedHash": "665497ecb63a43cef76fafcd1d5b7ec85311060d628452f40f9f9c4114157a83"
     }
   }
 }

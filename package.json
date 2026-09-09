@@ -21,7 +21,7 @@
     "test:api": "vitest run --project api",
     "test:nuxt": "vitest run --project nuxt",
     "test:e2e": "vitest run --project e2e",
-    "skills:install": "skills experimental_install --agent universal",
+    "skills:install": "pnpx skills@latest experimental_install --agent universal --force",
     "docker:up": "docker compose -f docker-compose.dev.yml up -d",
     "docker:down": "docker compose -f docker-compose.dev.yml down"
   },
@@ -78,7 +78,6 @@
     "happy-dom": "^20.13.2",
     "jiti": "^2.7.0",
     "nitro": "3.0.260903-beta",
-    "skills": "^1.5.23",
     "tailwindcss": "^4.3.2",
     "typescript": "^6.0.3",
     "unplugin-auto-import": "^21.1.0",
