@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { TodoListItem } from '~/components/todo/TodoList.vue'
-import { GraphQLRequestError } from '#shared/graphql-client'
+import { GraphQLErrors } from '@teages/oh-my-graphql'
+import { FetchError } from 'ofetch'
 
 definePageMeta({
   middleware: 'auth',
@@ -58,7 +59,7 @@ const items = computed((): TodoListItem[] => {
 })
 
 function showError(cause: unknown, fallback: string) {
-  const description = cause instanceof GraphQLRequestError
+  const description = cause instanceof GraphQLErrors || cause instanceof FetchError
     ? cause.message
     : cause instanceof Error
       ? cause.message

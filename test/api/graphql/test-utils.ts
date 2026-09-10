@@ -1,6 +1,6 @@
+import { GraphQLErrors } from '@teages/oh-my-graphql'
 import { expect } from 'vitest'
 import { useDrizzle } from '#drizzle'
-import { GraphQLRequestError } from '#shared/graphql-client'
 
 export const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -36,8 +36,8 @@ export async function expectUnauthorizedError(promise: Promise<unknown>): Promis
     () => undefined,
     (caught: unknown) => caught,
   )
-  expect(cause).toBeInstanceOf(GraphQLRequestError)
-  if (cause instanceof GraphQLRequestError) {
+  expect(cause).toBeInstanceOf(GraphQLErrors)
+  if (cause instanceof GraphQLErrors) {
     expect(cause.errors.some(error => error.message.includes('Unauthorized'))).toBe(true)
   }
 }

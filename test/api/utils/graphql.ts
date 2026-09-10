@@ -1,9 +1,9 @@
 import type { ResultOf, TypedDocumentNode, VariablesOf } from 'gazania'
 import type { Schema } from '#shared/gazania'
+import { createClient } from '@teages/oh-my-graphql'
 import { createGazania } from 'gazania'
 import { serverFetch } from 'nitro/app'
 import { createFetch } from 'ofetch'
-import { request } from '#shared/graphql-client'
 
 export type { ResultOf, TypedDocumentNode, VariablesOf } from 'gazania'
 export const gazania = createGazania({} as Schema)
@@ -15,9 +15,10 @@ export function requestGraphQL<
   variables: VariablesOf<TDocument>,
   headers?: Record<string, string>,
 ): Promise<ResultOf<TDocument>> {
-  return request(document, variables, {
-    url: '/api/graphql',
+  const client = createClient('/api/graphql', {
+    preferQueryMethod: 'GET',
     ofetch: createFetch({ fetch: serverFetch }),
-    headers,
   })
+
+  return client.request(document, variables, { headers })
 }
