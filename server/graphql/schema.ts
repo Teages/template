@@ -1,3 +1,5 @@
+import { readFile, writeFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import process from 'node:process'
 import { builder } from './builder'
 
@@ -26,8 +28,6 @@ export async function generateSchemaFile() {
 
 if (import.meta.dev && process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
   async function updateFile(path: string, content: string) {
-    const { resolve } = await import('node:path')
-    const { readFile, writeFile } = await import('node:fs/promises')
     const resolvedPath = resolve(import.meta.dirname, '../../shared', path)
     const existing = await readFile(resolvedPath, 'utf-8').catch(() => null)
     if (existing !== content) {
