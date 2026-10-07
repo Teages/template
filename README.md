@@ -1,7 +1,7 @@
 ## Use this template
 
 ```bash
-npx giget@latest gh:teages/template#fullstack package-name
+npx giget@latest gh:teages/template#fullstack-nuxt5 package-name
 ```
 
 # Fullstack App
