@@ -1,8 +1,8 @@
 diff --git a/dist/runtime-utils/index.mjs b/dist/runtime-utils/index.mjs
-index 5ce73f4..e26777c 100644
+index ec5cb4329cb1e0c33018c0f662b7635c6c095dab..9085220fdd7bef0173446a28263497ab00b3dd46 100644
 --- a/dist/runtime-utils/index.mjs
 +++ b/dist/runtime-utils/index.mjs
-@@ -155,15 +155,15 @@ async function mountSuspended(component, options = {}) {
+@@ -171,15 +171,15 @@ async function mountSuspended(component, options = {}) {
  	const suspendedHelperName = "MountSuspendedHelper";
  	const clonedComponentName = "MountSuspendedComponent";
  	cleanupAll();
@@ -21,7 +21,7 @@ index 5ce73f4..e26777c 100644
  	const wrapperProps = [
  		"setProps",
  		"emitted",
-@@ -172,6 +172,26 @@ function wrappedMountedWrapper(wrapper, component) {
+@@ -188,6 +188,26 @@ function wrappedMountedWrapper(wrapper, component) {
  	];
  	return new Proxy(wrapper, { get: (_, prop, receiver) => {
  		if (prop === "getCurrentComponent") return getCurrentComponentPatchedProxy;
@@ -49,7 +49,7 @@ index 5ce73f4..e26777c 100644
  		const value = Reflect.get(target, prop, receiver);
  		return typeof value === "function" ? value.bind(target) : value;
 diff --git a/dist/suspended-DDMM5DdJ.mjs b/dist/suspended-DDMM5DdJ.mjs
-index 68bc7a2..750b989 100644
+index 68bc7a26889dfa85916655300e2f5a1312e7dc89..5724e7b9298385bd1088cd6fc07c879a67d08303 100644
 --- a/dist/suspended-DDMM5DdJ.mjs
 +++ b/dist/suspended-DDMM5DdJ.mjs
 @@ -110,6 +110,10 @@ function runEffectScope(fn, register) {
@@ -63,10 +63,11 @@ index 68bc7a2..750b989 100644
  	const ownCleanups = [];
  	function registerCleanup(fn) {
  		ownCleanups.push(fn);
-@@ -174,8 +178,24 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
- 			__cssModules: componentRest.__cssModules,
+@@ -175,7 +179,23 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
  			setup: (props, ctx) => {
  				patchInstanceAppContext();
+ 				wrappedInstance = getCurrentInstance();
+-				setupContext = ctx;
 +				// [nuxt5-patch] wrap ctx.emit so every emit() call is recorded in
 +				// __emitted, then forwarded to the original emit (so onXxx listeners,
 +				// v-model, etc still work).
@@ -84,8 +85,6 @@ index 68bc7a2..750b989 100644
 +						return typeof value === 'function' ? value.bind(target) : value;
 +					}
 +				});
- 				wrappedInstance = getCurrentInstance();
--				setupContext = ctx;
  				const nuxtRootSetupResult = runEffectScope(() => NuxtRoot.setup(props, {
  					...ctx,
  					expose: () => {}

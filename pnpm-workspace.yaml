@@ -7,7 +7,7 @@ shellEmulator: true
 
 patchedDependencies:
   '@nuxt/nitro-server-nightly@5.0.0-29853320.9f91560d': patches/@nuxt__nitro-server-nightly@5.0.0-29853320.9f91560d.patch
-  '@nuxt/test-utils@4.2.0': patches/@nuxt__test-utils@4.2.0.patch
+  '@nuxt/test-utils@4.3.3': patches/@nuxt__test-utils@4.3.3.patch
   nitro@3.0.260903-beta: patches/nitro@3.0.260903-beta.patch
 
 allowBuilds:
