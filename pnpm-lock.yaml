@@ -277,8 +277,8 @@ importers:
         specifier: ^1.62.1
         version: 1.63.0
       '@teages/nitro-drizzle':
-        specifier: ^0.4.2
-        version: 0.4.2(@nuxt/schema-nightly@5.0.0-29853320.9f91560d)(confbox@0.2.4)(dotenv@17.4.2)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(postgres@3.4.9)(zod@4.6.5))(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.3)(mlly@1.8.2)(nitro@3.0.260903-beta(patch_hash=da923bd555ba4e9e6bdd13a49c83921bdabdf8b3a8b3834889efd7b3c77bcc91))(nuxt-nightly@5.0.0-29853320.9f91560d(83bf1eaa6c1968abfdfa519b661cdd8f))(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.27.7)(rolldown@1.2.12)(vite@8.3.3))(vite@8.3.3)
+        specifier: ^0.4.3
+        version: 0.4.3(@nuxt/schema-nightly@5.0.0-29853320.9f91560d)(confbox@0.2.4)(dotenv@17.4.2)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(postgres@3.4.9)(zod@4.6.5))(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.3)(mlly@1.8.2)(nitro@3.0.260903-beta(patch_hash=da923bd555ba4e9e6bdd13a49c83921bdabdf8b3a8b3834889efd7b3c77bcc91))(nuxt-nightly@5.0.0-29853320.9f91560d(83bf1eaa6c1968abfdfa519b661cdd8f))(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.27.7)(rolldown@1.2.12)(vite@8.3.3))(vite@8.3.3)
       '@types/node':
         specifier: ^24.9.2
         version: 24.19.1
@@ -685,9 +685,6 @@ packages:
 
   '@better-auth/utils@0.5.0':
     resolution: {integrity: sha512-BL8W4EfIZFwlu0r54m3v1ztjDhu6dDe/amLTm0xybmbZaNgYUqhD3SjpAsnq0q8YD6/ki4iwIgxJNLP/N3TxiA==}
-
-  '@better-fetch/fetch@1.3.1':
-    resolution: {integrity: sha512-ABkD1WhyfPZprKRQI3bhATjeiFuNWC9PXhfGWqL+sg/gKrM977oFrYkdb4msM3hgUGonr7KlOsOFT5TU2rht9g==}
 
   '@better-fetch/fetch@1.3.2':
     resolution: {integrity: sha512-Gs7n99b5tqUC6cQAPbV0uED3IraHB6xQbHLQ/C3l7ZFafHScOx9pQ+DYmP5blbLFShVWLqxNUlI9wi4xU/X+ow==}
@@ -1501,8 +1498,8 @@ packages:
     resolution: {integrity: sha512-X5XaVWZIBCT7HHZGm5I7ZQXDwLG+bGXuSrMQAW+7Zvl87h1kmc1ZB1VSRJcpUfoUrGQp4Fkoxm5kZ+Ms+aW+eA==}
     engines: {node: '>= 20.19.0'}
 
-  '@nuxt/cli-nightly@4.0.0-2610061353-2f890e5':
-    resolution: {integrity: sha512-hGPI61iu0cl30k1E9+vd/frpH7dcm1pnVSBW5nFf+KgAuYtPdR0+XgfSgdwC0bnEodAEv041Ux5gOgL+S+qJbg==}
+  '@nuxt/cli-nightly@4.0.0-2610070643-33663e3':
+    resolution: {integrity: sha512-rSL7awlxzRPnsgfsBAAYqutLmSLog+6HcW9lsfeeLyOmiJtla2NaVy9nbT9KGz+EpGw0rLrSbcQWgSBw3+mHpg==}
     engines: {node: ^22.21.0 || ^24.11.0 || >=26.0.0}
     hasBin: true
     peerDependencies:
@@ -2223,8 +2220,8 @@ packages:
     peerDependencies:
       vue: ^2.7.0 || ^3.0.0
 
-  '@teages/nitro-drizzle@0.4.2':
-    resolution: {integrity: sha512-lQE6FO8NBMKfSzn8RUbceqvB5K3mL3YYyAfT0kDtPHi5wc3bxi0qDrYTSCmKkEeBsKdckXQmrpuF28yoS2YRWw==}
+  '@teages/nitro-drizzle@0.4.3':
+    resolution: {integrity: sha512-2p5rTA8Wi6yD/ELPOf9iyMeh2lg1p12xCN9ub8CtkzBTA7kNaDGqJ79ydfEX0U7ZVfkF4GMYjU6nfAmG+5WMPA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       drizzle-kit: 1.0.0-rc.4
@@ -6200,9 +6197,6 @@ packages:
   zigpty@0.2.1:
     resolution: {integrity: sha512-MR9JqJx2wf5f4wz8zpx050AlqrmWeIW+1h0SO5iEyhG3HFRjY5luC3szS2ux2EGuPjE5OU9ZAuiCBeMWBTrqZw==}
 
-  zod@4.5.4:
-    resolution: {integrity: sha512-sC95tT5iHHH9gtpj6A81kh+NEaRAUFN+qlUPDUbRfOMvNf5QCBqsb3WgvnpVtK5Y+4UfA6KqufotuTvMGiTlsA==}
-
   zod@4.6.5:
     resolution: {integrity: sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==}
 
@@ -6521,7 +6515,7 @@ snapshots:
       jose: 6.2.12
       kysely: 0.29.5
       nanostores: 1.5.3
-      zod: 4.5.4
+      zod: 4.6.5
 
   '@better-auth/drizzle-adapter@1.7.7(@better-auth/core@1.7.7(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.2)(better-call@1.4.0(zod@4.6.5))(jose@6.2.12)(kysely@0.29.5)(nanostores@1.5.3))(@better-auth/utils@0.4.2)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(postgres@3.4.9)(zod@4.6.5))':
     dependencies:
@@ -6571,8 +6565,6 @@ snapshots:
   '@better-auth/utils@0.5.0':
     dependencies:
       '@noble/hashes': 2.4.0
-
-  '@better-fetch/fetch@1.3.1': {}
 
   '@better-fetch/fetch@1.3.2': {}
 
@@ -7296,7 +7288,7 @@ snapshots:
 
   '@noble/hashes@2.4.0': {}
 
-  '@nuxt/cli-nightly@4.0.0-2610061353-2f890e5(@nuxt/schema-nightly@5.0.0-29853320.9f91560d)(jiti@2.7.0)(rolldown@1.2.12)(vite@8.3.3)':
+  '@nuxt/cli-nightly@4.0.0-2610070643-33663e3(@nuxt/schema-nightly@5.0.0-29853320.9f91560d)(jiti@2.7.0)(rolldown@1.2.12)(vite@8.3.3)':
     dependencies:
       '@clack/prompts': 1.8.1
       args-tokenizer: 0.3.0
@@ -7666,15 +7658,15 @@ snapshots:
       defu: 6.1.7
       destr: 2.0.5
       errx: 0.1.2
-      exsolve: 1.1.1
-      ignore: 7.0.8
+      exsolve: 1.1.3
+      ignore: 7.0.12
       jiti: 2.7.0
       klona: 2.0.6
       mlly: 1.8.2
-      nostics: 1.2.0
+      nostics: 1.3.0
       ohash: 2.0.12
       pathe: 2.0.3
-      pkg-types: 2.3.2
+      pkg-types: 2.3.3
       rc9: 3.1.0
       scule: 1.3.0
       tinyglobby: 0.2.17
@@ -7696,15 +7688,15 @@ snapshots:
       defu: 6.1.7
       destr: 2.0.5
       errx: 0.1.2
-      exsolve: 1.1.1
-      ignore: 7.0.8
+      exsolve: 1.1.3
+      ignore: 7.0.12
       jiti: 2.7.0
       klona: 2.0.6
       mlly: 1.8.2
-      nostics: 1.2.0
+      nostics: 1.3.0
       ohash: 2.0.12
       pathe: 2.0.3
-      pkg-types: 2.3.2
+      pkg-types: 2.3.3
       rc9: 3.1.0
       scule: 1.3.0
       tinyglobby: 0.2.17
@@ -8338,7 +8330,7 @@ snapshots:
       '@tanstack/virtual-core': 3.17.11
       vue: 3.5.43(typescript@6.0.3)
 
-  '@teages/nitro-drizzle@0.4.2(@nuxt/schema-nightly@5.0.0-29853320.9f91560d)(confbox@0.2.4)(dotenv@17.4.2)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(postgres@3.4.9)(zod@4.6.5))(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.3)(mlly@1.8.2)(nitro@3.0.260903-beta(patch_hash=da923bd555ba4e9e6bdd13a49c83921bdabdf8b3a8b3834889efd7b3c77bcc91))(nuxt-nightly@5.0.0-29853320.9f91560d(83bf1eaa6c1968abfdfa519b661cdd8f))(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.27.7)(rolldown@1.2.12)(vite@8.3.3))(vite@8.3.3)':
+  '@teages/nitro-drizzle@0.4.3(@nuxt/schema-nightly@5.0.0-29853320.9f91560d)(confbox@0.2.4)(dotenv@17.4.2)(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(@electric-sql/pglite@0.5.8)(postgres@3.4.9)(zod@4.6.5))(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.3)(mlly@1.8.2)(nitro@3.0.260903-beta(patch_hash=da923bd555ba4e9e6bdd13a49c83921bdabdf8b3a8b3834889efd7b3c77bcc91))(nuxt-nightly@5.0.0-29853320.9f91560d(83bf1eaa6c1968abfdfa519b661cdd8f))(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.27.7)(rolldown@1.2.12)(vite@8.3.3))(vite@8.3.3)':
     dependencies:
       '@nuxt/kit': '@nuxt/kit-nightly@5.0.0-29809985.0842efa1(@nuxt/schema-nightly@5.0.0-29853320.9f91560d)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.3)(mlly@1.8.2)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.27.7)(rolldown@1.2.12)(vite@8.3.3))'
       drizzle-kit: 1.0.0-rc.4
@@ -9400,7 +9392,7 @@ snapshots:
   better-call@1.4.0(zod@4.6.5):
     dependencies:
       '@better-auth/utils': 0.5.0
-      '@better-fetch/fetch': 1.3.1
+      '@better-fetch/fetch': 1.3.2
       rou3: 0.9.2
       set-cookie-parser: 3.1.2
     optionalDependencies:
@@ -11240,7 +11232,7 @@ snapshots:
     dependencies:
       '@dxup/nuxt': 0.5.10(esbuild@0.27.7)(magicast@0.5.5)(rolldown@1.2.12)(vite@8.3.3)
       '@jridgewell/trace-mapping': 0.3.31
-      '@nuxt/cli': '@nuxt/cli-nightly@4.0.0-2610061353-2f890e5(@nuxt/schema-nightly@5.0.0-29853320.9f91560d)(jiti@2.7.0)(rolldown@1.2.12)(vite@8.3.3)'
+      '@nuxt/cli': '@nuxt/cli-nightly@4.0.0-2610070643-33663e3(@nuxt/schema-nightly@5.0.0-29853320.9f91560d)(jiti@2.7.0)(rolldown@1.2.12)(vite@8.3.3)'
       '@nuxt/devtools': 4.0.0-beta.4(@devframes/agentic@1.2.3)(@devframes/hub-ui@1.2.3(@devframes/hub@1.2.3(@devframes/agentic@1.2.3)(crossws@0.4.12(srvx@1.0.3))(devframe@1.2.3)(ocache@0.3.0))(@devframes/json-render@1.2.3(@devframes/hub@1.2.3(@devframes/agentic@1.2.3)(crossws@0.4.12(srvx@1.0.3))(devframe@1.2.3)(ocache@0.3.0))(devframe@1.2.3))(devframe@1.2.3))(@devframes/json-render@1.2.3(@devframes/hub@1.2.3(@devframes/agentic@1.2.3)(crossws@0.4.12(srvx@1.0.3))(devframe@1.2.3)(ocache@0.3.0))(devframe@1.2.3))(@nuxt/kit-nightly@5.0.0-29853320.9f91560d(@nuxt/schema-nightly@5.0.0-29853320.9f91560d)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.3)(mlly@1.8.2)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.27.7)(rolldown@1.2.12)(vite@8.3.3)))(cac@7.0.0)(crossws@0.4.12(srvx@1.0.3))(db0@0.4.1)(esbuild@0.27.7)(nitro@3.0.260903-beta(patch_hash=da923bd555ba4e9e6bdd13a49c83921bdabdf8b3a8b3834889efd7b3c77bcc91))(ocache@0.3.0)(rolldown@1.2.12)(srvx@1.0.3)(vite@8.3.3)(vue@3.5.43(typescript@6.0.3))
       '@nuxt/kit': '@nuxt/kit-nightly@5.0.0-29853320.9f91560d(@nuxt/schema-nightly@5.0.0-29853320.9f91560d)(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.4.3)(mlly@1.8.2)(rolldown@1.2.12)(unplugin@3.4.0(esbuild@0.27.7)(rolldown@1.2.12)(vite@8.3.3))'
       '@nuxt/nitro-server': '@nuxt/nitro-server-nightly@5.0.0-29853320.9f91560d(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7(supports-color@7.2.0)))(@nuxt/schema-nightly@5.0.0-29853320.9f91560d)(@oxc-project/types@0.148.0)(acorn@8.18.0)(confbox@0.2.4)(dotenv@17.4.2)(esbuild@0.27.7)(giget@3.3.1)(jiti@2.7.0)(lightningcss@1.33.0)(mlly@1.8.2)(nuxt-nightly@5.0.0-29853320.9f91560d(83bf1eaa6c1968abfdfa519b661cdd8f))(typescript@6.0.3)(vite@8.3.3)'
@@ -12475,8 +12467,6 @@ snapshots:
   yoctocolors@2.2.0: {}
 
   zigpty@0.2.1: {}
-
-  zod@4.5.4: {}
 
   zod@4.6.5: {}
 
