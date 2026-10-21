@@ -8,7 +8,7 @@ describe('graphql schema plugin wiring', () => {
       schemaExport: 'schema',
       outputs: {
         graphql: 'schema.graphql',
-        gazania: '.generated/shared/gazania.d.ts',
+        gazania: 'node_modules/.generated/shared/gazania.d.ts',
       },
     })
 

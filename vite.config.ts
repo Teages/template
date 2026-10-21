@@ -12,7 +12,7 @@ export default defineConfig({
       schemaExport: 'schema',
       outputs: {
         graphql: 'schema.graphql',
-        gazania: '.generated/shared/gazania.d.ts',
+        gazania: 'node_modules/.generated/shared/gazania.d.ts',
       },
     }),
     // Drizzle Studio ships built into @teages/nitro-drizzle dev-database

@@ -12,7 +12,7 @@ export interface TSConfigPaths {
 }
 
 export function resolveGeneratedTSConfigDir(rootDir: string): string {
-  return resolve(rootDir, '.generated')
+  return resolve(rootDir, 'node_modules/.generated')
 }
 
 export function toRelative(from: string, to: string): string {
@@ -84,7 +84,7 @@ export function getServerTSConfig(paths: TSConfigPaths): TSConfig {
       rootDir: pathToRoot('.'),
       paths: {
         '~/*': [pathToRoot('./*')],
-        '#generated/*': [pathToRoot('./.generated/*')],
+        '#generated/*': [pathToRoot('./node_modules/.generated/*')],
       },
       types: ['node', 'vite/client', 'nitro/vite/types'],
       noUncheckedIndexedAccess: true,
@@ -96,8 +96,8 @@ export function getServerTSConfig(paths: TSConfigPaths): TSConfig {
       // Ambient declarations for the generated `#drizzle` client.
       pathToBuild('drizzle/**/*.d.ts'),
       pathToRoot('env.d.ts'),
-      pathToRoot('.generated/server/**/*.ts'),
-      pathToRoot('.generated/shared/**/*.ts'),
+      pathToRoot('node_modules/.generated/server/**/*.ts'),
+      pathToRoot('node_modules/.generated/shared/**/*.ts'),
       pathToRoot('server/**/*.ts'),
       pathToRoot('plugins/*/runtime/server/**/*.ts'),
       pathToRoot('plugins/*/runtime/shared/**/*.ts'),

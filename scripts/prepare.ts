@@ -30,7 +30,7 @@ async function main() {
   ])
 
   const server = await createServer({
-    // Empties `.generated` before the plugin chain below regenerates it —
+    // Empties `node_modules/.generated` before the plugin chain below regenerates it —
     // this boot is the one context that rewrites every artifact, so only
     // it may clear.
     plugins: [generatedCleanPlugin()],

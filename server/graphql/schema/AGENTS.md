@@ -1,6 +1,6 @@
 # GraphQL Schema Guide
 
-This subtree defines the code-first GraphQL schema with Pothos, the Drizzle plugin, Relay, and GraphQL Yoga. TypeScript schema files are the source of truth. `schema.graphql` and `.generated/shared/gazania.d.ts` are generated outputs.
+This subtree defines the code-first GraphQL schema with Pothos, the Drizzle plugin, Relay, and GraphQL Yoga. TypeScript schema files are the source of truth. `schema.graphql` and `node_modules/.generated/shared/gazania.d.ts` are generated outputs.
 
 ## Structure
 
@@ -97,4 +97,4 @@ pnpm test:e2e
 pnpm lint
 ```
 
-Review and commit `schema.graphql`. Do not edit generated declarations under `.generated/`.
+Review and commit `schema.graphql`. Do not edit generated declarations under `node_modules/.generated/`.

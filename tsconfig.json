@@ -1,7 +1,7 @@
 {
   "references": [
-    { "path": "./.generated/tsconfig.server.json" },
-    { "path": "./.generated/tsconfig.node.json" }
+    { "path": "./node_modules/.generated/tsconfig.server.json" },
+    { "path": "./node_modules/.generated/tsconfig.node.json" }
   ],
   "files": []
 }

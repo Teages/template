@@ -7,7 +7,7 @@ import { clearGeneratedDir } from '~/plugins/generated-clean/index'
 describe('clearGeneratedDir', () => {
   it('empties every entry including nested dirs and incremental caches', async () => {
     const rootDir = await mkdtemp(join(tmpdir(), 'generated-clean-'))
-    const generatedDir = join(rootDir, '.generated')
+    const generatedDir = join(rootDir, 'node_modules/.generated')
     await mkdir(join(generatedDir, 'app'), { recursive: true })
     await Promise.all([
       writeFile(join(generatedDir, 'app', 'stale-component.d.ts'), ''),
@@ -25,6 +25,6 @@ describe('clearGeneratedDir', () => {
 
     await clearGeneratedDir(rootDir)
 
-    await expect(readdir(join(rootDir, '.generated'))).resolves.toEqual([])
+    await expect(readdir(join(rootDir, 'node_modules/.generated'))).resolves.toEqual([])
   })
 })

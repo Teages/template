@@ -28,6 +28,3 @@ coverage
 .env
 .env.*
 !.env.example
-
-# Generated files
-/.generated

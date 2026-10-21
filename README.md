@@ -42,19 +42,19 @@ The count-event model behind the GraphQL schema is a starting point — replace 
 | `pnpm dev` | Dev server with in-memory PGlite dev database |
 | `pnpm dev:prod` | Dev server against Postgres (`NITRO_DRIZZLE_CONNECTION_*`) |
 | `pnpm build` / `pnpm preview` | Build and preview the production bundle |
-| `pnpm typecheck` | Regenerate `.generated/` then run `tsc` |
+| `pnpm typecheck` | Regenerate `node_modules/.generated/` then run `tsc` |
 | `pnpm lint` | ESLint |
 | `pnpm test` | Unit + e2e suites (PGlite, no Docker); smoke excluded |
 | `pnpm test:smoke` | Build the production artifact and smoke-test it against Postgres (`compose.dev.yaml` on 5433) |
 | `pnpm db:generate` / `pnpm db:migrate` | Generate / apply Drizzle migrations |
 | `pnpm auth:generate` | Regenerate the Better Auth schema |
 
-`pnpm install` runs `prepare` automatically, which regenerates `.generated/` (tsconfigs, gazania types). Run `pnpm prepare` after changing GraphQL schema files.
+`pnpm install` runs `prepare` automatically, which regenerates `node_modules/.generated/` (tsconfigs, gazania types). Run `pnpm prepare` after changing GraphQL schema files.
 
 ## Troubleshooting
 
 - **Port already in use** — the dev server listens on `:3000`, compose.dev Postgres on `:5433`. Find the listener with `lsof -i :3000` and stop it, or change the dev URL in `.env` (`BETTER_AUTH_URL`).
-- **`pnpm prepare` fails** — it boots the full Vite plugin chain and needs Node.js 24+. Re-run `pnpm install` (which also runs prepare) and then `pnpm prepare` on its own to see the clean error. A transient `[TSCONFIG_ERROR]` / dev-worker stack trace right before a successful (exit 0) prepare is known noise from the `.generated` clear/rewrite window and can be ignored.
+- **`pnpm prepare` fails** — it boots the full Vite plugin chain and needs Node.js 24+. Re-run `pnpm install` (which also runs prepare) and then `pnpm prepare` on its own to see the clean error. A transient `[TSCONFIG_ERROR]` / dev-worker stack trace right before a successful (exit 0) prepare is known noise from the `node_modules/.generated` clear/rewrite window and can be ignored.
 
 ## Deploying
 
