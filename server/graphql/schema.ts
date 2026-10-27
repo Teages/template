@@ -11,7 +11,12 @@ export const schema = builder.toSchema()
 // this function should not be bundled in production
 export async function generateSchemaFile() {
   const { generate } = await import('gazania/codegen')
-  const { printSchema: printGraphQLSchema } = await import('graphql')
+  // [nuxt5-nightly] import the CJS entry explicitly: the nightly's runner
+  // resolves bare "graphql" to the ESM entry here but loads the schema's
+  // pothos chain against the CJS entry, splitting graphql into two realms
+  // and making printSchema() throw "from another module or realm".
+  // "graphql/index.js" deterministically hits the same realm as the schema.
+  const { printSchema: printGraphQLSchema } = await import('graphql/index.js')
 
   const sdl = printGraphQLSchema(schema)
   const type = generate({
