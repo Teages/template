@@ -18,7 +18,9 @@ describe('component: TodoCreateForm', () => {
 
     await wrapper.find('form').trigger('submit.prevent')
 
-    expect(wrapper.emitted('create')).toEqual([['Ship tests']])
+    expect(wrapper.emitted('create')).toEqual([
+      ['Ship tests'],
+    ])
     await vi.waitFor(() => {
       expect((wrapper.find('input').element as HTMLInputElement).value).toBe('')
     })

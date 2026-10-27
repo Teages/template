@@ -9,31 +9,43 @@ definePageMeta({
 
 const TodosQuery = gazania.query('TodoPageTodos')
   .vars({ first: 'Int!' })
-  .select(($, vars) => $.select([{
-    todos: $ => $.args({ first: vars.first }).select([{
-      edges: $ => $.select([{
-        node: $ => $.select(['id', 'title', 'completed']),
-      }]),
-    }]),
-  }]))
+  .select(($, vars) => $.select([
+    {
+      todos: $ => $.args({ first: vars.first }).select([
+        {
+          edges: $ => $.select([
+            {
+              node: $ => $.select(['id', 'title', 'completed']),
+            },
+          ]),
+        },
+      ]),
+    },
+  ]))
 
 const CreateTodoMutation = gazania.mutation('TodoPageCreate')
   .vars({ input: 'CreateTodoInput!' })
-  .select(($, vars) => $.select([{
-    createTodo: $ => $.args({ input: vars.input }).select(['id', 'title', 'completed']),
-  }]))
+  .select(($, vars) => $.select([
+    {
+      createTodo: $ => $.args({ input: vars.input }).select(['id', 'title', 'completed']),
+    },
+  ]))
 
 const UpdateTodoMutation = gazania.mutation('TodoPageUpdate')
   .vars({ input: 'UpdateTodoInput!' })
-  .select(($, vars) => $.select([{
-    updateTodo: $ => $.args({ input: vars.input }).select(['id', 'title', 'completed']),
-  }]))
+  .select(($, vars) => $.select([
+    {
+      updateTodo: $ => $.args({ input: vars.input }).select(['id', 'title', 'completed']),
+    },
+  ]))
 
 const DeleteTodoMutation = gazania.mutation('TodoPageDelete')
   .vars({ input: 'DeleteTodoInput!' })
-  .select(($, vars) => $.select([{
-    deleteTodo: $ => $.args({ input: vars.input }).select(['success', 'id']),
-  }]))
+  .select(($, vars) => $.select([
+    {
+      deleteTodo: $ => $.args({ input: vars.input }).select(['success', 'id']),
+    },
+  ]))
 
 const api = useApiClient()
 const toast = useToast()
@@ -50,11 +62,13 @@ const items = computed((): TodoListItem[] => {
     const node = edge?.node
     if (!node?.id || node.title == null || node.completed == null)
       return []
-    return [{
-      id: String(node.id),
-      title: node.title,
-      completed: node.completed,
-    }]
+    return [
+      {
+        id: String(node.id),
+        title: node.title,
+        completed: node.completed,
+      },
+    ]
   })
 })
 
@@ -69,7 +83,9 @@ function showError(cause: unknown, fallback: string) {
 
 async function onCreate(title: string) {
   try {
-    await api.request(CreateTodoMutation, { input: { title } })
+    await api.request(CreateTodoMutation, {
+      input: { title },
+    })
     await refresh()
   }
   catch (cause) {
@@ -80,7 +96,9 @@ async function onCreate(title: string) {
 async function onToggle(id: string, completed: boolean) {
   busyId.value = id
   try {
-    await api.request(UpdateTodoMutation, { input: { id, completed } })
+    await api.request(UpdateTodoMutation, {
+      input: { id, completed },
+    })
     await refresh()
   }
   catch (cause) {
@@ -94,7 +112,9 @@ async function onToggle(id: string, completed: boolean) {
 async function onRemove(id: string) {
   busyId.value = id
   try {
-    await api.request(DeleteTodoMutation, { input: { id } })
+    await api.request(DeleteTodoMutation, {
+      input: { id },
+    })
     await refresh()
   }
   catch (cause) {

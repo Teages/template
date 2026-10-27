@@ -13,7 +13,9 @@ builder.queryFields(t => ({
       const authSession = useAuthSession(event, 'required')
       const { db } = useDrizzle()
       return await db.query.todos.findFirst(
-        query({ where: { id: args.id, userId: authSession.user.id } }),
+        query({
+          where: { id: args.id, userId: authSession.user.id },
+        }),
       )
     },
   }),

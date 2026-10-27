@@ -9,18 +9,32 @@ import {
 
 const CreateTodoMutation = gazania.mutation('CreateTodoTest')
   .vars({ input: 'CreateTodoInput!' })
-  .select(($, vars) => $.select([{
-    createTodo: $ => $.args({ input: vars.input }).select(['id', 'title', 'completed', 'createdAt', 'updatedAt']),
-  }]))
+  .select(($, vars) => $.select([
+    {
+      createTodo: $ => $.args({ input: vars.input }).select([
+        'id',
+        'title',
+        'completed',
+        'createdAt',
+        'updatedAt',
+      ]),
+    },
+  ]))
 
 const TodosIdsQuery = gazania.query('CreateTodoScopeProbe')
-  .select($ => $.select([{
-    todos: $ => $.args({ first: 20 }).select([{
-      edges: $ => $.select([{
-        node: $ => $.select(['id']),
-      }]),
-    }]),
-  }]))
+  .select($ => $.select([
+    {
+      todos: $ => $.args({ first: 20 }).select([
+        {
+          edges: $ => $.select([
+            {
+              node: $ => $.select(['id']),
+            },
+          ]),
+        },
+      ]),
+    },
+  ]))
 
 describe('createTodo mutation', () => {
   it('creates a todo for the session user and returns its fields', async () => {
@@ -28,7 +42,9 @@ describe('createTodo mutation', () => {
 
     const { createTodo } = await user.api(
       CreateTodoMutation,
-      { input: { title: '  Buy milk  ' } },
+      {
+        input: { title: '  Buy milk  ' },
+      },
     )
 
     expect(createTodo?.id).toEqual(expect.stringMatching(UUID_PATTERN))
@@ -44,7 +60,9 @@ describe('createTodo mutation', () => {
 
     const { createTodo } = await owner.api(
       CreateTodoMutation,
-      { input: { title: 'owner only' } },
+      {
+        input: { title: 'owner only' },
+      },
     )
     expect(createTodo?.id).toBeDefined()
 
@@ -60,7 +78,9 @@ describe('createTodo mutation', () => {
   it('rejects creation without a session', async () => {
     await expectUnauthorizedError(requestGraphQL(
       CreateTodoMutation,
-      { input: { title: 'anonymous' } },
+      {
+        input: { title: 'anonymous' },
+      },
     ))
   })
 })

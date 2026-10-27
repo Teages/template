@@ -16,7 +16,11 @@ export default defineConfig({
     projects: [
       // The api project spawns Nitro while its config is derived, so it is
       // only evaluated when actually selected; everything else is cheap.
-      ...isProjectSelected('api') ? [api(rootDir)] : [],
+      ...isProjectSelected('api')
+        ? [
+            api(rootDir),
+          ]
+        : [],
       e2e(),
       nuxt(rootDir),
       unit(rootDir),

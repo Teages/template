@@ -71,7 +71,9 @@ async function main() {
     await nuxt.close()
     httpServer.closeAllConnections()
     await new Promise<void>((resolve, reject) => {
-      httpServer.close(error => (error ? reject(error) : resolve()))
+      httpServer.close(error => (error
+        ? reject(error)
+        : resolve()))
     })
   }
 

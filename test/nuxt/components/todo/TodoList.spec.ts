@@ -43,7 +43,9 @@ describe('component: TodoList', () => {
   it('renders todos and emits toggle', async () => {
     const wrapper = await mountSuspended(TodoList, {
       props: {
-        items: [{ id: '1', title: 'Write tests', completed: false }],
+        items: [
+          { id: '1', title: 'Write tests', completed: false },
+        ],
         status: 'success',
         busyId: null,
       },
@@ -53,6 +55,8 @@ describe('component: TodoList', () => {
 
     await wrapper.find('[role="checkbox"]').trigger('click')
 
-    expect(wrapper.emitted('toggle')).toEqual([['1', true]])
+    expect(wrapper.emitted('toggle')).toEqual([
+      ['1', true],
+    ])
   })
 })

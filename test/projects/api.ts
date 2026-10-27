@@ -19,7 +19,9 @@ export function api(rootDir: string): TestProjectConfiguration {
       },
     },
   }), defineConfig({
-    plugins: [nitroTeardownPlugin()],
+    plugins: [
+      nitroTeardownPlugin(),
+    ],
     test: {
       name: 'api',
       include: ['test/api/**/*.{test,spec}.ts'],

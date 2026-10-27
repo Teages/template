@@ -5,9 +5,11 @@ import { expectUnauthorizedError, seedTodo } from '../../test-utils'
 
 const TodoQuery = gazania.query('TodoByIdTest')
   .vars({ id: 'ID!' })
-  .select(($, vars) => $.select([{
-    todo: $ => $.args({ id: vars.id }).select(['id', 'title', 'completed']),
-  }]))
+  .select(($, vars) => $.select([
+    {
+      todo: $ => $.args({ id: vars.id }).select(['id', 'title', 'completed']),
+    },
+  ]))
 
 describe('todo query', () => {
   it('returns the session user\'s todo by id', async () => {
@@ -24,7 +26,9 @@ describe('todo query', () => {
   it('returns null for a todo that does not exist', async () => {
     const user = await createTestUser()
 
-    const { todo } = await user.api(TodoQuery, { id: crypto.randomUUID() })
+    const { todo } = await user.api(TodoQuery, {
+      id: crypto.randomUUID(),
+    })
 
     expect(todo).toBeNull()
   })

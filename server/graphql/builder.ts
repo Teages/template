@@ -17,7 +17,12 @@ export const builder = new SchemaBuilder<{
     UUID: { Input: string, Output: string }
   }
 }>({
-  plugins: [DrizzlePlugin, RelayPlugin, SimpleObjectsPlugin, WithInputPlugin],
+  plugins: [
+    DrizzlePlugin,
+    RelayPlugin,
+    SimpleObjectsPlugin,
+    WithInputPlugin,
+  ],
   drizzle: {
     client: () => useDrizzle().db,
     getTableConfig,
@@ -41,7 +46,7 @@ builder.scalarType('UUID', {
   serialize: value => value,
   parseValue: (value) => {
     if (typeof value !== 'string')
-      throw new Error('Invalid UUID')
+      throw new TypeError('Invalid UUID')
     return value
   },
 })

@@ -27,7 +27,9 @@ export default defineEventHandler(async (event) => {
   const client = db.$client as unknown as import('@electric-sql/pglite').PGlite
   const { rows } = await client.query(body.sql, body.params, {
     // `all` is drizzle's arrays mode — rows must come back as positional arrays
-    rowMode: body.method === 'all' ? 'array' : 'object',
+    rowMode: body.method === 'all'
+      ? 'array'
+      : 'object',
   })
 
   return { rows }

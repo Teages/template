@@ -47,7 +47,9 @@ export default async function () {
 async function startDevServer(): Promise<{ close: () => Promise<void> }> {
   if (await isServing()) {
     // someone else is already serving (e.g. a running `pnpm dev`) — use it
-    return { close: async () => {} }
+    return {
+      close: async () => {},
+    }
   }
 
   const nuxt = await loadNuxt({
@@ -59,10 +61,12 @@ async function startDevServer(): Promise<{ close: () => Promise<void> }> {
       logLevel: 'silent',
       devtools: false,
       nitro: {
-        handlers: [{
-          route: '/_test/db',
-          handler: fileURLToPath(new URL('./utils/db/handler.ts', import.meta.url)),
-        }],
+        handlers: [
+          {
+            route: '/_test/db',
+            handler: fileURLToPath(new URL('./utils/db/handler.ts', import.meta.url)),
+          },
+        ],
       },
     },
   })
@@ -98,7 +102,9 @@ async function startDevServer(): Promise<{ close: () => Promise<void> }> {
       await nuxt.close()
       httpServer.closeAllConnections()
       await new Promise<void>((resolve, reject) => {
-        httpServer.close(error => (error ? reject(error) : resolve()))
+        httpServer.close(error => (error
+          ? reject(error)
+          : resolve()))
       })
     },
   }
@@ -107,7 +113,9 @@ async function startDevServer(): Promise<{ close: () => Promise<void> }> {
 /** Any HTTP response means something is already serving on the e2e port. */
 async function isServing() {
   try {
-    await fetch(E2E_BASE_URL, { signal: AbortSignal.timeout(2_000) })
+    await fetch(E2E_BASE_URL, {
+      signal: AbortSignal.timeout(2_000),
+    })
     return true
   }
   catch {

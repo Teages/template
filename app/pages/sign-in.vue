@@ -10,7 +10,9 @@ const password = ref('')
 
 const redirectTo = computed(() => {
   const raw = route.query.redirect
-  return typeof raw === 'string' && raw.startsWith('/') ? raw : '/'
+  return typeof raw === 'string' && raw.startsWith('/')
+    ? raw
+    : '/'
 })
 
 async function onSubmit() {

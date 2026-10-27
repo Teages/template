@@ -29,7 +29,9 @@ export async function createTestUser() {
       headers?: Record<string, string>
     },
   ): Promise<ResultOf<TDocument>> => {
-    const client = createClient('/api/graphql', { ofetch: createFetch({ fetch: serverFetch }) })
+    const client = createClient('/api/graphql', {
+      ofetch: createFetch({ fetch: serverFetch }),
+    })
 
     return client.request(document, variables, {
       preferQueryMethod: 'GET',

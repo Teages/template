@@ -6,14 +6,26 @@ import { expectUnauthorizedError, seedTodo } from '../../test-utils'
 
 const TodosPageQuery = gazania.query('TodosConnectionTest')
   .vars({ first: 'Int', after: 'String' })
-  .select(($, vars) => $.select([{
-    todos: $ => $.args({ first: vars.first, after: vars.after }).select([{
-      edges: $ => $.select(['cursor', {
-        node: $ => $.select(['id', 'title']),
-      }]),
-      pageInfo: $ => $.select(['startCursor', 'endCursor', 'hasNextPage', 'hasPreviousPage']),
-    }]),
-  }]))
+  .select(($, vars) => $.select([
+    {
+      todos: $ => $.args({ first: vars.first, after: vars.after }).select([
+        {
+          edges: $ => $.select([
+            'cursor',
+            {
+              node: $ => $.select(['id', 'title']),
+            },
+          ]),
+          pageInfo: $ => $.select([
+            'startCursor',
+            'endCursor',
+            'hasNextPage',
+            'hasPreviousPage',
+          ]),
+        },
+      ]),
+    },
+  ]))
 
 function seededTitles(connection: ResultOf<typeof TodosPageQuery>): string[] {
   return connection.todos?.edges?.flatMap(edge => edge?.node?.title ?? []) ?? []
@@ -25,9 +37,21 @@ describe('todos query', () => {
     const other = await createTestUser()
     const base = new Date('2026-01-01T00:00:00.000Z')
     await seedTodo({ userId: owner.userId, title: 'todo-a', createdAt: base })
-    await seedTodo({ userId: owner.userId, title: 'todo-b', createdAt: new Date(base.getTime() + 60_000) })
-    await seedTodo({ userId: owner.userId, title: 'todo-c', createdAt: new Date(base.getTime() + 120_000) })
-    await seedTodo({ userId: other.userId, title: 'someone else', createdAt: new Date(base.getTime() + 180_000) })
+    await seedTodo({
+      userId: owner.userId,
+      title: 'todo-b',
+      createdAt: new Date(base.getTime() + 60_000),
+    })
+    await seedTodo({
+      userId: owner.userId,
+      title: 'todo-c',
+      createdAt: new Date(base.getTime() + 120_000),
+    })
+    await seedTodo({
+      userId: other.userId,
+      title: 'someone else',
+      createdAt: new Date(base.getTime() + 180_000),
+    })
 
     const connection = await owner.api(TodosPageQuery, { first: 10 })
 

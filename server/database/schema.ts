@@ -15,5 +15,7 @@ export const todos = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
-  table => [index('todos_userId_idx').on(table.userId)],
+  table => [
+    index('todos_userId_idx').on(table.userId),
+  ],
 )

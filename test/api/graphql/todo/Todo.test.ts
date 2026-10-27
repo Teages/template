@@ -5,9 +5,17 @@ import { ISO_DATE_PATTERN, seedTodo } from '../test-utils'
 
 const TodoAllFieldsQuery = gazania.query('TodoTypeFields')
   .vars({ id: 'ID!' })
-  .select(($, vars) => $.select([{
-    todo: $ => $.args({ id: vars.id }).select(['id', 'title', 'completed', 'createdAt', 'updatedAt']),
-  }]))
+  .select(($, vars) => $.select([
+    {
+      todo: $ => $.args({ id: vars.id }).select([
+        'id',
+        'title',
+        'completed',
+        'createdAt',
+        'updatedAt',
+      ]),
+    },
+  ]))
 
 describe('todo type', () => {
   it('exposes all declared fields through a selection set', async () => {

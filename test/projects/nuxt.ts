@@ -21,7 +21,9 @@ export function nuxt(rootDir: string): TestProjectConfiguration {
       browser: {
         enabled: true,
         provider: playwright(),
-        instances: [{ browser: 'chromium', headless: true }],
+        instances: [
+          { browser: 'chromium', headless: true },
+        ],
       },
     },
   })

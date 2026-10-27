@@ -5,15 +5,19 @@ import { expectUnauthorizedError, seedTodo } from '../../test-utils'
 
 const UpdateTodoMutation = gazania.mutation('UpdateTodoTest')
   .vars({ input: 'UpdateTodoInput!' })
-  .select(($, vars) => $.select([{
-    updateTodo: $ => $.args({ input: vars.input }).select(['id', 'title', 'completed']),
-  }]))
+  .select(($, vars) => $.select([
+    {
+      updateTodo: $ => $.args({ input: vars.input }).select(['id', 'title', 'completed']),
+    },
+  ]))
 
 const TodoQuery = gazania.query('UpdateTodoProbe')
   .vars({ id: 'ID!' })
-  .select(($, vars) => $.select([{
-    todo: $ => $.args({ id: vars.id }).select(['title', 'completed']),
-  }]))
+  .select(($, vars) => $.select([
+    {
+      todo: $ => $.args({ id: vars.id }).select(['title', 'completed']),
+    },
+  ]))
 
 describe('updateTodo mutation', () => {
   it('updates the title and keeps the other fields', async () => {
@@ -22,7 +26,9 @@ describe('updateTodo mutation', () => {
 
     const { updateTodo } = await user.api(
       UpdateTodoMutation,
-      { input: { id: seeded.id, title: '  after  ' } },
+      {
+        input: { id: seeded.id, title: '  after  ' },
+      },
     )
 
     expect(updateTodo?.id).toBe(seeded.id)
@@ -36,7 +42,9 @@ describe('updateTodo mutation', () => {
 
     const { updateTodo } = await user.api(
       UpdateTodoMutation,
-      { input: { id: seeded.id, completed: true } },
+      {
+        input: { id: seeded.id, completed: true },
+      },
     )
 
     expect(updateTodo?.id).toBe(seeded.id)
@@ -48,7 +56,9 @@ describe('updateTodo mutation', () => {
     const user = await createTestUser()
     const seeded = await seedTodo({ userId: user.userId, title: 'unchanged' })
 
-    const { updateTodo } = await user.api(UpdateTodoMutation, { input: { id: seeded.id } })
+    const { updateTodo } = await user.api(UpdateTodoMutation, {
+      input: { id: seeded.id },
+    })
 
     expect(updateTodo).toBeNull()
   })
@@ -58,7 +68,12 @@ describe('updateTodo mutation', () => {
 
     const { updateTodo } = await user.api(
       UpdateTodoMutation,
-      { input: { id: crypto.randomUUID(), title: 'ghost' } },
+      {
+        input: {
+          id: crypto.randomUUID(),
+          title: 'ghost',
+        },
+      },
     )
 
     expect(updateTodo).toBeNull()
@@ -71,7 +86,9 @@ describe('updateTodo mutation', () => {
 
     const { updateTodo } = await other.api(
       UpdateTodoMutation,
-      { input: { id: seeded.id, title: 'hijacked' } },
+      {
+        input: { id: seeded.id, title: 'hijacked' },
+      },
     )
     expect(updateTodo).toBeNull()
 
@@ -85,7 +102,9 @@ describe('updateTodo mutation', () => {
 
     await expectUnauthorizedError(requestGraphQL(
       UpdateTodoMutation,
-      { input: { id: seeded.id, title: 'anonymous' } },
+      {
+        input: { id: seeded.id, title: 'anonymous' },
+      },
     ))
   })
 })

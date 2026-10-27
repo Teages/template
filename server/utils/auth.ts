@@ -41,7 +41,11 @@ function initAuth(db: DrizzleDatabase) {
     }),
     plugins: [
       // keep non-mock enticement safe
-      ...(import.meta.dev ? [testUtils()] : []) as [ReturnType<typeof testUtils>],
+      ...(import.meta.dev
+        ? [
+            testUtils(),
+          ]
+        : []) as [ReturnType<typeof testUtils>],
     ],
   })
 }

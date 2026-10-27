@@ -4,7 +4,10 @@ import { createTestUserCredentials, signInWithNewUser, signUpWithCredentials } f
 
 describe('auth', () => {
   test('signs up with email and password', async ({ page, goto, hydrationErrors }) => {
-    const credentials = { ...createTestUserCredentials('signup'), name: 'New E2E User' }
+    const credentials = {
+      ...createTestUserCredentials('signup'),
+      name: 'New E2E User',
+    }
     await signUpWithCredentials(page, goto, credentials)
 
     await expect(page.getByPlaceholder('What needs to be done?')).toBeVisible()
