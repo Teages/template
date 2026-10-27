@@ -162,9 +162,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  seroval: 1.7.1
-
 patchedDependencies:
   '@nuxt/test-utils@4.3.4': 6953050d38b13341ce53f8839f3250ac003fd24b779ee09a85bd75cf3520e65f
   nitro@3.0.260903-beta: da923bd555ba4e9e6bdd13a49c83921bdabdf8b3a8b3834889efd7b3c77bcc91
@@ -5786,8 +5783,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  seroval@1.7.1:
-    resolution: {integrity: sha512-tSRMcPkD/bu1rmY0/XfFP2zLPD8jXVuzHli6Y2UFi9AiG/d0kOd8LAc/G6NolpW8MA1PtgDUhywKCmerS4E3tg==}
+  seroval@1.7.2:
+    resolution: {integrity: sha512-NPOYrDVbvtuTo5m9InqKE7O6wBASON46OabjyqLUGPvoXNDYp0pReuFYkqOQwGsoj1OpZVj6mIdnRRgt5O1/gQ==}
     engines: {node: '>=20'}
 
   set-cookie-parser@3.1.2:
@@ -8679,7 +8676,7 @@ snapshots:
       pkg-types: 2.4.0
       rolldown: 1.2.15
       rolldown-string: 0.3.1(rolldown@1.2.15)
-      seroval: 1.7.1
+      seroval: 1.7.2
       std-env: 4.3.0
       ufo: 1.6.4
       unenv: 2.0.0-rc.24
@@ -12750,7 +12747,7 @@ snapshots:
 
   semver@7.8.5: {}
 
-  seroval@1.7.1: {}
+  seroval@1.7.2: {}
 
   set-cookie-parser@3.1.2: {}
 
