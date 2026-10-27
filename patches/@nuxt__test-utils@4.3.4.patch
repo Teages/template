@@ -1,5 +1,5 @@
 diff --git a/dist/runtime-utils/index.mjs b/dist/runtime-utils/index.mjs
-index ec5cb4329cb1e0c33018c0f662b7635c6c095dab..9085220fdd7bef0173446a28263497ab00b3dd46 100644
+index 7b6fb564d9185339a9d7f704bb91d4543373e1e7..a27a55412d601b7547886b5685531d4aa6d47e2b 100644
 --- a/dist/runtime-utils/index.mjs
 +++ b/dist/runtime-utils/index.mjs
 @@ -171,15 +171,15 @@ async function mountSuspended(component, options = {}) {
@@ -48,11 +48,11 @@ index ec5cb4329cb1e0c33018c0f662b7635c6c095dab..9085220fdd7bef0173446a28263497ab
  		const target = wrapperProps.includes(prop) ? wrapper : Reflect.has(component, prop) ? component : wrapper;
  		const value = Reflect.get(target, prop, receiver);
  		return typeof value === "function" ? value.bind(target) : value;
-diff --git a/dist/suspended-DDMM5DdJ.mjs b/dist/suspended-DDMM5DdJ.mjs
-index 68bc7a26889dfa85916655300e2f5a1312e7dc89..5724e7b9298385bd1088cd6fc07c879a67d08303 100644
---- a/dist/suspended-DDMM5DdJ.mjs
-+++ b/dist/suspended-DDMM5DdJ.mjs
-@@ -110,6 +110,10 @@ function runEffectScope(fn, register) {
+diff --git a/dist/suspended-BS3QNCks.mjs b/dist/suspended-BS3QNCks.mjs
+index 9f2a0611e0a6a1f491d276bc410e7bbcbf497388..815f7b677c9301e8acc60230ae997b77f7a00107 100644
+--- a/dist/suspended-BS3QNCks.mjs
++++ b/dist/suspended-BS3QNCks.mjs
+@@ -93,6 +93,10 @@ function runEffectScope(fn, register) {
  }
  function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn) => fn, suspendedHelperName, clonedComponentName, stubRouterLink = true }) {
  	const vueApp = resolveVueApp();
@@ -63,7 +63,7 @@ index 68bc7a26889dfa85916655300e2f5a1312e7dc89..5724e7b9298385bd1088cd6fc07c879a
  	const ownCleanups = [];
  	function registerCleanup(fn) {
  		ownCleanups.push(fn);
-@@ -175,7 +179,23 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
+@@ -158,7 +162,23 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
  			setup: (props, ctx) => {
  				patchInstanceAppContext();
  				wrappedInstance = getCurrentInstance();
@@ -88,12 +88,12 @@ index 68bc7a26889dfa85916655300e2f5a1312e7dc89..5724e7b9298385bd1088cd6fc07c879a
  				const nuxtRootSetupResult = runEffectScope(() => NuxtRoot.setup(props, {
  					...ctx,
  					expose: () => {}
-@@ -198,6 +218,9 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
+@@ -181,6 +201,9 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
  				isMountSettled = true;
  				wrapper.setupState = setupState;
  				resolve({
 +					// [nuxt5-patch] expose the captured emits so mountSuspended can
-+					// surface them through wrapper.emitted()
++				// surface them through wrapper.emitted()
 +					__emitted,
  					wrapper,
  					setProps: (props) => {
