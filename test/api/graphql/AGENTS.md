@@ -20,6 +20,8 @@ Files mirror `server/graphql/schema/<domain>/` one-to-one.
 
 Use `requestGraphQL()` from `test/api/utils/graphql.ts` to execute GraphQL queries and mutations. It returns a promise that resolves to the parsed JSON response, including `data` and `errors`.
 
+Resolver tests send full documents. The API project sets `GRAPHQL_ALLOW_ARBITRARY_OPERATIONS` so the server accepts them. Other test projects do not, and exercise the production allowlist. `persisted-operations.test.ts` covers that allowlist, which only contains operations extracted from `app/`.
+
 ## What to test
 
 - `operations/`: happy-path result shape, user scoping (a second user must never read or modify the first user's rows), rejection without a session, and pagination for connections — `pageInfo`, forward `first`/`after`, empty and final pages.

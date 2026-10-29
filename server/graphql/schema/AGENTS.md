@@ -75,6 +75,12 @@ const RecordCountPayload = builder.simpleObject('RecordCountPayload', {
 
 Check `test/api/graphql/AGENTS.md`
 
+## Persisted operations
+
+`modules/persisted-operations` extracts Gazania operations from `app/` while Nitro builds and injects `{ sha256: document }` as `#graphql/persisted-operations`. Production executes only those documents. Interactive dev still accepts full documents so GraphiQL works. Among tests, only the API project opts in (`GRAPHQL_ALLOW_ARBITRARY_OPERATIONS`); e2e and the others use the production allowlist. App code sends the hash through `useApiClient()`.
+
+Operations must stay statically analyzable. Extraction fails the build when a Gazania call depends on a runtime value, and again when an operation does not validate against `shared/schema.graphql`.
+
 ## Generation and Verification
 
 Run these commands after schema changes:

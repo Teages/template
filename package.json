@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "1.7.14",
+    "@graphql-yoga/plugin-persisted-operations": "4.0.1",
     "@pothos/core": "4.16.0",
     "@pothos/plugin-drizzle": "0.20.2",
     "@pothos/plugin-relay": "4.8.1",

@@ -1,8 +1,20 @@
+**IMPORTANT**: KEEP THIS FILE UP TO DATE
+
 # AGENTS.md
+
+## TEMPLATE NOTICE
+
+Remove this section once you have set up your project.
+
+It's a project template, update this file when you start to build. 
+
+You will need to find a good [nuxt ui template](https://ui.nuxt.com/templates) when you need to build the user interface.
+
 
 ## Frameworks / Libraries
 - Nuxt 5 (nightly) & Nitro 3
 - GraphQL, check `shared/schema.graphql`
+- Persisted operations: `modules/persisted-operations` extracts Gazania operations from `app/` into the Nitro virtual module `#graphql/persisted-operations`. Production Yoga executes only those documents.
 - Better Auth
 
 ## Structure

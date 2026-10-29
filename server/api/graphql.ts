@@ -1,18 +1,8 @@
-import type { H3Event } from 'nitro/h3'
-import process from 'node:process'
-import { createYoga } from 'graphql-yoga'
 import { defineEventHandler, defineLazyEventHandler } from 'nitro/h3'
-import { schema } from '#server/graphql/schema'
+import { createGraphqlYoga } from '#server/graphql/yoga'
 
 export default defineLazyEventHandler(() => {
-  const isTest = process.env.NODE_ENV === 'test' || !!process.env.VITEST
-
-  const yoga = createYoga<{ event: H3Event<any> }>({
-    schema,
-    fetchAPI: { Response },
-    graphqlEndpoint: '/api/graphql',
-    maskedErrors: !(import.meta.dev || isTest),
-  })
+  const yoga = createGraphqlYoga()
 
   return defineEventHandler(event =>
     yoga.handleRequest(event.req, { event }),

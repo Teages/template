@@ -15,6 +15,10 @@ export function api(rootDir: string): TestProjectConfiguration {
       name: 'api',
       include: ['test/api/**/*.{test,spec}.ts'],
       environment: 'nitro',
+      env: {
+        // Resolver tests send documents outside the app allowlist.
+        GRAPHQL_ALLOW_ARBITRARY_OPERATIONS: '1',
+      },
       setupFiles: ['test/api/setup.ts'],
       isolate: false,
       maxWorkers: 1,

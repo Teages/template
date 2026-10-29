@@ -18,6 +18,7 @@ export function useApiClient(): ApiClient {
     sharedClient ??= createClient('/api/graphql', {
       ofetch: requestFetch as $Fetch,
       preferQueryMethod: 'GET',
+      persistedQueries: true,
     })
     return sharedClient
   }
@@ -25,5 +26,6 @@ export function useApiClient(): ApiClient {
   return createClient('/api/graphql', {
     ofetch: requestFetch as $Fetch,
     preferQueryMethod: 'GET',
+    persistedQueries: true,
   })
 }
