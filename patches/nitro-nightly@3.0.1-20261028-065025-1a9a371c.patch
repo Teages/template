@@ -1,8 +1,8 @@
 diff --git a/dist/runtime/internal/vite/dev-worker.mjs b/dist/runtime/internal/vite/dev-worker.mjs
-index 3ced9371804165a184fbed4a1d5256537ab734f1..d2f5adbdbe859ff7a4041e6a81264f24310dc9c9 100644
+index 9bb5d228306c602ac7b0031d364618a8dc586f8b..505149cc42ebe4056bdeba33ad9b23c3baa5ce5b 100644
 --- a/dist/runtime/internal/vite/dev-worker.mjs
 +++ b/dist/runtime/internal/vite/dev-worker.mjs
-@@ -74,6 +74,7 @@ class ViteEnvRunner {
+@@ -89,6 +89,7 @@ class ViteEnvRunner {
        : new ESModulesEvaluator();
      const debug =
        typeof process !== "undefined" && process.env?.NITRO_DEBUG ? console.debug : undefined;
@@ -10,7 +10,7 @@ index 3ced9371804165a184fbed4a1d5256537ab734f1..d2f5adbdbe859ff7a4041e6a81264f24
      this.runner = new ModuleRunner({ transport }, evaluator, debug);
  
      this.reload();
-@@ -114,7 +115,11 @@ class ViteEnvRunner {
+@@ -129,7 +130,11 @@ class ViteEnvRunner {
          this.entry = await this.runner.import(this.entryPath);
          this.entryError = undefined;
        } catch (error) {

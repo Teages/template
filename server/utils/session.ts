@@ -1,5 +1,5 @@
 import type { H3Event } from 'nitro/h3'
-import { createError } from 'nitro/h3'
+import { HTTPError } from 'nitro/h3'
 import { useAuth } from './auth'
 
 type AuthSession = NonNullable<Awaited<ReturnType<typeof fetchAuthSession>>>
@@ -29,7 +29,7 @@ export function useAuthSession(event: H3Event, mode: 'optional' | 'required'): A
   }
 
   if (!res && mode === 'required') {
-    throw createError({ status: 401, message: 'Unauthorized' })
+    throw HTTPError.status(401, 'Unauthorized')
   }
 
   return res
