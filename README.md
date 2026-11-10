@@ -2,7 +2,7 @@
 
 An API-only GraphQL template on [Nitro](https://nitro.build/) v3, [h3](https://h3.dev/), [Vite](https://vite.dev/), Drizzle ORM, and Better Auth. There is no frontend — the server exposes a JSON GraphQL API and answers any other route with a 404.
 
-Requires **Node.js 24+** and **pnpm**. See [`AGENTS.md`](./AGENTS.md) for repository conventions.
+Requires **Node.js 26+** and **pnpm**. See [`AGENTS.md`](./AGENTS.md) for repository conventions.
 
 ## Use this template
 
@@ -54,7 +54,7 @@ The count-event model behind the GraphQL schema is a starting point — replace 
 ## Troubleshooting
 
 - **Port already in use** — the dev server listens on `:3000`, compose.dev Postgres on `:5433`. Find the listener with `lsof -i :3000` and stop it, or change the dev URL in `.env` (`BETTER_AUTH_URL`).
-- **`pnpm prepare` fails** — it boots the full Vite plugin chain and needs Node.js 24+. Re-run `pnpm install` (which also runs prepare) and then `pnpm prepare` on its own to see the clean error. A transient `[TSCONFIG_ERROR]` / dev-worker stack trace right before a successful (exit 0) prepare is known noise from the `node_modules/.generated` clear/rewrite window and can be ignored.
+- **`pnpm prepare` fails** — it boots the full Vite plugin chain and needs Node.js 26+. Re-run `pnpm install` (which also runs prepare) and then `pnpm prepare` on its own to see the clean error. A transient `[TSCONFIG_ERROR]` / dev-worker stack trace right before a successful (exit 0) prepare is known noise from the `node_modules/.generated` clear/rewrite window and can be ignored.
 
 ## Deploying
 

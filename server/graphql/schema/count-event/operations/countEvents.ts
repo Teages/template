@@ -5,7 +5,10 @@ import { requireAuthSession, UnauthorizedError } from '~/server/graphql/errors'
 builder.queryFields(t => ({
   countEvents: t.drizzleConnection({
     type: 'countEvents',
-    errors: { types: [UnauthorizedError], directResult: true },
+    errors: {
+      types: [UnauthorizedError],
+      directResult: true,
+    },
     resolve: async (query, _root, _args, { event }) => {
       requireAuthSession(event)
       const { db } = useDrizzle()

@@ -79,7 +79,7 @@ async function printGraphqlSchema(
       // The schema runner executes outside the Nitro dev pipeline, so mirror
       // its import.meta.dev and the dev-database gate for any code it loads.
       'import.meta.dev': 'true',
-      'import.meta.env.NITRO_DRIZZLE_DEV': env.NITRO_DRIZZLE_DEV === 'false'
+      'import.meta.env.NITRO_DRIZZLE_DEV_MOCK': env.NITRO_DRIZZLE_DEV_MOCK === 'false'
         ? 'false'
         : 'undefined',
       '__GRAPHQL_SCHEMA_EXPORT__': JSON.stringify(options.schemaExport),

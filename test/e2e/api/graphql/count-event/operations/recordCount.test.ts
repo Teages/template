@@ -14,23 +14,27 @@ describe('mutation recordCount', () => {
 
     const res = await client.mutation(
       gazania.mutation('RecordCount')
-        .select($ => $.select([{
-          recordCount: $ => $.select([
-            '__typename',
-            {
-              '... on RecordCountPayload': $ => $.select([
-                'totalCount',
-                {
-                  countEvent: $ => $.select([
-                    'id',
-                    'createdAt',
-                    { user: $ => $.select(['name', 'email']) },
-                  ]),
-                },
-              ]),
-            },
-          ]),
-        }])),
+        .select($ => $.select([
+          {
+            recordCount: $ => $.select([
+              '__typename',
+              {
+                '... on RecordCountPayload': $ => $.select([
+                  'totalCount',
+                  {
+                    countEvent: $ => $.select([
+                      'id',
+                      'createdAt',
+                      {
+                        user: $ => $.select(['name', 'email']),
+                      },
+                    ]),
+                  },
+                ]),
+              },
+            ]),
+          },
+        ])),
     )
 
     expect(res.recordCount.__typename).toBe('RecordCountPayload')
@@ -44,12 +48,16 @@ describe('mutation recordCount', () => {
     const unauthenticated = createGraphQLTestClient(serverFetch)
     const res = await unauthenticated.mutation(
       gazania.mutation('RecordCountUnauth')
-        .select($ => $.select([{
-          recordCount: $ => $.select([
-            '__typename',
-            { '... on UnauthorizedError': $ => $.select(['message']) },
-          ]),
-        }])),
+        .select($ => $.select([
+          {
+            recordCount: $ => $.select([
+              '__typename',
+              {
+                '... on UnauthorizedError': $ => $.select(['message']),
+              },
+            ]),
+          },
+        ])),
     )
 
     expect(res.recordCount.__typename).toBe('UnauthorizedError')

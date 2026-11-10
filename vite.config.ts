@@ -16,7 +16,7 @@ export default defineConfig({
       },
     }),
     // Drizzle Studio ships built into @teages/nitro-drizzle dev-database
-    // sessions (drizzle.dev) — no local plugin needed.
+    // sessions (drizzle.devMock) — no local plugin needed.
     nitro(),
   ],
   resolve: {
@@ -26,7 +26,7 @@ export default defineConfig({
   },
   define: {
     'import.meta.vitest': 'undefined',
-    'import.meta.env.NITRO_DRIZZLE_DEV': env.NITRO_DRIZZLE_DEV === 'false'
+    'import.meta.env.NITRO_DRIZZLE_DEV_MOCK': env.NITRO_DRIZZLE_DEV_MOCK === 'false'
       ? 'false'
       : 'undefined',
   },

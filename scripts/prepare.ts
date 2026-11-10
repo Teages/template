@@ -33,7 +33,9 @@ async function main() {
     // Empties `node_modules/.generated` before the plugin chain below regenerates it —
     // this boot is the one context that rewrites every artifact, so only
     // it may clear.
-    plugins: [generatedCleanPlugin()],
+    plugins: [
+      generatedCleanPlugin(),
+    ],
     logLevel: 'silent',
     server: {
       middlewareMode: true,

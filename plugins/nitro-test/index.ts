@@ -25,13 +25,15 @@ export async function teardownNitroInstances(): Promise<void> {
  * `close timed out after 10000ms`.
  */
 export function nitroTestPlugin(): Plugin[] {
-  return [{
-    name: 'nitro:test',
-    nitro: {
-      setup(nitro) {
-        const g = globalThis as unknown as NitroTestGlobal
+  return [
+    {
+      name: 'nitro:test',
+      nitro: {
+        setup(nitro) {
+          const g = globalThis as unknown as NitroTestGlobal
         ;(g.__nitroInstances__ ??= new Set()).add(nitro)
+        },
       },
     },
-  }]
+  ]
 }

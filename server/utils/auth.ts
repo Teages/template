@@ -26,8 +26,10 @@ function initAuth(db: DrizzleDatabase) {
     }),
     // testUtils serves local dev/test debugging against the disposable dev
     // database; a production build (import.meta.dev false) must not expose it.
-    plugins: import.meta.dev && import.meta.env.NITRO_DRIZZLE_DEV !== false
-      ? [testUtils()]
+    plugins: import.meta.dev && import.meta.env.NITRO_DRIZZLE_DEV_MOCK !== false
+      ? [
+          testUtils(),
+        ]
       : [],
   })
 }

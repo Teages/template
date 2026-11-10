@@ -86,9 +86,13 @@ describe('production compose stack', () => {
     expect(nitro).toContain('envExpansion: true')
     expect(nitro).not.toContain('envPrefix:')
     expect(nitro).not.toContain('postgresql://')
-    // All credential-bearing keys are templates; port is the typed static
-    // default (number) that NITRO_DRIZZLE_CONNECTION_PORT overrides.
-    for (const key of ['HOST', 'USER', 'PASSWORD', 'DATABASE']) {
+    for (const key of [
+      'HOST',
+      'PORT',
+      'USER',
+      'PASSWORD',
+      'DATABASE',
+    ]) {
       expect(nitro).toContain(`{{NITRO_DRIZZLE_CONNECTION_${key}}}`)
     }
     // No credentials may live in the config file.

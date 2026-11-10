@@ -83,8 +83,12 @@ export function getServerTSConfig(paths: TSConfigPaths): TSConfig {
     compilerOptions: {
       rootDir: pathToRoot('.'),
       paths: {
-        '~/*': [pathToRoot('./*')],
-        '#generated/*': [pathToRoot('./node_modules/.generated/*')],
+        '~/*': [
+          pathToRoot('./*'),
+        ],
+        '#generated/*': [
+          pathToRoot('./node_modules/.generated/*'),
+        ],
       },
       types: ['node', 'vite/client', 'nitro/vite/types'],
       noUncheckedIndexedAccess: true,
@@ -94,7 +98,7 @@ export function getServerTSConfig(paths: TSConfigPaths): TSConfig {
       pathToBuild('types/nitro-imports.d.ts'),
       pathToBuild('types/nitro-routes.d.ts'),
       // Ambient declarations for the generated `#drizzle` client.
-      pathToBuild('drizzle/**/*.d.ts'),
+      pathToRoot('node_modules/.nitro-drizzle/**/*.d.ts'),
       pathToRoot('env.d.ts'),
       pathToRoot('node_modules/.generated/server/**/*.ts'),
       pathToRoot('node_modules/.generated/shared/**/*.ts'),
@@ -111,12 +115,14 @@ export function getNodeTSConfig(paths: TSConfigPaths): TSConfig {
   const { toRoot: pathToRoot, toBuild: pathToBuild } = pathResolvers(paths)
 
   return {
-    extends: '@tsconfig/node24/tsconfig.json',
+    extends: '@tsconfig/node26/tsconfig.json',
     compilerOptions: {
       module: 'Preserve',
       moduleResolution: 'Bundler',
       paths: {
-        '~/*': [pathToRoot('./*')],
+        '~/*': [
+          pathToRoot('./*'),
+        ],
       },
       types: ['node'],
       allowImportingTsExtensions: true,

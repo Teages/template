@@ -1,0 +1,49 @@
+diff --git a/dist/runtime/node-stub-client.mjs b/dist/runtime/node-stub-client.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..87068196f00b422f81f4e14f27a429de0a7f7f8f
+--- /dev/null
++++ b/dist/runtime/node-stub-client.mjs
+@@ -0,0 +1,12 @@
++// Node evaluates the published plugin, which statically imports `#drizzle`.
++// Nitro replaces this module when the file is bundled.
++export function useDrizzle() {
++  throw new Error('#drizzle is only available inside the Nitro bundle')
++}
++
++export function drizzleConfig() {
++  return {}
++}
++
++export const schema = {}
++export const relations = {}
+diff --git a/dist/runtime/node-stub-config.mjs b/dist/runtime/node-stub-config.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..5a865f3e8bed93fac48a18285c87a4fc6fa815f6
+--- /dev/null
++++ b/dist/runtime/node-stub-config.mjs
+@@ -0,0 +1,9 @@
++export const drizzleConfig = {
++  devMock: false,
++  dialect: 'postgresql',
++  driver: 'postgres-js',
++}
++
++export function useDrizzleConnection() {
++  return {}
++}
+diff --git a/package.json b/package.json
+index a566511b63a771c2ba82cfe7ebd15a4900f35576..da56088f9418e1c1a4c90f23fdf3479d6a6a5b21 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,11 @@
+ {
+   "name": "@teages/nitro-drizzle",
+   "type": "module",
++  "imports": {
++    "#drizzle": "./dist/runtime/node-stub-client.mjs",
++    "#drizzle/schema": "./dist/runtime/node-stub-client.mjs",
++    "#drizzle/config": "./dist/runtime/node-stub-config.mjs"
++  },
+   "version": "0.4.4",
+   "description": "Drizzle ORM integration for Nitro v3",
+   "license": "MIT",

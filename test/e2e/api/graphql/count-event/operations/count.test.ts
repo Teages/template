@@ -14,22 +14,34 @@ describe('query count', () => {
 
     await client.mutation(
       gazania.mutation('RecordForCountQuery')
-        .select($ => $.select([{
-          recordCount: $ => $.select([
-            '__typename',
-            { '... on RecordCountPayload': $ => $.select([{ countEvent: $ => $.select(['id']) }]) },
-          ]),
-        }])),
+        .select($ => $.select([
+          {
+            recordCount: $ => $.select([
+              '__typename',
+              {
+                '... on RecordCountPayload': $ => $.select([
+                  {
+                    countEvent: $ => $.select(['id']),
+                  },
+                ]),
+              },
+            ]),
+          },
+        ])),
     )
 
     const res = await client.query(
       gazania.query('CountTotal')
-        .select($ => $.select([{
-          count: $ => $.select([
-            '__typename',
-            { '... on QueryCountSuccess': $ => $.select(['data']) },
-          ]),
-        }])),
+        .select($ => $.select([
+          {
+            count: $ => $.select([
+              '__typename',
+              {
+                '... on QueryCountSuccess': $ => $.select(['data']),
+              },
+            ]),
+          },
+        ])),
     )
 
     expect(res.count.__typename).toBe('QueryCountSuccess')
@@ -40,12 +52,16 @@ describe('query count', () => {
     const unauthenticated = createGraphQLTestClient(serverFetch)
     const res = await unauthenticated.query(
       gazania.query('CountTotalUnauth')
-        .select($ => $.select([{
-          count: $ => $.select([
-            '__typename',
-            { '... on UnauthorizedError': $ => $.select(['message']) },
-          ]),
-        }])),
+        .select($ => $.select([
+          {
+            count: $ => $.select([
+              '__typename',
+              {
+                '... on UnauthorizedError': $ => $.select(['message']),
+              },
+            ]),
+          },
+        ])),
     )
 
     expect(res.count.__typename).toBe('UnauthorizedError')

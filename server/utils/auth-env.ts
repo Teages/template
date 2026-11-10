@@ -26,7 +26,9 @@ export function readBetterAuthEnv(
     trustedOrigins: [
       // Zero-config dev keeps trusting the Vite dev origin; an explicitly
       // configured deployment must not silently trust localhost as well.
-      ...(source.BETTER_AUTH_URL?.trim() ? [] : [DEFAULT_BETTER_AUTH_URL]),
+      ...(source.BETTER_AUTH_URL?.trim()
+        ? []
+        : [DEFAULT_BETTER_AUTH_URL]),
       ...parseEnvList(source.BETTER_AUTH_TRUSTED_ORIGINS),
     ],
     allowedHosts: allowedHosts.length > 0

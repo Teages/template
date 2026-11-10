@@ -6,7 +6,7 @@ interface ImportMetaEnv {
   readonly NODE_ENV?: string
   // Boolean false when the vite define statically disables the dev database;
   // a string when the raw env var reaches import.meta.env.
-  readonly NITRO_DRIZZLE_DEV?: string | false
+  readonly NITRO_DRIZZLE_DEV_MOCK?: string | false
   readonly VITEST?: string | boolean
 }
 

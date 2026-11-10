@@ -133,7 +133,9 @@ run('production build smoke', () => {
       headers: {
         'content-type': 'application/json',
         'origin': baseUrl,
-        ...(cookie ? { cookie } : {}),
+        ...(cookie
+          ? { cookie }
+          : {}),
       },
       body: JSON.stringify({ query: RECORD_COUNT_MUTATION }),
     })

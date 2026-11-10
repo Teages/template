@@ -12,18 +12,22 @@ its runtime, with real database).
 
 ## Problems and workarounds
 
-### OpenTelemetry semantic-conventions ships extensionless ESM imports
-- reason: `@opentelemetry/semantic-conventions@1.43.0` ESM build uses
-  extensionless specifiers (`export * from './trace'`) and a CJS-style
-  `main`/`exports` map. Under strict Node ESM and the Vite SSR ModuleRunner
-  these fail to resolve. The package also lacks `"type": "module"`.
-- affected: dev, build
-- patched: `patches/@opentelemetry__semantic-conventions@1.43.0.patch` — rewrites
-  internal imports/exports to include `.js` extensions, points `main`/`exports`
-  at the ESM build, and adds `"type": "module"`. Registered in
-  `pnpm-workspace.yaml` under `patchedDependencies`.
-- follow up: Remove once upstream ships proper `.js` ESM specifiers. Track
-  open-telemetry/opentelemetry-js and bump the cataloged version when fixed.
+### Vite 8.3 Nitro dev runner cannot load externalized pnpm file URLs
+- reason: With Vite 8.3 and Nitro `3.0.261103-rc`, the dev/test module runner
+  externalizes dependencies to `file://` URLs under `node_modules/.pnpm` and
+  then fails to load them (`#drizzle` → `drizzle-orm/pglite`, `graphql-yoga`,
+  and the next dependency after each one is inlined). `@teages/nitro-drizzle`
+  also registers a `noExternals` string that does not match its
+  `dist/runtime` path, so Node loads those files and rejects `#drizzle`.
+- affected: dev, test
+- patched: `patches/@teages__nitro-drizzle@0.4.4.patch` gives the package
+  `#drizzle` import stubs so Node can evaluate the published plugin and
+  Studio route. `nitro.config.ts` also sets `noExternals` to
+  `/node_modules\//`, and `bundleNitroDeps` appends that pattern after the
+  Drizzle module copies the list, so the dev runner bundles dependencies
+  instead of externalizing their `file://` URLs.
+- follow up: Remove once the Nitro dev runner can import externalized pnpm
+  file URLs, and `@teages/nitro-drizzle` matches its resolved runtime path.
 
 ### Rolldown helper sharing deadlocks production ESM evaluation
 - reason: Nitro's Rolldown `codeSplitting.groups` puts each `node_modules`

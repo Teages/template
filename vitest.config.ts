@@ -46,7 +46,9 @@ export default defineConfig({
       }),
       // Full Nitro + Vite stack through the dev pipeline.
       mergeConfig(viteConfig, defineConfig({
-        plugins: [nitroTestPlugin()],
+        plugins: [
+          nitroTestPlugin(),
+        ],
         test: {
           name: 'e2e',
           include: ['test/e2e/**/*.test.ts'],

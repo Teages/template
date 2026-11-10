@@ -38,7 +38,9 @@ async function main() {
     },
   })
   try {
-    await migrate(db, { migrationsFolder: resolve(import.meta.dirname, 'migrations') })
+    await migrate(db, {
+      migrationsFolder: resolve(import.meta.dirname, 'migrations'),
+    })
   }
   finally {
     await db.$client.end()

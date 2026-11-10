@@ -15,7 +15,10 @@ const RecordCountPayload = builder.simpleObject('RecordCountPayload', {
 builder.mutationFields(t => ({
   recordCount: t.field({
     type: RecordCountPayload,
-    errors: { types: [UnauthorizedError], directResult: true },
+    errors: {
+      types: [UnauthorizedError],
+      directResult: true,
+    },
     resolve: async (_root, _args, { event }) => {
       const authSession = requireAuthSession(event)
       const { db } = useDrizzle()
@@ -25,7 +28,9 @@ builder.mutationFields(t => ({
       if (!created)
         throw new Error('Failed to record count event')
       const [total] = await db
-        .select({ value: count() })
+        .select({
+          value: count(),
+        })
         .from(schema.countEvents)
       return {
         countEvent: created,

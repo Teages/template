@@ -5,7 +5,6 @@ import {
   pgTable,
   text,
   timestamp,
-  uniqueIndex,
 } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
@@ -37,14 +36,15 @@ export const sessions = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
   },
-  table => [index('sessions_userId_idx').on(table.userId)],
+  table => [
+    index('sessions_userId_idx').on(table.userId),
+  ],
 )
 
 export const accounts = pgTable(
   'accounts',
   {
     id: text('id').primaryKey(),
-    issuer: text('issuer').notNull(),
     accountId: text('account_id').notNull(),
     providerId: text('provider_id').notNull(),
     userId: text('user_id')
@@ -63,10 +63,6 @@ export const accounts = pgTable(
       .notNull(),
   },
   table => [
-    uniqueIndex('accounts_issuer_accountId_uidx').on(
-      table.issuer,
-      table.accountId,
-    ),
     index('accounts_userId_idx').on(table.userId),
   ],
 )
@@ -84,11 +80,18 @@ export const verifications = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  table => [index('verifications_identifier_idx').on(table.identifier)],
+  table => [
+    index('verifications_identifier_idx').on(table.identifier),
+  ],
 )
 
 export const authRelations = defineRelationsPart(
-  { users, sessions, accounts, verifications },
+  {
+    users,
+    sessions,
+    accounts,
+    verifications,
+  },
   r => ({
     users: {
       sessions: r.many.sessions({

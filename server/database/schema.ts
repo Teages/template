@@ -12,5 +12,7 @@ export const countEvents = pgTable(
       .references(() => users.id, { onDelete: 'cascade' }),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
-  table => [index('count_events_created_at_idx').on(table.createdAt)],
+  table => [
+    index('count_events_created_at_idx').on(table.createdAt),
+  ],
 )
