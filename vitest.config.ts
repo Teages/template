@@ -1,27 +1,16 @@
 import { defineConfig, mergeConfig } from 'vitest/config'
-import { nitroTestPlugin } from './plugins/nitro-test/index.ts'
 import viteConfig from './vite.config.ts'
 
-const rootDir = import.meta.dirname
-
-const authTestEnv = {
-  BETTER_AUTH_SECRET: 'vitest-better-auth-secret-32chars',
-  BETTER_AUTH_URL: 'http://localhost:20398',
-} as const
-
-export default defineConfig({
+export default mergeConfig(viteConfig, defineConfig({
   test: {
-    env: authTestEnv,
-    globalSetup: ['./test/global-setup.ts'],
+    env: {
+      BETTER_AUTH_SECRET: 'vitest-better-auth-secret-32chars',
+      BETTER_AUTH_URL: 'http://localhost:20398',
+      BETTER_AUTH_TRUSTED_ORIGINS: 'http://localhost:20398',
+    },
     projects: [
-      // Pure Node — no Vite/Nitro plugins. Fastest feedback + in-source tests.
-      defineConfig({
-        plugins: [],
-        resolve: {
-          alias: {
-            '~': rootDir,
-          },
-        },
+      // Pure Node — fastest feedback + in-source tests.
+      {
         test: {
           name: 'unit',
           environment: 'node',
@@ -31,11 +20,10 @@ export default defineConfig({
             'plugins/*/runtime/**/*.ts',
           ],
         },
-      }),
+      },
       // Bundled production output against Postgres, freshly built by
       // pretest:smoke (`pnpm build`). Excluded from `pnpm test`.
-      defineConfig({
-        plugins: [],
+      {
         test: {
           name: 'smoke',
           environment: 'node',
@@ -43,29 +31,15 @@ export default defineConfig({
           testTimeout: 120_000,
           hookTimeout: 120_000,
         },
-      }),
-      // Full Nitro + Vite stack through the dev pipeline.
-      mergeConfig(viteConfig, defineConfig({
-        plugins: [
-          nitroTestPlugin(),
-        ],
+      },
+      // Full Nitro server in Vitest's native `nitro` environment (PGlite).
+      {
         test: {
           name: 'e2e',
+          environment: 'nitro',
           include: ['test/e2e/**/*.test.ts'],
-          environment: './test/env',
-          isolate: false,
-          maxWorkers: 1,
-          sequence: { groupOrder: 1 },
-          env: {
-            ...authTestEnv,
-            BETTER_AUTH_URL: 'http://localhost:20399',
-            // e2e sends cross-origin requests from :20398 (see test/utils.ts
-            // testOrigin) while the server runs on :20399 — trust it
-            // explicitly instead of relying on a developer's local .env.
-            BETTER_AUTH_TRUSTED_ORIGINS: 'http://localhost:20398',
-          },
         },
-      })),
+      },
     ],
   },
-})
+}))

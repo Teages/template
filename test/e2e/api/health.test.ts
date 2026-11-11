@@ -1,4 +1,4 @@
-import { serverFetch } from 'nitro/app'
+import { serverFetch } from 'nitro'
 import { describe, expect, it } from 'vitest'
 
 describe('get /api/health', () => {

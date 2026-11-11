@@ -11,7 +11,6 @@ export default defineConfig({
   // chunks import, which deadlocks ESM evaluation (see WORKAROUND.md).
   inlineDynamicImports: true,
   experimental: {
-    tasks: true,
     asyncContext: true,
     envExpansion: true,
   },

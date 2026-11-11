@@ -1,16 +1,34 @@
 import type { TestHelpers } from 'better-auth/plugins'
 import { createClient } from '@teages/oh-my-graphql'
-import { serverFetch } from 'nitro/app'
+import { getTableName, is, sql, Table } from 'drizzle-orm'
+import { serverFetch } from 'nitro'
 import { createFetch } from 'ofetch'
+import { useDrizzle } from '#drizzle'
 import { useAuth } from '~/server/utils/auth'
 
+let serverReady: Promise<void> | null = null
+
+async function ensureTestServerReady(): Promise<void> {
+  serverReady ??= (async () => {
+    // Route one request through the Nitro request cycle so
+    // @teages/nitro-drizzle's startup schema push (awaited by drizzle-gate)
+    // finishes before helpers touch useDrizzle() or Better Auth directly.
+    const res = await serverFetch('/api/health')
+    if (res.status >= 500) {
+      throw new Error(`Test server initialization failed with status ${res.status}`)
+    }
+  })()
+  await serverReady
+}
+
 export async function resetTestDatabase(): Promise<void> {
-  // db:reset drops the dev-database schema, re-pushes it, and re-seeds. The
-  // task runs through the request cycle, so it also waits for the module's
-  // initial startup push.
-  const res = await serverFetch('/_nitro/tasks/db:reset', { method: 'POST' })
-  if (!res.ok) {
-    throw new Error(`db:reset task failed with status ${res.status}`)
+  await ensureTestServerReady()
+  const { db, schema } = useDrizzle()
+  const tables = Object.values(schema)
+    .filter(value => is(value, Table))
+    .map(table => sql.identifier(getTableName(table)))
+  if (tables.length > 0) {
+    await db.execute(sql`truncate table ${sql.join(tables, sql.raw(', '))} restart identity cascade`)
   }
 }
 
@@ -41,6 +59,7 @@ let authTestHelpers: TestHelpers | null = null
 
 export async function getAuthTestHelpers(): Promise<TestHelpers> {
   if (!authTestHelpers) {
+    await ensureTestServerReady()
     const context = await useAuth().$context as unknown
     if (!isRecord(context) || !isTestHelpers(context.test))
       throw new Error('Better Auth test utilities are not configured')

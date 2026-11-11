@@ -132,8 +132,6 @@ export function getNodeTSConfig(paths: TSConfigPaths): TSConfig {
     include: [
       pathToBuild('types/nitro-config.d.ts'),
       pathToRoot('env.d.ts'),
-      pathToRoot('test/env.ts'),
-      pathToRoot('test/global-setup.ts'),
       pathToRoot('test/unit/**/*.ts'),
       pathToRoot('test/smoke/**/*.ts'),
       pathToRoot('scripts/**/*.ts'),

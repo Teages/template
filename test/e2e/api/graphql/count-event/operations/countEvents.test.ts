@@ -1,4 +1,4 @@
-import { serverFetch } from 'nitro/app'
+import { serverFetch } from 'nitro'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { gazania } from '~/plugins/graphql-schema/runtime/shared/gazania.ts'
 import {

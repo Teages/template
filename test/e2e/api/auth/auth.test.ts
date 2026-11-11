@@ -1,4 +1,4 @@
-import { serverFetch } from 'nitro/app'
+import { serverFetch } from 'nitro'
 import { describe, expect, it } from 'vitest'
 import { cookieHeader, jsonHeaders, testOrigin, uniqueAuthEmail } from '~/test/utils'
 

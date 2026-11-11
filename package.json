@@ -16,7 +16,7 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "test": "vitest run --project='!smoke'",
-    "test:watch": "vitest --project unit",
+    "test:watch": "vitest --project='!smoke'",
     "test:unit": "vitest run --project unit",
     "test:e2e": "vitest run --project e2e",
     "pretest:smoke": "pnpm build",
@@ -64,7 +64,6 @@
     "pathe": "catalog:utilities",
     "pkg-types": "catalog:utilities",
     "skills": "catalog:tooling",
-    "srvx": "catalog:nitro",
     "typescript": "catalog:typescript",
     "vite": "catalog:vite",
     "vitest": "catalog:vitest"
