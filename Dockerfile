@@ -8,7 +8,6 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN npm install -g corepack@latest
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY patches ./patches
 RUN pnpm install --frozen-lockfile --ignore-scripts
 COPY . .
 RUN pnpm rebuild && pnpm prepare && pnpm build

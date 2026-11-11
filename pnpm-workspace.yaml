@@ -4,9 +4,6 @@ trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 10080 # 7 days
 shellEmulator: true
 
-patchedDependencies:
-  '@teages/nitro-drizzle@0.4.4': patches/@teages__nitro-drizzle@0.4.4.patch
-
 allowBuilds:
   esbuild: true
 
@@ -19,7 +16,7 @@ catalogs:
 
   database:
     '@electric-sql/pglite': ^0.5.16
-    '@teages/nitro-drizzle': 0.4.4
+    '@teages/nitro-drizzle': 0.4.5
     drizzle-kit: 1.0.0-rc.5
     drizzle-orm: 1.0.0-rc.5
     postgres: ^4.1.0

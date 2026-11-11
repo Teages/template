@@ -1,30 +1,12 @@
-import type { NitroModule } from 'nitro/types'
 import NitroDrizzle from '@teages/nitro-drizzle'
 import { defineConfig } from 'nitro/config'
 
-// Vite 8.3 externalizes `node_modules/.pnpm` file URLs and then fails to load
-// them, including `@teages/nitro-drizzle`'s `#drizzle` imports. Bundle
-// dependencies instead. Declared here so the Drizzle module keeps the pattern
-// when it copies `noExternals`. See WORKAROUND.md.
-const bundleNodeModules = /node_modules\//
-
-const bundleNitroDeps: NitroModule = {
-  name: 'bundle-nitro-deps',
-  setup(nitro) {
-    if (nitro.options.noExternals === true)
-      return
-    const patterns = Array.isArray(nitro.options.noExternals)
-      ? nitro.options.noExternals
-      : []
-    if (!patterns.includes(bundleNodeModules))
-      nitro.options.noExternals = [...patterns, bundleNodeModules]
-  },
-}
-
 export default defineConfig({
   serverDir: './server',
-  modules: [NitroDrizzle, bundleNitroDeps],
-  noExternals: [bundleNodeModules],
+  modules: [NitroDrizzle],
+  // Vite 8.3 still fails to load externalized pnpm `file://` URLs. 0.4.5
+  // anchors its own runtime on the resolved path and copies this list.
+  noExternals: [/node_modules\//],
   // Rolldown otherwise shares runtime helpers from an app chunk that lib
   // chunks import, which deadlocks ESM evaluation (see WORKAROUND.md).
   inlineDynamicImports: true,

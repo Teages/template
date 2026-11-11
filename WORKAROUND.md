@@ -15,19 +15,14 @@ its runtime, with real database).
 ### Vite 8.3 Nitro dev runner cannot load externalized pnpm file URLs
 - reason: With Vite 8.3 and Nitro `3.0.261103-rc`, the dev/test module runner
   externalizes dependencies to `file://` URLs under `node_modules/.pnpm` and
-  then fails to load them (`#drizzle` → `drizzle-orm/pglite`, `graphql-yoga`,
-  and the next dependency after each one is inlined). `@teages/nitro-drizzle`
-  also registers a `noExternals` string that does not match its
-  `dist/runtime` path, so Node loads those files and rejects `#drizzle`.
+  then fails to load them. `@teages/nitro-drizzle@0.4.5` keeps its own runtime
+  in the server graph by anchoring `noExternals` on the resolved directory;
+  nested packages such as `drizzle-orm/pglite` and `graphql-yoga` still fail.
 - affected: dev, test
-- patched: `patches/@teages__nitro-drizzle@0.4.4.patch` gives the package
-  `#drizzle` import stubs so Node can evaluate the published plugin and
-  Studio route. `nitro.config.ts` also sets `noExternals` to
-  `/node_modules\//`, and `bundleNitroDeps` appends that pattern after the
-  Drizzle module copies the list, so the dev runner bundles dependencies
-  instead of externalizing their `file://` URLs.
+- patched: `nitro.config.ts` sets `noExternals` to `/node_modules\//`. The
+  Drizzle module copies that list and appends its own runtime pattern.
 - follow up: Remove once the Nitro dev runner can import externalized pnpm
-  file URLs, and `@teages/nitro-drizzle` matches its resolved runtime path.
+  file URLs.
 
 ### Rolldown helper sharing deadlocks production ESM evaluation
 - reason: Nitro's Rolldown `codeSplitting.groups` puts each `node_modules`
