@@ -7,9 +7,11 @@ import { describe, expect, it } from 'vitest'
 
 // Locks the production ESM graph: Rolldown helper sharing across Nitro
 // `_libs/*` chunks used to throw `TypeError: __exportAll is not a function`
-// during module evaluation (see WORKAROUND.md). Needs `.output/server` only,
-// not Postgres. `pretest:smoke` builds; invoking vitest directly skips
-// when the artifact is missing.
+// during module evaluation. The `inlineDynamicImports` workaround is gone
+// (rolldown#11293, see WORKAROUND.md), so this test is the only thing keeping
+// the helper placement honest. Needs `.output/server` only, not Postgres.
+// `pretest:smoke` builds; invoking vitest directly skips when the artifact is
+// missing.
 
 const rootDir = resolve(import.meta.dirname, '../..')
 const serverEntry = resolve(rootDir, '.output/server/index.mjs')

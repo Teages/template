@@ -7,9 +7,6 @@ export default defineConfig({
   // Vite 8.3 still fails to load externalized pnpm `file://` URLs. 0.4.5
   // anchors its own runtime on the resolved path and copies this list.
   noExternals: [/node_modules\//],
-  // Rolldown otherwise shares runtime helpers from an app chunk that lib
-  // chunks import, which deadlocks ESM evaluation (see WORKAROUND.md).
-  inlineDynamicImports: true,
   experimental: {
     asyncContext: true,
     envExpansion: true,

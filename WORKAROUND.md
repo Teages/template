@@ -24,25 +24,34 @@ its runtime, with real database).
 - follow up: Remove once the Nitro dev runner can import externalized pnpm
   file URLs.
 
-### Rolldown helper sharing deadlocks production ESM evaluation
+---
+
+## Resolved
+
+Kept for context; the patch is gone and the regression guard stays.
+
+### Rolldown helper sharing deadlocked production ESM evaluation (removed 2026-11-11)
 - reason: Nitro's Rolldown `codeSplitting.groups` puts each `node_modules`
   package in its own `_libs/*` chunk. Shared runtime helpers
-  (`__exportAll`, `__toESM`, `__require`, `__commonJSMin`) then land in an
+  (`__exportAll`, `__toESM`, `__require`, `__commonJSMin`) then landed in an
   app chunk (`_chunks/drizzle.mjs`) because that file also uses
   `import * as schema`. The app chunk imports `@pothos/plugin-drizzle`,
   which imports `@better-auth/drizzle-adapter`, which calls
   `__exportAll` at module top-level from the still-evaluating app chunk.
   Node links the live binding as `undefined`, so the first GraphQL/server
-  boot throws `TypeError: __exportAll is not a function`. Dev and
+  boot threw `TypeError: __exportAll is not a function`. Dev and
   in-process e2e never hit this: they run through Vite's ModuleRunner, not
   the split production graph.
 - affected: build
-- patched: `nitro.config.ts` sets `inlineDynamicImports: true`, which Nitro
-  turns into Rolldown `codeSplitting: false` so helpers stay local to the
-  single server file. `test/smoke/server-eval.test.ts` boots
+- was patched: `nitro.config.ts` set `inlineDynamicImports: true`, which
+  Nitro turns into Rolldown `codeSplitting: false` so helpers stayed local
+  to the single server file.
+- removed because: rolldown#11293 ("only host the runtime in a chunk that
+  every consumer's entries load", merged 2026-10-28, released in rolldown
+  1.2.16) fixes the class. Verified on rolldown 1.2.18: without the flag the
+  helpers land in the leaf `_runtime.mjs` chunk, `pnpm build` + the full
+  smoke suite pass, and the bundled server answers both `/api/health` and a
+  GraphQL query. Upstream reports: rolldown#8184, #11341, #11351, #10747.
+- guard: `test/smoke/server-eval.test.ts` still boots
   `.output/server/index.mjs` without Postgres and asserts the process
-  answers `/api/health`.
-- follow up: Remove once Rolldown places shared helpers in a leaf chunk
-  that participates in no import cycle, or Nitro stops grouping
-  `node_modules` in a way that re-exports drizzle-orm through Pothos and
-  Better Auth adapter chunks. Track rolldown and nitro releases.
+  answers `/api/health`, so a regression in helper placement fails CI.
