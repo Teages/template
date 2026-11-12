@@ -1,8 +1,8 @@
 diff --git a/dist/runtime-utils/index.mjs b/dist/runtime-utils/index.mjs
-index 7b6fb564d9185339a9d7f704bb91d4543373e1e7..a27a55412d601b7547886b5685531d4aa6d47e2b 100644
+index ef1566d899d872f22b526611b3d4ca32ecd6ced0..035e0ca763a5cb7cba86e3ee6625aea190d1b9c9 100644
 --- a/dist/runtime-utils/index.mjs
 +++ b/dist/runtime-utils/index.mjs
-@@ -171,15 +171,15 @@ async function mountSuspended(component, options = {}) {
+@@ -181,15 +181,15 @@ async function mountSuspended(component, options = {}) {
  	const suspendedHelperName = "MountSuspendedHelper";
  	const clonedComponentName = "MountSuspendedComponent";
  	cleanupAll();
@@ -21,7 +21,7 @@ index 7b6fb564d9185339a9d7f704bb91d4543373e1e7..a27a55412d601b7547886b5685531d4a
  	const wrapperProps = [
  		"setProps",
  		"emitted",
-@@ -188,6 +188,26 @@ function wrappedMountedWrapper(wrapper, component) {
+@@ -198,6 +198,26 @@ function wrappedMountedWrapper(wrapper, component) {
  	];
  	return new Proxy(wrapper, { get: (_, prop, receiver) => {
  		if (prop === "getCurrentComponent") return getCurrentComponentPatchedProxy;
@@ -48,11 +48,11 @@ index 7b6fb564d9185339a9d7f704bb91d4543373e1e7..a27a55412d601b7547886b5685531d4a
  		const target = wrapperProps.includes(prop) ? wrapper : Reflect.has(component, prop) ? component : wrapper;
  		const value = Reflect.get(target, prop, receiver);
  		return typeof value === "function" ? value.bind(target) : value;
-diff --git a/dist/suspended-BS3QNCks.mjs b/dist/suspended-BS3QNCks.mjs
-index 9f2a0611e0a6a1f491d276bc410e7bbcbf497388..815f7b677c9301e8acc60230ae997b77f7a00107 100644
---- a/dist/suspended-BS3QNCks.mjs
-+++ b/dist/suspended-BS3QNCks.mjs
-@@ -93,6 +93,10 @@ function runEffectScope(fn, register) {
+diff --git a/dist/suspended-UrdAzOmb.mjs b/dist/suspended-UrdAzOmb.mjs
+index d7b2a0e01b0497af6b5130758e5fff35b3e8b5f2..771f284eb0ceacbeabc3f1eaa417496cdf247eab 100644
+--- a/dist/suspended-UrdAzOmb.mjs
++++ b/dist/suspended-UrdAzOmb.mjs
+@@ -92,6 +92,10 @@ function runEffectScope(fn, register) {
  }
  function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn) => fn, suspendedHelperName, clonedComponentName, stubRouterLink = true }) {
  	const vueApp = resolveVueApp();
@@ -63,7 +63,7 @@ index 9f2a0611e0a6a1f491d276bc410e7bbcbf497388..815f7b677c9301e8acc60230ae997b77
  	const ownCleanups = [];
  	function registerCleanup(fn) {
  		ownCleanups.push(fn);
-@@ -158,7 +162,23 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
+@@ -157,7 +161,25 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
  			setup: (props, ctx) => {
  				patchInstanceAppContext();
  				wrappedInstance = getCurrentInstance();
@@ -71,9 +71,12 @@ index 9f2a0611e0a6a1f491d276bc410e7bbcbf497388..815f7b677c9301e8acc60230ae997b77
 +				// [nuxt5-patch] wrap ctx.emit so every emit() call is recorded in
 +				// __emitted, then forwarded to the original emit (so onXxx listeners,
 +				// v-model, etc still work).
++				// Vue dev builds freeze the setup context, so `expose` is a
++				// non-configurable data property. Rebinding it violates the
++				// proxy invariant. Only `emit` (an accessor) can be wrapped.
 +				setupContext = new Proxy(ctx, {
 +					get(target, key, receiver) {
-+						if (key === 'emit') {
++						if (key === "emit") {
 +							return (event, ...args) => {
 +								let list = __emitted.get(event);
 +								if (!list) __emitted.set(event, list = []);
@@ -81,19 +84,18 @@ index 9f2a0611e0a6a1f491d276bc410e7bbcbf497388..815f7b677c9301e8acc60230ae997b77
 +								return target.emit(event, ...args);
 +							};
 +						}
-+						const value = Reflect.get(target, key, receiver);
-+						return typeof value === 'function' ? value.bind(target) : value;
++						return Reflect.get(target, key, receiver);
 +					}
 +				});
  				const nuxtRootSetupResult = runEffectScope(() => NuxtRoot.setup(props, {
  					...ctx,
  					expose: () => {}
-@@ -181,6 +201,9 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
+@@ -180,6 +202,9 @@ function wrapperSuspended(component, options, { wrapperFn, wrappedRender = (fn)
  				isMountSettled = true;
  				wrapper.setupState = setupState;
  				resolve({
 +					// [nuxt5-patch] expose the captured emits so mountSuspended can
-+				// surface them through wrapper.emitted()
++					// surface them through wrapper.emitted()
 +					__emitted,
  					wrapper,
  					setProps: (props) => {
