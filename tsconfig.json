@@ -8,5 +8,12 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
+  "contentMappers": [
+    {
+      "package": "@vue/content-mapper",
+      "extensions": [".vue"],
+      "options": { "target": 3.5 }
+    }
+  ],
   "include": ["src"]
 }

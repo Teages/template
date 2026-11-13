@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite",
     "dev:dist": "cross-env VITE_PACKAGE_SOURCE=dist vite",
-    "build": "vite build && vue-tsc -b",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -17,7 +17,6 @@
     "cross-env": "^10.1.0",
     "pathe": "^2.0.3",
     "typescript": "^6.0.3",
-    "vite": "^8.3.8",
-    "vue-tsc": "^3.3.14"
+    "vite": "^8.3.8"
   }
 }
