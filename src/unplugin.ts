@@ -47,7 +47,7 @@ function getSideEffect(options: Required<PluginOptions>) {
   }
   return isDist
     ? resolve('styles')
-    : resolve('styles', 'index.scss')
+    : resolve('styles', 'index.css')
 }
 function componentImportPlugin(framework: UnpluginContextMeta['framework'], options: Required<PluginOptions>) {
   const names = new Set(Object.keys(exportMeta.components))

@@ -21,7 +21,6 @@
   },
   "devDependencies": {
     "cross-env": "^10.1.0",
-    "sass": "^1.108.2",
     "typescript": "^6.0.3",
     "vue-tsc": "^3.3.14"
   }

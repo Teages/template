@@ -16,7 +16,6 @@
     "@vitejs/plugin-vue": "^6.0.11",
     "cross-env": "^10.1.0",
     "pathe": "^2.0.3",
-    "sass": "^1.108.2",
     "typescript": "^6.0.3",
     "vite": "^8.3.8",
     "vue-tsc": "^3.3.14"
