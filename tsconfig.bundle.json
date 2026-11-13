@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "contentMappers": [
+    {
+      "package": "@vue/content-mapper",
+      "extensions": [".vue"],
+      "options": { "target": 3.5 }
+    }
+  ],
+  "include": [
+    "src/components",
+    "src/composables",
+    "src/styles",
+    "src/utils",
+    "src/export-meta.ts",
+    "src/index.ts"
+  ]
+}

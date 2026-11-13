@@ -1,28 +1,47 @@
-import type { AnalyzedExport } from './export-meta'
+import type { AnalyzedExport, ExportName } from './export-meta.ts'
 import fs from 'node:fs/promises'
-import { genExport, genTypeExport } from 'knitwork'
 import { findTypeExports } from 'mlly'
 import { extname } from 'pathe'
-import { glob } from 'tinyglobby'
 import { parse } from 'vue/compiler-sfc'
-import { codegenHead, normalizeFrom, resolve, updateFile } from '../utils'
-import { scanComponents, scanTsFile } from './export-meta'
+import { codegenHead, globFiles, normalizeFrom, resolve, updateFile } from '../utils.ts'
+import { scanComponents, scanTsFile } from './export-meta.ts'
 
 const indexFilePath = 'index.ts'
+
+type ExportEntry = string | ExportName
+
+function genStatement(type: 'export' | 'export type', specifier: string, names: ExportEntry[]) {
+  const entries = names.map((entry) => {
+    if (typeof entry === 'string') {
+      return entry
+    }
+    return entry.as && entry.as !== entry.name
+      ? `${entry.name} as ${entry.as}`
+      : entry.name
+  })
+
+  return `${type} { ${entries.join(', ')} } from ${JSON.stringify(specifier)};`
+}
+
+function genExport(specifier: string, names: ExportEntry[]) {
+  return genStatement('export', specifier, names)
+}
+
+function genTypeExport(specifier: string, names: ExportEntry[]) {
+  return genStatement('export type', specifier, names)
+}
 
 async function scanTypes() {
   const res: Array<AnalyzedExport> = []
 
-  const files = (await glob([
+  const files = await globFiles([
     'composables/*.ts',
     'composables/*/index.ts',
     'utils/*.ts',
     'utils/*/index.ts',
     'components/**/*.vue',
     'components/**/*.ts',
-  ], {
-    cwd: resolve(),
-  }))
+  ], resolve())
 
   for (const file of files) {
     const from = normalizeFrom(file)

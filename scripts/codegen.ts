@@ -1,5 +1,5 @@
-import genExportMeta from './codegen/export-meta'
-import genIndexExport from './codegen/index-export'
+import genExportMeta from './codegen/export-meta.ts'
+import genIndexExport from './codegen/index-export.ts'
 
 async function main() {
   await genExportMeta()

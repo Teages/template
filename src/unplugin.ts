@@ -1,21 +1,36 @@
 import type { UnpluginContextMeta, UnpluginOptions } from 'unplugin'
 
+import { createRequire } from 'node:module'
+import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 
 import defu from 'defu'
-import { isPackageExists } from 'local-pkg'
 import { join, normalize } from 'pathe'
 import { defineUnimportPreset } from 'unimport'
 import Unimport from 'unimport/unplugin'
 import { createUnplugin } from 'unplugin'
 import AutoImportComponents from 'unplugin-vue-components'
 
-import exportMeta from './export-meta'
+import exportMeta from './export-meta.ts'
 
 export interface PluginOptions {
   prefix?: string
   dts?: boolean | string
   importStyle?: boolean
+}
+
+function canResolvePackage(name: string) {
+  try {
+    createRequire(join(process.cwd(), 'noop.js')).resolve(name)
+    return true
+  }
+  catch {
+    return false
+  }
+}
+
+function isPackageExists(name: string) {
+  return canResolvePackage(`${name}/package.json`) || canResolvePackage(name)
 }
 
 const defaultOptions = {

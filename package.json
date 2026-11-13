@@ -16,41 +16,18 @@
   },
   "description": "",
   "license": "MIT",
-  "repository": "Teages/repo",
-  "sideEffects": false,
+  "repository": "git+https://github.com/Teages/repo.git",
+  "sideEffects": ["./dist/styles/index.css"],
   "exports": {
-    ".": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
-    },
-    "./components/*": {
-      "types": "./dist/components/*.d.ts",
-      "default": "./dist/components/*"
-    },
-    "./utils/*": {
-      "types": "./dist/utils/*.d.mts",
-      "default": "./dist/utils/*.mjs"
-    },
-    "./composables/*": {
-      "types": "./dist/composables/*.d.mts",
-      "default": "./dist/composables/*.mjs"
-    },
-    "./unplugin": {
-      "types": "./dist/unplugin.d.mts",
-      "default": "./dist/unplugin.mjs"
-    },
-    "./vite": {
-      "types": "./dist/vite.d.mts",
-      "default": "./dist/vite.mjs"
-    },
-    "./nuxt": {
-      "types": "./dist/nuxt.d.mts",
-      "default": "./dist/nuxt.mjs"
-    },
-    "./styles": "./dist/styles/index.css"
+    ".": "./src/index.ts",
+    "./components/*": "./src/components/*",
+    "./utils/*": "./src/utils/*.ts",
+    "./composables/*": "./src/composables/*.ts",
+    "./unplugin": "./src/unplugin.ts",
+    "./vite": "./src/vite.ts",
+    "./nuxt": "./src/nuxt.ts",
+    "./styles": "./src/styles/index.ts"
   },
-  "main": "./dist/index.mjs",
-  "module": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
   "files": [
     "dist"
@@ -60,10 +37,8 @@
   },
   "scripts": {
     "dev": "pnpm -C playground dev",
-    "dev:nuxt": "pnpm -C playground-nuxt dev:dist",
-    "dev:dist": "pnpm -C playground dev:dist",
-    "dev:dist:nuxt": "pnpm -C playground-nuxt dev:dist",
-    "codegen": "jiti ./scripts/codegen.ts",
+    "dev:nuxt": "pnpm -C playground-nuxt dev",
+    "codegen": "node ./scripts/codegen.ts",
     "build": "pnpm codegen && tsdown",
     "prepack": "pnpm build",
     "release": "pnpm test && changelogen --release --push && pnpm publish",
@@ -73,13 +48,12 @@
     "lint:fix": "eslint --cache --fix ."
   },
   "peerDependencies": {
-    "vue": "^3.5"
+    "vue": "^3.5.0"
   },
   "dependencies": {
     "@nuxt/kit": "^4.6.4",
     "@nuxt/schema": "^4.6.4",
     "defu": "^6.1.7",
-    "local-pkg": "^2.0.0",
     "pathe": "^2.0.3",
     "unimport": "^7.0.2",
     "unplugin": "^3.7.0",
@@ -87,22 +61,18 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^10.0.0",
+    "@arethetypeswrong/core": "^0.18.5",
     "@tsdown/css": "^0.23.7",
     "@types/node": "^26.6.6",
     "@typescript/native": "npm:typescript@7.1.0-beta",
     "@vitejs/plugin-vue": "^6.0.11",
     "@vitest/coverage-v8": "^5.1.0",
-    "@volar/typescript": "^2.4.31",
     "@vue/content-mapper": "4.0.0-alpha.0",
     "@vue/test-utils": "^2.5.1",
-    "changelogen": "^0.6.2",
     "eslint": "^10.14.0",
     "happy-dom": "^21.0.4",
-    "jiti": "^2.7.0",
-    "knitwork": "^1.3.0",
     "mlly": "^1.8.2",
-    "scule": "^1.3.0",
-    "tinyglobby": "^0.2.17",
+    "publint": "^0.3.25",
     "tsdown": "^0.23.7",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vite": "^8.3.8",
@@ -112,6 +82,16 @@
     "vue-tsc": "^3.3.14"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "exports": {
+      ".": "./dist/index.mjs",
+      "./components/*": "./dist/components/*",
+      "./utils/*": "./dist/utils/*.mjs",
+      "./composables/*": "./dist/composables/*.mjs",
+      "./unplugin": "./dist/unplugin.mjs",
+      "./vite": "./dist/vite.mjs",
+      "./nuxt": "./dist/nuxt.mjs",
+      "./styles": "./dist/styles/index.mjs"
+    }
   }
 }

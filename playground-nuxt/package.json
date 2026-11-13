@@ -7,7 +7,6 @@
   },
   "scripts": {
     "dev": "nuxt dev",
-    "dev:dist": "cross-env NUXT_PACKAGE_SOURCE=dist nuxt dev",
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
@@ -16,11 +15,9 @@
   "dependencies": {
     "nuxt": "^4.6.4",
     "package-name": "workspace:*",
-    "vue": "^3.5.45",
-    "vue-router": "^5.5.0"
+    "vue": "^3.5.45"
   },
   "devDependencies": {
-    "cross-env": "^10.1.0",
     "typescript": "^6.0.3"
   }
 }

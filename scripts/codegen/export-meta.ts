@@ -1,25 +1,26 @@
-import type { ESMImport } from 'knitwork'
 import fs from 'node:fs/promises'
 import { findExports } from 'mlly'
-import { glob } from 'tinyglobby'
-import { codegenHead, getComponentName, normalizeFrom, resolve, updateFile } from '../utils'
+import { codegenHead, getComponentName, globFiles, normalizeFrom, resolve, updateFile } from '../utils.ts'
 
 const exportMetaFilePath = 'export-meta.ts'
+
+export interface ExportName {
+  name: string
+  as?: string
+}
 
 export interface AnalyzedExport {
   type?: boolean
   from: string
-  names: ESMImport[]
+  names: Array<string | ExportName>
 }
 
 export async function scanComponents() {
   const res: Array<AnalyzedExport> = []
 
-  const files = await glob([
+  const files = await globFiles([
     'components/**/*.vue',
-  ], {
-    cwd: resolve(),
-  })
+  ], resolve())
 
   for (const file of files) {
     const from = normalizeFrom(file)
@@ -42,12 +43,10 @@ export async function scanComponents() {
 export async function scanTsFile(dir: string) {
   const res: Array<AnalyzedExport> = []
 
-  const files = await glob([
+  const files = await globFiles([
     `${dir}/*.ts`,
     `${dir}/*/index.ts`,
-  ], {
-    cwd: resolve(),
-  })
+  ], resolve())
 
   for (const file of files) {
     const from = normalizeFrom(file)

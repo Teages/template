@@ -1,17 +1,23 @@
 import { defineConfig } from 'tsdown'
 import { vueSfcPlugin } from 'vue-sfc-transformer/rolldown'
 
-export default defineConfig({
-  entry: ['src/**/*.ts', 'src/**/*.css'],
+const sourceConfig = defineConfig({
+  entry: [
+    'src/index.ts',
+    'src/{components,composables,styles,utils,styles}/**/*.ts',
+  ],
   unbundle: true,
   root: 'src',
   fixedExtension: true,
-  hash: false,
-  platform: 'node',
-  dts: true,
+  platform: 'neutral',
+  dts: {
+    tsc: { build: true },
+  },
+  publint: true,
+  attw: true,
   css: {
+    inject: true,
     transformer: 'lightningcss',
-    // engines.node is not a browser target, so it does not lower CSS.
     target: 'baseline-widely-available',
   },
   plugins: [
@@ -23,3 +29,33 @@ export default defineConfig({
     }),
   ],
 })
+
+const intergrationConfig = defineConfig({
+  entry: [
+    'src/nuxt.ts',
+    'src/unplugin.ts',
+    'src/vite.ts',
+  ],
+  root: 'src',
+  platform: 'node',
+  dts: {
+    tsc: { build: true },
+  },
+  deps: { neverBundle: true },
+})
+
+const metaConfig = defineConfig({
+  entry: ['src/export-meta.ts'],
+  root: 'src',
+  platform: 'neutral',
+  fixedExtension: true,
+  dts: {
+    tsc: { build: true },
+  },
+})
+
+export default defineConfig([
+  sourceConfig,
+  intergrationConfig,
+  metaConfig,
+])

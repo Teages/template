@@ -1,7 +1,7 @@
-import type { PluginOptions } from './unplugin'
+import type { PluginOptions } from './unplugin.ts'
 import { addComponentsDir, addImportsSources, createResolver, defineNuxtModule } from '@nuxt/kit'
 import defu from 'defu'
-import { unimportPreset } from './unplugin'
+import { unimportPreset } from './unplugin.ts'
 
 export interface ModuleOptions extends Pick<
   PluginOptions,
