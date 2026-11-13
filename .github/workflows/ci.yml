@@ -20,8 +20,9 @@ jobs:
 
       - name: 📦 Install dependencies
         run: pnpm install
+      - run: pnpm codegen
       - run: pnpm lint
-      - run: pnpm test:types
+      - run: pnpm typecheck
+      - run: pnpm test
       - run: pnpm build
-      - run: pnpm vitest --coverage
       - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7

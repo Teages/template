@@ -41,11 +41,10 @@
     "codegen": "node ./scripts/codegen.ts",
     "build": "pnpm codegen && tsdown",
     "prepack": "pnpm build",
-    "release": "pnpm test && changelogen --release --push && pnpm publish",
-    "test": "pnpm lint && pnpm test:types && vitest run --coverage",
-    "test:types": "tsc --runExternalCode",
-    "lint": "eslint --cache .",
-    "lint:fix": "eslint --cache --fix ."
+    "test": "vitest run --coverage",
+    "typecheck": "tsc --runExternalCode",
+    "lint": "eslint",
+    "fmt": "eslint --fix"
   },
   "peerDependencies": {
     "vue": "^3.5.0"

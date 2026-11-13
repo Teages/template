@@ -20,8 +20,10 @@ jobs:
 
       - name: 📦 Install dependencies
         run: pnpm install
+      - name: Check codegen
+        run: pnpm codegen
       - name: Fix lint issues
-        run: pnpm lint:fix
+        run: pnpm fmt
       - uses: autofix-ci/action@c5b2d67aa2274e7b5a18224e8171550871fc7e4a # v1.3.4
         with:
           commit-message: 'chore: apply automated fixes'
