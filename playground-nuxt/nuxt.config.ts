@@ -6,7 +6,7 @@ const module = process.env.NUXT_PACKAGE_SOURCE === 'dist'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
+  compatibilityDate: '2026-11-13',
   devtools: { enabled: true },
 
   modules: [module],

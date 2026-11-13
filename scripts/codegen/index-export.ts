@@ -20,7 +20,9 @@ async function scanTypes() {
     'utils/*/index.ts',
     'components/**/*.vue',
     'components/**/*.ts',
-  ], { cwd: resolve() }))
+  ], {
+    cwd: resolve(),
+  }))
 
   for (const file of files) {
     const from = normalizeFrom(file)
@@ -49,7 +51,9 @@ function compare(a: AnalyzedExport, b: AnalyzedExport) {
   }
 
   if (a.from !== b.from) {
-    return a.from < b.from ? -1 : 1
+    return a.from < b.from
+      ? -1
+      : 1
   }
 
   return 0

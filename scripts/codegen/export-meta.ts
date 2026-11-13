@@ -17,14 +17,18 @@ export async function scanComponents() {
 
   const files = await glob([
     'components/**/*.vue',
-  ], { cwd: resolve() })
+  ], {
+    cwd: resolve(),
+  })
 
   for (const file of files) {
     const from = normalizeFrom(file)
-    const names = [{
-      name: 'default',
-      as: getComponentName(file.replace(/^components\//, '')),
-    }]
+    const names = [
+      {
+        name: 'default',
+        as: getComponentName(file.replace(/^components\//, '')),
+      },
+    ]
 
     res.push({
       names,
@@ -41,7 +45,9 @@ export async function scanTsFile(dir: string) {
   const files = await glob([
     `${dir}/*.ts`,
     `${dir}/*/index.ts`,
-  ], { cwd: resolve() })
+  ], {
+    cwd: resolve(),
+  })
 
   for (const file of files) {
     const from = normalizeFrom(file)

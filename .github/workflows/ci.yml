@@ -12,15 +12,16 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: corepack enable
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3
         with:
-          node-version: 20
-          cache: pnpm
-      - run: pnpm install
+          cache: true
+          install: false
+
+      - name: 📦 Install dependencies
+        run: pnpm install
       - run: pnpm lint
       - run: pnpm test:types
       - run: pnpm build
       - run: pnpm vitest --coverage
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7

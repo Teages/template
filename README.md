@@ -1,5 +1,3 @@
-# Vue Module Template
-
 ## Use this template
 
 ```bash
@@ -51,7 +49,9 @@ Use it with Vite:
 import { plugin } from 'package-name/vite'
 
 export default defineConfig({
-  plugins: [plugin()],
+  plugins: [
+    plugin()
+  ],
 })
 ```
 
@@ -66,8 +66,8 @@ export default defineNuxtConfig({
 ## Development
 
 - Clone this repository
-- Install latest LTS version of [Node.js](https://nodejs.org/en/)
-- Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable`
+- Install [Node.js](https://nodejs.org/en/) 26 or newer
+- Enable [Corepack](https://github.com/nodejs/corepack) using `npm install -g corepack && corepack enable` (Node.js 26 no longer ships Corepack)
 - Install dependencies using `pnpm install`
 - Run interactive tests using `pnpm dev`
 

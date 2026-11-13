@@ -28,7 +28,9 @@ export function getComponentName(_path: string) {
   const base = pascalCase(paths.pop()!)
   const prefix = pascalCase(paths.join('/'))
 
-  return base.startsWith(prefix) ? base : `${prefix}${base}`
+  return base.startsWith(prefix)
+    ? base
+    : `${prefix}${base}`
 }
 
 export async function updateFile(path: string, content: string) {

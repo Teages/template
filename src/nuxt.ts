@@ -1,7 +1,8 @@
+import type { PluginOptions } from './unplugin'
 import { fileURLToPath } from 'node:url'
 import { addComponentsDir, addImportsSources, createResolver, defineNuxtModule } from '@nuxt/kit'
 import defu from 'defu'
-import { type PluginOptions, unimportPreset } from './unplugin'
+import { unimportPreset } from './unplugin'
 
 const __filename = fileURLToPath(import.meta.url)
 const isDist = !__filename.endsWith('.ts')
@@ -20,7 +21,7 @@ export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'package-name/nuxt',
     configKey: 'package-name',
-    version: '>=3.13.1',
+    version: '>=4.0.0',
   },
   defaults: {},
   setup(_options, nuxt) {

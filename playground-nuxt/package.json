@@ -2,6 +2,9 @@
   "name": "playground-nuxt",
   "type": "module",
   "private": true,
+  "engines": {
+    "node": ">=26"
+  },
   "scripts": {
     "dev": "nuxt dev",
     "dev:dist": "cross-env NUXT_PACKAGE_SOURCE=dist nuxt dev",
@@ -11,15 +14,15 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "nuxt": "^3.14.1592",
+    "nuxt": "^4.6.4",
     "package-name": "workspace:*",
-    "vue": "latest",
-    "vue-router": "latest"
+    "vue": "^3.5.45",
+    "vue-router": "^5.5.0"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
-    "sass": "^1.82.0",
-    "typescript": "^5.7.2",
-    "vue-tsc": "^2.1.10"
+    "cross-env": "^10.1.0",
+    "sass": "^1.108.2",
+    "typescript": "^6.0.3",
+    "vue-tsc": "^3.3.14"
   }
 }

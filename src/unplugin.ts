@@ -27,9 +27,13 @@ const defaultOptions = {
 const __filename = fileURLToPath(import.meta.url)
 const isDist = !__filename.endsWith('.ts')
 
-const srcdir = isDist ? 'package-name' : normalize(fileURLToPath(new URL('.', import.meta.url)))
+const srcdir = isDist
+  ? 'package-name'
+  : normalize(fileURLToPath(new URL('.', import.meta.url)))
 function resolve(...paths: string[]) {
-  const base = srcdir.endsWith('/') ? srcdir.slice(0, -1) : srcdir
+  const base = srcdir.endsWith('/')
+    ? srcdir.slice(0, -1)
+    : srcdir
   if (paths.length === 0) {
     return base
   }
@@ -41,7 +45,9 @@ function getSideEffect(options: Required<PluginOptions>) {
   if (!options.importStyle) {
     return undefined
   }
-  return isDist ? resolve('styles') : resolve('styles', 'index.scss')
+  return isDist
+    ? resolve('styles')
+    : resolve('styles', 'index.scss')
 }
 function componentImportPlugin(framework: UnpluginContextMeta['framework'], options: Required<PluginOptions>) {
   const names = new Set(Object.keys(exportMeta.components))
@@ -97,17 +103,25 @@ export const unimportPreset = defineUnimportPreset({
   ],
 })
 function unimportPlugin(framework: UnpluginContextMeta['framework'], options: Required<PluginOptions>) {
-  const dts = options.dts === true ? 'package-name.d.ts' : options.dts
+  const dts = options.dts === true
+    ? 'package-name.d.ts'
+    : options.dts
 
   return Unimport[framework]({
     presets: [unimportPreset],
     dts,
     addons: {
-      addons: [{
-        declaration: (dts) => {
-          return `${[dtsHeader, dts, componentDts(options.prefix)].join('\n\n')}\n`
+      addons: [
+        {
+          declaration: (dts) => {
+            return `${[
+              dtsHeader,
+              dts,
+              componentDts(options.prefix),
+            ].join('\n\n')}\n`
+          },
         },
-      }],
+      ],
     },
   }) satisfies UnpluginOptions
 }
