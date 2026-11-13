@@ -17,7 +17,10 @@
   "description": "",
   "license": "MIT",
   "repository": "git+https://github.com/Teages/repo.git",
-  "sideEffects": ["./dist/styles/index.css"],
+  "sideEffects": [
+    "./dist/styles/*",
+    "./src/styles/*"
+  ],
   "exports": {
     ".": "./src/index.ts",
     "./components/*": "./src/components/*",
@@ -53,7 +56,6 @@
     "@nuxt/kit": "^4.6.4",
     "@nuxt/schema": "^4.6.4",
     "defu": "^6.1.7",
-    "pathe": "^2.0.3",
     "unimport": "^7.0.2",
     "unplugin": "^3.7.0",
     "unplugin-vue-components": "^32.1.0"
@@ -71,6 +73,7 @@
     "eslint": "^10.14.0",
     "happy-dom": "^21.0.4",
     "mlly": "^1.8.2",
+    "pathe": "^2.0.3",
     "publint": "^0.3.25",
     "tsdown": "^0.23.7",
     "typescript": "npm:@typescript/typescript6@^6.0.2",

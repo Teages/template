@@ -1,11 +1,10 @@
 import type { UnpluginContextMeta, UnpluginOptions } from 'unplugin'
 
 import { createRequire } from 'node:module'
+import { join } from 'node:path'
 import process from 'node:process'
-import { fileURLToPath } from 'node:url'
 
 import defu from 'defu'
-import { join, normalize } from 'pathe'
 import { defineUnimportPreset } from 'unimport'
 import Unimport from 'unimport/unplugin'
 import { createUnplugin } from 'unplugin'
@@ -39,30 +38,19 @@ const defaultOptions = {
   importStyle: true,
 } satisfies PluginOptions
 
-const __filename = fileURLToPath(import.meta.url)
-const isDist = !__filename.endsWith('.ts')
+const srcdir = 'package-name'
 
-const srcdir = isDist
-  ? 'package-name'
-  : normalize(fileURLToPath(new URL('.', import.meta.url)))
 function resolve(...paths: string[]) {
-  const base = srcdir.endsWith('/')
-    ? srcdir.slice(0, -1)
-    : srcdir
-  if (paths.length === 0) {
-    return base
-  }
-
-  return join(base, ...paths)
+  return paths.length === 0
+    ? srcdir
+    : `${srcdir}/${paths.join('/')}`
 }
 
 function getSideEffect(options: Required<PluginOptions>) {
   if (!options.importStyle) {
     return undefined
   }
-  return isDist
-    ? resolve('styles')
-    : resolve('styles', 'index.css')
+  return resolve('styles')
 }
 function componentImportPlugin(framework: UnpluginContextMeta['framework'], options: Required<PluginOptions>) {
   const names = new Set(Object.keys(exportMeta.components))
