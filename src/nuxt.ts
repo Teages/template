@@ -1,13 +1,22 @@
-import type { PluginOptions } from './unplugin.ts'
 import { addComponentsDir, addImportsSources, createResolver, defineNuxtModule } from '@nuxt/kit'
 import defu from 'defu'
-import { unimportPreset } from './unplugin.ts'
+import { unimportPreset } from './presets.ts'
 
-export interface ModuleOptions extends Pick<
-  PluginOptions,
-  | 'prefix'
-  | 'importStyle'
-> {}
+export interface ModuleOptions {
+  /**
+   * Prefix of the component names.
+   *
+   * @default 'P'
+   */
+  prefix?: string
+  /**
+   * Import the styles automatically.
+   *
+   * @default true
+   */
+  importStyle?: boolean
+}
+
 const defaultOptions: Required<ModuleOptions> = {
   prefix: 'P',
   importStyle: true,

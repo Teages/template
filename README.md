@@ -43,17 +43,70 @@ pnpm install package-name
 bun install package-name
 ```
 
-Use it with Vite:
+### Manual import
 
 ```ts
-import { plugin } from 'package-name/vite'
+import { Button, sum, useDouble } from 'package-name'
+// import styles when not using the auto import integrations
+import 'package-name/styles'
+```
+
+### Auto import with Vite
+
+Install the unplugin plugins as dev dependencies:
+
+```sh
+pnpm install -D unplugin-auto-import unplugin-vue-components
+```
+
+Then register the preset and resolver:
+
+```ts
+// vite.config.ts
+import vue from '@vitejs/plugin-vue'
+import { unimportPreset } from 'package-name/presets'
+import { componentResolver } from 'package-name/resolvers'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [
-    plugin()
+    vue(),
+    AutoImport({
+      imports: [unimportPreset],
+    }),
+    Components({
+      resolvers: [
+        componentResolver()
+      ],
+    }),
   ],
 })
 ```
+
+`unplugin-auto-import` and `unplugin-vue-components` will generate the
+`auto-imports.d.ts` and `components.d.ts` files for you.
+
+If you prefer `unimport` to scan the package exports instead of listing them
+upfront, use the package preset:
+
+```ts
+AutoImport({
+  packagePresets: [packagePreset],
+})
+```
+
+Resolver options:
+
+```ts
+componentResolver({
+  prefix: 'P', // component name prefix, default to `P`
+  importStyle: true, // import `package-name/styles` together with components
+})
+```
+
+### Nuxt
 
 As a Nuxt Module:
 

@@ -33,8 +33,8 @@ const sourceConfig = defineConfig({
 const intergrationConfig = defineConfig({
   entry: [
     'src/nuxt.ts',
-    'src/unplugin.ts',
-    'src/vite.ts',
+    'src/presets.ts',
+    'src/resolvers.ts',
   ],
   root: 'src',
   platform: 'node',

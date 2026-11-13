@@ -26,8 +26,8 @@
     "./components/*": "./src/components/*",
     "./utils/*": "./src/utils/*.ts",
     "./composables/*": "./src/composables/*.ts",
-    "./unplugin": "./src/unplugin.ts",
-    "./vite": "./src/vite.ts",
+    "./presets": "./src/presets.ts",
+    "./resolvers": "./src/resolvers.ts",
     "./nuxt": "./src/nuxt.ts",
     "./styles": "./src/styles/index.ts"
   },
@@ -55,10 +55,7 @@
   "dependencies": {
     "@nuxt/kit": "^4.6.4",
     "@nuxt/schema": "^4.6.4",
-    "defu": "^6.1.7",
-    "unimport": "^7.0.2",
-    "unplugin": "^3.7.0",
-    "unplugin-vue-components": "^32.1.0"
+    "defu": "^6.1.7"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^10.0.0",
@@ -90,8 +87,8 @@
       "./components/*": "./dist/components/*",
       "./utils/*": "./dist/utils/*.mjs",
       "./composables/*": "./dist/composables/*.mjs",
-      "./unplugin": "./dist/unplugin.mjs",
-      "./vite": "./dist/vite.mjs",
+      "./presets": "./dist/presets.mjs",
+      "./resolvers": "./dist/resolvers.mjs",
       "./nuxt": "./dist/nuxt.mjs",
       "./styles": "./dist/styles/index.mjs"
     }

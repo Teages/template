@@ -12,8 +12,8 @@
   },
   "include": [
     "src/nuxt.ts",
-    "src/unplugin.ts",
-    "src/vite.ts",
+    "src/presets.ts",
+    "src/resolvers.ts",
     "scripts"
   ]
 }
