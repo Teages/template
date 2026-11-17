@@ -1,90 +1,117 @@
 {
-  "version": 1,
+  "version": 2,
   "skills": {
     "better-auth-best-practices": {
       "source": "better-auth/skills",
+      "commit": "20c9e88a5c007461a703f1c213572b073196113e",
       "sourceType": "github",
       "skillPath": "better-auth/best-practices/SKILL.md",
-      "computedHash": "0c30be0e118c2b7a0c4c57bd9e63bf110c7e420a79ec6ce7997153f3b1e066ee"
+      "computedHash": "2773c3687f2cf96d659049ebf2d8c86058a33541b09360712df0dc6b1404c403"
     },
     "better-auth-security-best-practices": {
       "source": "better-auth/skills",
+      "commit": "20c9e88a5c007461a703f1c213572b073196113e",
       "sourceType": "github",
       "skillPath": "security/SKILL.md",
-      "computedHash": "7a230edf3a24ce18162cb4379f59b6a19b8d24ca04db530609d0f15cede556dc"
+      "computedHash": "36e9710eaa13c61c00bec00a4902fdc6ed829e6de13127238ae57494e93c1d9d"
     },
     "drizzle": {
       "source": "drizzle-kit",
       "sourceType": "node_modules",
       "skillPath": "skills/drizzle/SKILL.md",
       "version": "1.0.0-rc.5",
-      "computedHash": "27540b3acc549af69f3882a32f4daa68b2efea9c8724d4506631770cd4b13c88"
+      "computedHash": "c91331769b0cf9a9f5592d9ea5cf0998fdfcd81c4ed1fb0d8784ada819a797e9"
     },
     "email-and-password-best-practices": {
       "source": "better-auth/skills",
+      "commit": "20c9e88a5c007461a703f1c213572b073196113e",
       "sourceType": "github",
       "skillPath": "better-auth/emailAndPassword/SKILL.md",
-      "computedHash": "863886759f729081e265941f4f72c503835d55a1f34f6d63cebe6571159fff4a"
+      "computedHash": "407c1244202876daa748818ed41dc55afde1b3f7aec48ae3a1f1c8a7ee40465e"
     },
     "gazania": {
       "source": "Teages/gazania",
+      "commit": "59247b56157e1c66f726e5d861f4781ba1c5a238",
       "sourceType": "github",
       "skillPath": "skills/gazania/SKILL.md",
-      "computedHash": "2f43fdc9c7cdbba56bbdf9e56a10ebfb34edd302b7ae08d89b9add725be17282"
+      "computedHash": "2560d77e96fa906cefe68ad19d8ab8584759956326da5ddb36ee37faf9a9a431"
+    },
+    "nitro": {
+      "source": "antfu/skills",
+      "commit": "4a6bb39e7b45e26402eb215393c51ccf5df1ca4c",
+      "sourceType": "github",
+      "skillPath": "skills/nitro/SKILL.md",
+      "computedHash": "ace89f8710836f13c59b7c6b1a272fa8039a0bf0b48c13322c382c68e6b77b7b"
     },
     "nuxt": {
       "source": "antfu/skills",
+      "commit": "4a6bb39e7b45e26402eb215393c51ccf5df1ca4c",
       "sourceType": "github",
       "skillPath": "skills/nuxt/SKILL.md",
-      "computedHash": "03fc229d7c6a300b2ded6d9f984b45d8a554c2c991199c54760893e627c91371"
+      "computedHash": "4c10d4e793c1d7f4308a3b66930d55d6531224ea887ae29d9bcc946cea2c8081"
+    },
+    "nuxt-explicit-imports": {
+      "source": "antfu/nuxt-explicit-imports",
+      "commit": "59429f5a46fdcc5f9636521e4236f572ae636a32",
+      "sourceType": "github",
+      "skillPath": "skills/nuxt-explicit-imports/SKILL.md",
+      "computedHash": "29a9050b8ce6dfcdaaed2b9744ff0fc5abbc872f65cd2c5258d2c6329db4f1b5"
     },
     "nuxt-ui": {
       "source": "nuxt/ui",
+      "commit": "48d76af54c743db1dce936dfd3b6b104007ed596",
       "sourceType": "github",
       "skillPath": "skills/nuxt-ui/SKILL.md",
-      "computedHash": "6669bdad8c0a11f8cb28195652d03e1888be1b0ec9d714276e52aa241fd01bab"
+      "computedHash": "89a36be1af44314309cc668fab6294b566393e282e2526fa03c6dbc9ca9f2779"
     },
     "organization-best-practices": {
       "source": "better-auth/skills",
+      "commit": "20c9e88a5c007461a703f1c213572b073196113e",
       "sourceType": "github",
       "skillPath": "better-auth/organization/SKILL.md",
-      "computedHash": "8c85e683dabef4532f1e8b67bbed5c453d39e0e3d5aeedd69d16b568f6e6d44f"
+      "computedHash": "e5b1238c3b62c789918fe397ed52787742e50944343de33f459629f29b0fe922"
     },
     "pnpm": {
       "source": "antfu/skills",
+      "commit": "4a6bb39e7b45e26402eb215393c51ccf5df1ca4c",
       "sourceType": "github",
       "skillPath": "skills/pnpm/SKILL.md",
-      "computedHash": "d1bd6f4fd38ff1ba33b857223c58a832d1cd5b488163ba0d389db449be472603"
+      "computedHash": "fb4c2b0f98b1e651fb217f2070e3782f2fa58fd7d9fb2745e9fefaf945b8c60e"
     },
     "two-factor-authentication-best-practices": {
       "source": "better-auth/skills",
+      "commit": "20c9e88a5c007461a703f1c213572b073196113e",
       "sourceType": "github",
       "skillPath": "better-auth/twoFactor/SKILL.md",
-      "computedHash": "5bc3051aef5060db013f0b3cbe812c40dbae5c22d6ba3ddde4b941158362a197"
+      "computedHash": "89ca7fde92a69aec2cf7407d29058c5428e17d228e2578c79e0129d128524f38"
     },
     "vite": {
       "source": "antfu/skills",
+      "commit": "4a6bb39e7b45e26402eb215393c51ccf5df1ca4c",
       "sourceType": "github",
       "skillPath": "skills/vite/SKILL.md",
-      "computedHash": "88ee465fd10f711efecc76e91e96accae2b229dda371614dcf219099c264a486"
+      "computedHash": "db9eea82d8bf6ce0f60a4a1d94a626c718df7d97160b5f1d5b150647e0c401b3"
     },
     "vitest": {
       "source": "antfu/skills",
+      "commit": "4a6bb39e7b45e26402eb215393c51ccf5df1ca4c",
       "sourceType": "github",
       "skillPath": "skills/vitest/SKILL.md",
-      "computedHash": "90f1cee9326269c91b46a601b3a575491505d8e771009dacff01329381d45291"
+      "computedHash": "bd95e41d66d76da9008893c9bc48c30f0a68f352cd2b00017767f5e4c129501d"
     },
     "vue": {
       "source": "antfu/skills",
+      "commit": "4a6bb39e7b45e26402eb215393c51ccf5df1ca4c",
       "sourceType": "github",
       "skillPath": "skills/vue/SKILL.md",
-      "computedHash": "29ad402cf2ff868b3b43160883fbc42e135223655a41d16092d0d205f2c1ed31"
+      "computedHash": "973126c2d026d971177def462808c99b65965b3f88e6769282aa300c214af66f"
     },
     "vueuse-functions": {
       "source": "vueuse/skills",
+      "commit": "004812b4aa0815f5745ac30a6a7dc4927aec7b3d",
       "sourceType": "github",
       "skillPath": "skills/vueuse-functions/SKILL.md",
-      "computedHash": "70b65fb127323568380de490290eaf195b165da23c1f4fa27df10b386ca0dab2"
+      "computedHash": "898b0286e6c5eefab0d5cf010925d3911b2e127ea776adbf17027e2eca059888"
     }
   }
 }
