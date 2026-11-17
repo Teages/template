@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto'
+import { existsSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { extract, parseTSConfig, validateManifest } from 'gazania/extract'
@@ -32,7 +33,7 @@ export default defineNuxtModule<ModuleOptions>({
   },
   setup(options, nuxt) {
     const logger = useLogger('persisted-operations')
-    const tsconfig = options.tsconfig ?? resolve(nuxt.options.buildDir, 'tsconfig.app.json')
+    const tsconfig = options.tsconfig ?? resolveAppTsconfig(nuxt)
 
     const declaration = addTypeTemplate({
       filename: 'types/persisted-operations.d.ts',
@@ -65,6 +66,18 @@ export default operations
     })
   },
 })
+
+/**
+ * Production builds use a cached `buildDir` that never receives generated
+ * tsconfigs, so fall back to the app tsconfig `nuxt prepare` writes to `.nuxt`.
+ */
+function resolveAppTsconfig(nuxt: { options: { buildDir: string, rootDir: string } }): string {
+  const candidates = [
+    resolve(nuxt.options.buildDir, 'tsconfig.app.json'),
+    resolve(nuxt.options.rootDir, '.nuxt/tsconfig.app.json'),
+  ]
+  return candidates.find(file => existsSync(file)) ?? candidates[0]!
+}
 
 interface ExtractSettings {
   dir: string
