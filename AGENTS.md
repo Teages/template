@@ -13,6 +13,7 @@ Start the user interface from the [shadcn-vue blocks](https://www.shadcn-vue.com
 
 ## Frameworks / Libraries
 - Nuxt 5 (nightly) & Nitro 3
+- **Explicit imports only**: Nuxt auto-imports are disabled through `nuxt-explicit-imports` (`explicitImports.mode: 'strict'` in `nuxt.config.ts`). Import composables, components and server helpers yourself — see [Explicit imports](#explicit-imports).
 - GraphQL, check `shared/schema.graphql`
 - Persisted operations: `modules/persisted-operations` extracts Gazania operations from `app/` into the Nitro virtual module `#graphql/persisted-operations`. Production Yoga executes only those documents.
 - Better Auth
@@ -30,6 +31,31 @@ tests/
 ```
 
 If a deeper AGENTS.md exists in a subdirectory, follow the deeper file for files in that subtree.
+
+## Explicit imports
+
+Auto-imports are off for `imports`, `components` and `server`; the build fails on any implicit use. Never write a bare `ref()`/`useFetch()` or a bare `<Button>` tag expecting Nuxt to resolve it.
+
+| What                                  | Import from                                                                 |
+| ------------------------------------- | --------------------------------------------------------------------------- |
+| Vue (`ref`, `computed`, ...)          | `vue`                                                                        |
+| Nuxt composables (`useFetch`, ...)    | `#app` (sub-paths such as `#app/composables/pages` for `definePageMeta`)     |
+| Module composables (`useColorMode`)   | `#imports`                                                                   |
+| `app/composables/**`, `app/utils/**`  | `~/composables/...`, `~/utils/...`                                           |
+| `shared/**`                            | `#shared/...`                                                                |
+| Vue components and `NuxtLink`, `NuxtPage` | `#components` or `~/components/<path>.vue`                              |
+| Server helpers (`useDrizzle`)         | `#drizzle`, `#server/utils/...`                                              |
+| h3 / Nitro (`defineEventHandler`)     | `nitro/h3`, `nitro/app`                                                      |
+
+```vue
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import { Button } from '#components'
+import { useApiClient } from '~/composables/api/useApiClient'
+</script>
+```
+
+`pnpm exec nuxt-explicit-imports check` lists any implicit use (and writes `.nuxt/explicit-imports-report.json`); `pnpm exec nuxt-explicit-imports migrate` writes the missing imports. Tests and config files are skipped by the checker, so keep their imports explicit by hand.
 
 ## Commands
 - pnpm install

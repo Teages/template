@@ -16,6 +16,10 @@ The interface uses [shadcn-vue](https://www.shadcn-vue.com) on top of Tailwind C
 pnpm dlx shadcn-vue@latest add dialog dropdown-menu
 ```
 
+## Imports
+
+Nuxt auto-imports are disabled ([`nuxt-explicit-imports`](https://github.com/antfu/nuxt-explicit-imports), strict mode): every composable, component and server helper is imported explicitly, and the build fails on an implicit use. `pnpm exec nuxt-explicit-imports check` reports leftovers, `pnpm exec nuxt-explicit-imports migrate` adds the missing imports.
+
 ## Database
 
 ```bash

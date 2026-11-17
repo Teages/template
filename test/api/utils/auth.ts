@@ -2,6 +2,7 @@ import type { ResultOf, TypedDocumentNode, VariablesOf } from 'gazania'
 import { createClient } from '@teages/oh-my-graphql'
 import { serverFetch } from 'nitro/app'
 import { createFetch } from 'ofetch'
+import { useAuth } from '#server/utils/auth'
 
 export async function createTestUser() {
   const auth = useAuth()

@@ -1,6 +1,7 @@
 import type { ResultOf, TypedDocumentNode, VariablesOf } from 'gazania'
 import type { $Fetch } from 'ofetch'
 import { createClient } from '@teages/oh-my-graphql'
+import { useRequestFetch } from '#app'
 
 export interface ApiClient {
   request: <TDocument extends TypedDocumentNode<any, any>>(

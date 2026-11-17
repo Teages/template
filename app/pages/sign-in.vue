@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
 import { toast } from 'vue-sonner'
+import { navigateTo, useRoute, useSeoMeta } from '#app'
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Input, Label, NuxtLink, Spinner } from '#components'
 import { authClient } from '~/utils/auth-client'
 
 const route = useRoute()

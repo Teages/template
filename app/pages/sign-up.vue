@@ -1,5 +1,9 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { toast } from 'vue-sonner'
+import { navigateTo, useSeoMeta } from '#app'
+import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Input, Label, NuxtLink, Spinner } from '#components'
+import { authClient } from '~/utils/auth-client'
 
 const pending = ref(false)
 

@@ -23,8 +23,11 @@ export interface ModuleOptions {
 
 /**
  * Registers the shadcn-vue components via their `index.ts` barrel files so the
- * exports (`Button`, `CardHeader`, `buttonVariants`, ...) are auto-imported
- * without Nuxt also scanning every `.vue` file in the directory.
+ * exports (`Button`, `CardHeader`, `buttonVariants`, ...) are available from
+ * `#components`, without Nuxt also scanning every `.vue` file in the directory.
+ *
+ * Auto-imports are disabled in this project, so consumers import them
+ * explicitly: `import { Button } from '#components'`.
  *
  * @see https://www.shadcn-vue.com/docs/installation/nuxt
  */

@@ -20,13 +20,6 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
-  imports: {
-    dirs: [
-      '~/composables',
-      '~/composables/**/*.ts',
-    ],
-  },
-
   vite: {
     define: {
       'import.meta.env.UPDATE_SCHEMA': false,
@@ -80,7 +73,12 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
     '@teages/nitro-drizzle/nuxt',
+    'nuxt-explicit-imports',
   ],
+
+  explicitImports: {
+    mode: 'strict',
+  },
 
   shadcn: {
     prefix: '',

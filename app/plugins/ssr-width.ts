@@ -1,4 +1,5 @@
 import { provideSSRWidth } from '@vueuse/core'
+import { defineNuxtPlugin } from '#app'
 
 /**
  * shadcn-vue components that rely on `useSSRWidth` (e.g. responsive

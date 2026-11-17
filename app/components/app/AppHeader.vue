@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Button, NuxtLink } from '#components'
+import AppHeaderAuth from '~/components/app/AppHeaderAuth.vue'
+import AppThemeToggle from '~/components/app/AppThemeToggle.vue'
+
 const {
   title,
 } = defineProps<{
