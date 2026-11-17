@@ -18,13 +18,6 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
-  imports: {
-    dirs: [
-      '~/composables',
-      '~/composables/**/*.ts',
-    ],
-  },
-
   vite: {
     define: {
       'import.meta.env.UPDATE_SCHEMA': false,
@@ -67,7 +60,12 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@vueuse/nuxt',
     '@teages/nitro-drizzle/nuxt',
+    'nuxt-explicit-imports',
   ],
+
+  explicitImports: {
+    mode: 'strict',
+  },
 
   $test: {
     // Browser-mode component tests are served by a bare Vite dev server

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+import { navigateTo, useRoute, useSeoMeta } from '#app'
+import { NuxtLink, UButton, UCard, UContainer, UFormField, UInput } from '#components'
+import { useToast } from '#imports'
 import { authClient } from '~/utils/auth-client'
 
 const route = useRoute()

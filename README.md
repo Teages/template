@@ -8,6 +8,10 @@ npx giget@latest gh:teages/template#fullstack-nuxt5 package-name
 
 Single Nuxt app: the Nitro server serves the UI, `/api/graphql`, and `/api/auth/**` from one origin. Database access is managed by [`@teages/nitro-drizzle`](https://www.npmjs.com/package/@teages/nitro-drizzle) — `pnpm dev` runs on an in-memory PGlite dev database (with Drizzle Studio link) and needs no Postgres.
 
+## Imports
+
+Nuxt auto-imports are disabled ([`nuxt-explicit-imports`](https://github.com/antfu/nuxt-explicit-imports), strict mode): every composable, Nuxt UI component and server helper is imported explicitly, and the build fails on an implicit use. `pnpm exec nuxt-explicit-imports check` reports leftovers, `pnpm exec nuxt-explicit-imports migrate` adds the missing imports.
+
 ## Database
 
 ```bash

@@ -1,4 +1,8 @@
 <script setup>
+import { useHead, useSeoMeta } from '#app'
+import { NuxtPage, UApp, UMain } from '#components'
+import AppHeader from '~/components/app/AppHeader.vue'
+
 useHead({
   meta: [
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },

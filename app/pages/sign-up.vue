@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { navigateTo, useSeoMeta } from '#app'
+import { NuxtLink, UButton, UCard, UContainer, UFormField, UInput } from '#components'
+import { useToast } from '#imports'
+import { authClient } from '~/utils/auth-client'
+
 const toast = useToast()
 const pending = ref(false)
 

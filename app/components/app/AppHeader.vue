@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { NuxtLink, UButton, UColorModeButton, UHeader } from '#components'
+import AppHeaderAuth from '~/components/app/AppHeaderAuth.vue'
+
 const {
   title,
 } = defineProps<{

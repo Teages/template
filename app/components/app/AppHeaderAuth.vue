@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { navigateTo } from '#app'
+import { UButton } from '#components'
+import { useSession } from '~/composables/auth/useSession'
 import { authClient } from '~/utils/auth-client'
 
 const session = useSession()
