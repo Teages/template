@@ -20,30 +20,31 @@ async function onSignOut() {
 <template>
   <div
     v-if="session.isPending"
-    class="size-8"
+    class="size-9"
     aria-hidden="true"
   />
 
   <template v-else-if="session.data?.user">
-    <span class="hidden text-sm text-muted sm:inline">
+    <span class="hidden text-sm text-muted-foreground sm:inline">
       {{ session.data.user.name ?? session.data.user.email }}
     </span>
-    <UButton
-      color="neutral"
+    <Button
       variant="ghost"
-      :loading="signingOut"
+      :disabled="signingOut"
       @click="onSignOut"
     >
+      <Spinner v-if="signingOut" />
       Sign out
-    </UButton>
+    </Button>
   </template>
 
-  <UButton
+  <Button
     v-else
-    to="/sign-in"
-    color="neutral"
-    variant="soft"
+    variant="secondary"
+    as-child
   >
-    Sign in
-  </UButton>
+    <NuxtLink to="/sign-in">
+      Sign in
+    </NuxtLink>
+  </Button>
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const toast = useToast()
+import { toast } from 'vue-sonner'
+
 const pending = ref(false)
 
 const name = ref('')
@@ -16,10 +17,8 @@ async function onSubmit() {
       callbackURL: '/',
     })
     if (error) {
-      toast.add({
-        title: 'Sign up failed',
+      toast.error('Sign up failed', {
         description: error.message ?? 'Could not create account',
-        color: 'error',
       })
       return
     }
@@ -34,71 +33,80 @@ useSeoMeta({ title: 'Sign up' })
 </script>
 
 <template>
-  <UContainer class="flex min-h-[calc(100dvh-4rem)] items-center py-12">
-    <UCard class="mx-auto w-full max-w-md">
-      <template #header>
-        <h1 class="text-xl font-semibold">
+  <div class="flex min-h-[calc(100dvh-4rem)] items-center px-4 py-12">
+    <Card class="mx-auto w-full max-w-md">
+      <CardHeader>
+        <CardTitle class="text-xl">
           Sign up
-        </h1>
-        <p class="text-sm text-muted">
+        </CardTitle>
+        <CardDescription>
           Create an account with email and password.
-        </p>
-      </template>
+        </CardDescription>
+      </CardHeader>
 
-      <form
-        class="flex flex-col gap-4"
-        @submit.prevent="onSubmit"
-      >
-        <UFormField label="Name" required>
-          <UInput
-            v-model="name"
-            type="text"
-            autocomplete="name"
-            placeholder="Your name"
-            required
-          />
-        </UFormField>
-
-        <UFormField label="Email" required>
-          <UInput
-            v-model="email"
-            type="email"
-            autocomplete="email"
-            placeholder="you@example.com"
-            required
-          />
-        </UFormField>
-
-        <UFormField label="Password" required>
-          <UInput
-            v-model="password"
-            type="password"
-            autocomplete="new-password"
-            minlength="8"
-            required
-          />
-        </UFormField>
-
-        <UButton
-          type="submit"
-          block
-          :loading="pending"
+      <CardContent>
+        <form
+          class="flex flex-col gap-4"
+          @submit.prevent="onSubmit"
         >
-          Create account
-        </UButton>
-      </form>
+          <div class="grid gap-2">
+            <Label for="name">Name</Label>
+            <Input
+              id="name"
+              v-model="name"
+              type="text"
+              autocomplete="name"
+              placeholder="Your name"
+              required
+            />
+          </div>
 
-      <template #footer>
-        <p class="text-center text-sm text-muted">
+          <div class="grid gap-2">
+            <Label for="email">Email</Label>
+            <Input
+              id="email"
+              v-model="email"
+              type="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+
+          <div class="grid gap-2">
+            <Label for="password">Password</Label>
+            <Input
+              id="password"
+              v-model="password"
+              type="password"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            />
+          </div>
+
+          <Button
+            type="submit"
+            class="w-full"
+            :disabled="pending"
+          >
+            <Spinner v-if="pending" />
+            Create account
+          </Button>
+        </form>
+      </CardContent>
+
+      <CardFooter class="justify-center">
+        <p class="text-sm text-muted-foreground">
           Already have an account?
           <NuxtLink
-            class="font-medium text-primary"
+            class="font-medium text-primary hover:underline"
             to="/sign-in"
           >
             Sign in
           </NuxtLink>
         </p>
-      </template>
-    </UCard>
-  </UContainer>
+      </CardFooter>
+    </Card>
+  </div>
 </template>

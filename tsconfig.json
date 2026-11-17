@@ -1,4 +1,14 @@
 {
+  "compilerOptions": {
+    "paths": {
+      "@/*": [
+        "./app/*"
+      ],
+      "~/*": [
+        "./app/*"
+      ]
+    }
+  },
   "references": [
     {
       "path": "./.nuxt/tsconfig.app.json"

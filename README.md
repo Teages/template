@@ -8,6 +8,14 @@ npx giget@latest gh:teages/template#fullstack-nuxt5 package-name
 
 Single Nuxt app: the Nitro server serves the UI, `/api/graphql`, and `/api/auth/**` from one origin. Database access is managed by [`@teages/nitro-drizzle`](https://www.npmjs.com/package/@teages/nitro-drizzle) — `pnpm dev` runs on an in-memory PGlite dev database (with Drizzle Studio link) and needs no Postgres.
 
+## UI
+
+The interface uses [shadcn-vue](https://www.shadcn-vue.com) on top of Tailwind CSS v4. Components live in `app/components/ui`, the theme tokens in `app/assets/css/main.css`, and both are configured through `components.json`. Add new components with the CLI instead of copying them by hand:
+
+```bash
+pnpm dlx shadcn-vue@latest add dialog dropdown-menu
+```
+
 ## Database
 
 ```bash

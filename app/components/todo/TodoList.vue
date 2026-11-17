@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { AsyncDataRequestStatus } from '#app'
+import { CloudOff, ListTodo, RefreshCw, Trash2 } from '@lucide/vue'
 
 export interface TodoListItem {
   id: string
@@ -26,41 +27,61 @@ const emit = defineEmits<{
 
 <template>
   <section class="space-y-4">
-    <div v-if="status === 'pending' && items.length === 0" class="space-y-2">
-      <UCard v-for="index in 4" :key="index">
-        <div class="flex items-center gap-3">
-          <USkeleton class="size-5 shrink-0 rounded-md" />
-          <USkeleton class="h-5 flex-1" />
-          <USkeleton class="size-8 shrink-0 rounded-md" />
-        </div>
-      </UCard>
+    <div
+      v-if="status === 'pending' && items.length === 0"
+      class="space-y-2"
+      aria-busy="true"
+    >
+      <Card
+        v-for="index in 4"
+        :key="index"
+        class="gap-0 py-0"
+      >
+        <CardContent class="flex items-center gap-3 px-4 py-3">
+          <Skeleton class="size-5 shrink-0 rounded-md" />
+          <Skeleton class="h-5 flex-1" />
+          <Skeleton class="size-8 shrink-0 rounded-md" />
+        </CardContent>
+      </Card>
     </div>
 
-    <UCard v-else-if="status === 'error'" :ui="{ body: 'py-12 text-center' }">
-      <UIcon name="i-lucide-cloud-off" class="mx-auto mb-4 text-4xl text-dimmed" />
-      <p class="font-medium text-highlighted">
-        Could not load todos
-      </p>
-      <p class="mt-1 text-sm text-muted">
-        Check that the API is running, then try again.
-      </p>
-      <UButton
-        class="mt-4"
-        icon="i-lucide-refresh-cw"
-        label="Retry"
-        @click="emit('retry')"
-      />
-    </UCard>
+    <Card
+      v-else-if="status === 'error'"
+      class="gap-0 py-0"
+    >
+      <CardContent class="px-6 py-12 text-center">
+        <CloudOff class="mx-auto mb-4 size-9 text-muted-foreground" />
+        <p class="font-medium">
+          Could not load todos
+        </p>
+        <p class="mt-1 text-sm text-muted-foreground">
+          Check that the API is running, then try again.
+        </p>
+        <Button
+          variant="outline"
+          class="mt-4"
+          @click="emit('retry')"
+        >
+          <RefreshCw />
+          Retry
+        </Button>
+      </CardContent>
+    </Card>
 
-    <UCard v-else-if="items.length === 0" :ui="{ body: 'py-12 text-center' }">
-      <UIcon name="i-lucide-list-todo" class="mx-auto mb-4 text-4xl text-dimmed" />
-      <p class="font-medium text-highlighted">
-        No todos yet
-      </p>
-      <p class="mt-1 text-sm text-muted">
-        Add your first task above.
-      </p>
-    </UCard>
+    <Card
+      v-else-if="items.length === 0"
+      class="gap-0 py-0"
+    >
+      <CardContent class="px-6 py-12 text-center">
+        <ListTodo class="mx-auto mb-4 size-9 text-muted-foreground" />
+        <p class="font-medium">
+          No todos yet
+        </p>
+        <p class="mt-1 text-sm text-muted-foreground">
+          Add your first task above.
+        </p>
+      </CardContent>
+    </Card>
 
     <ul
       v-else
@@ -68,9 +89,9 @@ const emit = defineEmits<{
       :class="[status === 'pending' && 'pointer-events-none opacity-60']"
     >
       <li v-for="todo in items" :key="todo.id">
-        <UCard :ui="{ body: 'py-3' }">
-          <div class="flex items-center gap-3">
-            <UCheckbox
+        <Card class="gap-0 py-0">
+          <CardContent class="flex items-center gap-3 px-4 py-3">
+            <Checkbox
               :model-value="todo.completed"
               :disabled="busyId === todo.id"
               :aria-label="todo.completed ? 'Mark incomplete' : 'Mark complete'"
@@ -78,20 +99,22 @@ const emit = defineEmits<{
             />
             <span
               class="min-w-0 flex-1 text-sm"
-              :class="todo.completed ? 'text-muted line-through' : 'text-highlighted'"
+              :class="todo.completed ? 'text-muted-foreground line-through' : ''"
             >
               {{ todo.title }}
             </span>
-            <UButton
-              icon="i-lucide-trash-2"
-              color="neutral"
+            <Button
               variant="ghost"
+              size="icon"
               aria-label="Delete todo"
-              :loading="busyId === todo.id"
+              :disabled="busyId === todo.id"
               @click="emit('remove', todo.id)"
-            />
-          </div>
-        </UCard>
+            >
+              <Spinner v-if="busyId === todo.id" />
+              <Trash2 v-else />
+            </Button>
+          </CardContent>
+        </Card>
       </li>
     </ul>
   </section>

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 useHead({
   meta: [
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -18,11 +18,13 @@ useSeoMeta({ title, description })
 </script>
 
 <template>
-  <UApp>
+  <div class="flex min-h-dvh flex-col">
     <AppHeader :title />
 
-    <UMain>
+    <main class="flex-1">
       <NuxtPage />
-    </UMain>
-  </UApp>
+    </main>
+
+    <Toaster position="top-center" />
+  </div>
 </template>

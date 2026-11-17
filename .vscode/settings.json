@@ -49,15 +49,15 @@
     "postcss"
   ],
 
-  // Nuxt UI and Tailwind CSS support
+  // Tailwind CSS support
   "files.associations": {
     "*.css": "tailwindcss"
   },
   "editor.quickSuggestions": {
     "strings": "on"
   },
-  "tailwindCSS.classAttributes": ["class", "ui"],
+  "tailwindCSS.classAttributes": ["class"],
   "tailwindCSS.experimental.classRegex": [
-    ["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+    ["cva\\(([^)]*)\\)", "['\"`]([^'\"`]*).*?['\"`]"]
   ]
 }

@@ -2,6 +2,7 @@
 import type { TodoListItem } from '~/components/todo/TodoList.vue'
 import { GraphQLErrors } from '@teages/oh-my-graphql'
 import { FetchError } from 'ofetch'
+import { toast } from 'vue-sonner'
 
 definePageMeta({
   middleware: 'auth',
@@ -48,7 +49,6 @@ const DeleteTodoMutation = gazania.mutation('TodoPageDelete')
   ]))
 
 const api = useApiClient()
-const toast = useToast()
 const busyId = ref<string | null>(null)
 
 const { data, status, error, refresh } = await useAsyncData(
@@ -78,7 +78,7 @@ function showError(cause: unknown, fallback: string) {
     : cause instanceof Error
       ? cause.message
       : fallback
-  toast.add({ title: fallback, description, color: 'error' })
+  toast.error(fallback, { description })
 }
 
 async function onCreate(title: string) {
@@ -131,22 +131,26 @@ if (import.meta.dev && error.value) {
 </script>
 
 <template>
-  <UContainer class="py-8">
-    <UPageSection
-      title="Todos"
-      description="GraphQL-backed todo task list."
-    >
-      <div class="mx-auto flex w-full max-w-2xl flex-col gap-6">
-        <TodoCreateForm @create="onCreate" />
-        <TodoList
-          :items
-          :status
-          :busy-id
-          @retry="refresh()"
-          @toggle="onToggle"
-          @remove="onRemove"
-        />
-      </div>
-    </UPageSection>
-  </UContainer>
+  <div class="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6">
+    <div class="mb-6 space-y-1">
+      <h2 class="text-2xl font-semibold tracking-tight">
+        Todos
+      </h2>
+      <p class="text-muted-foreground">
+        GraphQL-backed todo task list.
+      </p>
+    </div>
+
+    <div class="mx-auto flex w-full max-w-2xl flex-col gap-6">
+      <TodoCreateForm @create="onCreate" />
+      <TodoList
+        :items
+        :status
+        :busy-id
+        @retry="refresh()"
+        @toggle="onToggle"
+        @remove="onRemove"
+      />
+    </div>
+  </div>
 </template>

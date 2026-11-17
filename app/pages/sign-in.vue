@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { toast } from 'vue-sonner'
 import { authClient } from '~/utils/auth-client'
 
 const route = useRoute()
-const toast = useToast()
 const pending = ref(false)
 
 const email = ref('')
@@ -24,10 +24,8 @@ async function onSubmit() {
       callbackURL: redirectTo.value,
     })
     if (error) {
-      toast.add({
-        title: 'Sign in failed',
+      toast.error('Sign in failed', {
         description: error.message ?? 'Invalid email or password',
-        color: 'error',
       })
       return
     }
@@ -42,60 +40,67 @@ useSeoMeta({ title: 'Sign in' })
 </script>
 
 <template>
-  <UContainer class="flex min-h-[calc(100dvh-4rem)] items-center py-12">
-    <UCard class="mx-auto w-full max-w-md">
-      <template #header>
-        <h1 class="text-xl font-semibold">
+  <div class="flex min-h-[calc(100dvh-4rem)] items-center px-4 py-12">
+    <Card class="mx-auto w-full max-w-md">
+      <CardHeader>
+        <CardTitle class="text-xl">
           Sign in
-        </h1>
-        <p class="text-sm text-muted">
+        </CardTitle>
+        <CardDescription>
           Use your email and password.
-        </p>
-      </template>
+        </CardDescription>
+      </CardHeader>
 
-      <form
-        class="flex flex-col gap-4"
-        @submit.prevent="onSubmit"
-      >
-        <UFormField label="Email" required>
-          <UInput
-            v-model="email"
-            type="email"
-            autocomplete="email"
-            placeholder="you@example.com"
-            required
-          />
-        </UFormField>
-
-        <UFormField label="Password" required>
-          <UInput
-            v-model="password"
-            type="password"
-            autocomplete="current-password"
-            required
-          />
-        </UFormField>
-
-        <UButton
-          type="submit"
-          block
-          :loading="pending"
+      <CardContent>
+        <form
+          class="flex flex-col gap-4"
+          @submit.prevent="onSubmit"
         >
-          Sign in
-        </UButton>
-      </form>
+          <div class="grid gap-2">
+            <Label for="email">Email</Label>
+            <Input
+              id="email"
+              v-model="email"
+              type="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
 
-      <template #footer>
-        <p class="text-center text-sm text-muted">
+          <div class="grid gap-2">
+            <Label for="password">Password</Label>
+            <Input
+              id="password"
+              v-model="password"
+              type="password"
+              autocomplete="current-password"
+              required
+            />
+          </div>
+
+          <Button
+            type="submit"
+            class="w-full"
+            :disabled="pending"
+          >
+            <Spinner v-if="pending" />
+            Sign in
+          </Button>
+        </form>
+      </CardContent>
+
+      <CardFooter class="justify-center">
+        <p class="text-sm text-muted-foreground">
           No account?
           <NuxtLink
-            class="font-medium text-primary"
+            class="font-medium text-primary hover:underline"
             to="/sign-up"
           >
             Sign up
           </NuxtLink>
         </p>
-      </template>
-    </UCard>
-  </UContainer>
+      </CardFooter>
+    </Card>
+  </div>
 </template>

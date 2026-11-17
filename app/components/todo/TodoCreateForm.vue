@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Plus } from '@lucide/vue'
+
 const emit = defineEmits<{
   create: [title: string]
 }>()
@@ -23,22 +25,24 @@ async function onSubmit() {
 </script>
 
 <template>
-  <UForm class="w-full" @submit.prevent="onSubmit">
-    <UFieldGroup class="w-full">
-      <UInput
-        v-model="title"
-        class="flex-1"
-        placeholder="What needs to be done?"
-        autocomplete="off"
-        :disabled="pending"
-      />
-      <UButton
-        type="submit"
-        icon="i-lucide-plus"
-        label="Add"
-        :loading="pending"
-        :disabled="!title.trim()"
-      />
-    </UFieldGroup>
-  </UForm>
+  <form
+    class="flex w-full items-center gap-2"
+    @submit.prevent="onSubmit"
+  >
+    <Input
+      v-model="title"
+      class="flex-1"
+      placeholder="What needs to be done?"
+      autocomplete="off"
+      :disabled="pending"
+    />
+    <Button
+      type="submit"
+      :disabled="pending || !title.trim()"
+    >
+      <Spinner v-if="pending" />
+      <Plus v-else />
+      Add
+    </Button>
+  </form>
 </template>

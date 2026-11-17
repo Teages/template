@@ -1,3 +1,5 @@
+import tailwindcss from '@tailwindcss/vite'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: 'latest',
@@ -30,8 +32,19 @@ export default defineNuxtConfig({
       'import.meta.env.UPDATE_SCHEMA': false,
     },
     optimizeDeps: {
-      include: ['gazania', 'graphql', 'better-auth/vue'],
+      include: [
+        'gazania',
+        'graphql',
+        'better-auth/vue',
+        'reka-ui',
+        'cn',
+        'vue-sonner',
+        '@lucide/vue',
+      ],
     },
+    plugins: [
+      tailwindcss(),
+    ],
   },
 
   typescript: {
@@ -64,19 +77,26 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/test-utils',
     '@nuxt/eslint',
-    '@nuxt/ui',
+    '@nuxtjs/color-mode',
     '@vueuse/nuxt',
     '@teages/nitro-drizzle/nuxt',
   ],
 
+  shadcn: {
+    prefix: '',
+    componentDir: '@/components/ui',
+  },
+
+  colorMode: {
+    // shadcn-vue targets the `.dark` class instead of Nuxt color mode's
+    // default `-mode` suffix.
+    classSuffix: '',
+    preference: 'system',
+    fallback: 'light',
+    storageKey: 'nuxt-color-mode',
+  },
+
   $test: {
-    // Browser-mode component tests are served by a bare Vite dev server
-    // without the nitro `/api/_nuxt_icon` route, so `icon.provider: 'server'`
-    // would 404 per icon. Bundle the icons used in app code client-side
-    // instead, so they resolve without any request.
-    icon: {
-      clientBundle: { scan: true },
-    },
     debug: {
       hydration: true,
     },
@@ -108,17 +128,9 @@ export default defineNuxtConfig({
     migrationsDir: './server/database/migrations',
   },
 
-  ui: {
-    fonts: false,
-  },
-
   devtools: { enabled: true },
 
   eslint: {
     config: { standalone: false },
-  },
-
-  icon: {
-    provider: 'server',
   },
 })

@@ -6,9 +6,9 @@
 
 Remove this section once you have set up your project.
 
-It's a project template, update this file when you start to build. 
+It's a project template, update this file when you start to build.
 
-You will need to find a good [nuxt ui template](https://ui.nuxt.com/templates) when you need to build the user interface.
+Start the user interface from the [shadcn-vue blocks](https://www.shadcn-vue.com/blocks) or components, then grow it from there.
 
 
 ## Frameworks / Libraries
@@ -16,6 +16,7 @@ You will need to find a good [nuxt ui template](https://ui.nuxt.com/templates) w
 - GraphQL, check `shared/schema.graphql`
 - Persisted operations: `modules/persisted-operations` extracts Gazania operations from `app/` into the Nitro virtual module `#graphql/persisted-operations`. Production Yoga executes only those documents.
 - Better Auth
+- shadcn-vue (Tailwind CSS v4, reka-ui, lucide icons), configured through `components.json`; add components with `pnpm dlx shadcn-vue@latest add <component>`
 
 ## Structure
 

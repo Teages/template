@@ -12,7 +12,7 @@ describe('component: TodoList', () => {
       },
     })
 
-    expect(wrapper.findAll('[role="alert"][aria-busy="true"]').length).toBeGreaterThan(0)
+    expect(wrapper.findAll('[aria-busy="true"]').length).toBeGreaterThan(0)
   })
 
   it('shows the empty state when there are no items', async () => {
