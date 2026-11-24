@@ -12,7 +12,7 @@ app/
   pages/
   plugins/
   middleware/
-  units/
+  utils/
   app.vue
 ```
 
