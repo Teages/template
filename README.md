@@ -1,10 +1,12 @@
 ## Use this template
 
 ```bash
-npx giget@latest gh:teages/template#fullstack package-name
+npx giget@latest gh:teages/template#fullstack-monorepo package-name
 ```
 
-# Fullstack App
+# Fullstack App (monorepo)
+
+pnpm monorepo: `frontend/` (Nuxt) + `backend/` (standalone Nitro). `pnpm dev` starts both apps — frontend on **20397**, backend on **20398** — and the Nuxt dev server proxies `/graphql` and `/api/auth/**` to the backend.
 
 ## Production Docker
 
@@ -22,3 +24,5 @@ docker compose -f docker-compose.prod.yml --profile migrate run --rm migrate
 ```
 
 Set `APP_ORIGIN` to the public frontend origin in real deployments, for example `https://app.example.com`. The frontend container proxies `/graphql` and `/api/auth/**` to the backend container over the Docker network.
+
+Looking for the single-app variant (Nuxt 5, one server for UI + GraphQL + auth)? Use the `fullstack` branch.
